@@ -16,8 +16,9 @@ Wiadomości:
 ## Sieć peer to peer
 
 Składa się z nodów:
-- publicznych - o adresie ip publicznym
-- prywatnych - bez publicznego ip
+- <span style="color: dark-red">publicznych</span> - o adresie ip publicznym
+- <span style="color: dark-green">prywatnych</span> - bez publicznego ip
+- **<span style="color: dark-red">publicznego głównego</span>** - o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. 
 
 ### Rodzaje połączeń
 
@@ -37,7 +38,11 @@ Składa się z nodów:
 
     Jak wyżej, ale "wiązki" połączeń są jednym połączeniem. Node publiczny na podstawie zawartości wiadomości (informacji o adresacie) wybiera dalszą drogę wiadomości. 
 
+    <img style="height:400px" src="./komunikacjaPure.PNG">
+
 -   wybór reprezentanta
+
+    <img style="height:400px" src="./komunikacjaReprezentant.PNG">
 
     Każdy prywatny node wybiera swojego publicznego reprezentanta, do którego przesyła całą komunikację. Publiczny node musi przetworzyć i dalej rozesłać wiadomości. Broadcast może składać się tylko z jednej wiadomości do noda publicznego, który potem kopiuje i rozsyła wiadomość dalej:
 
