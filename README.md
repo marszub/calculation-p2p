@@ -16,9 +16,9 @@ Wiadomości:
 ## Sieć peer to peer
 
 Składa się z nodów:
-- <font color="DarkRed">publicznych</font> - o adresie ip publicznym
-- <font color="DarkGreen">prywatnych</font> - bez publicznego ip
-- **<font color="DarkRed">publicznego głównego</font>** - o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. 
+- <font color="red">publicznych</font> - o adresie ip publicznym
+- <font color="green">prywatnych</font> - bez publicznego ip
+- **<font color="red">publicznego głównego</font>** - o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. 
 
 ### Rodzaje połączeń
 
