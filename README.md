@@ -6,19 +6,120 @@ Odbiorca:
 - Unicast
 - Broadcast
 
-Wiadomości:
-- pytanie o listę nodów (unicast do wyróżnionego noda)
-- odpowiedź z listą nodów (unicast od wyróżnionego noda)
-- broadcast heart beat
-- broadcast "zajmuję dane"
-- broadcast "obliczyłem"
+### Wiadomości
+
+Szkielet:
+```
+{
+    header:
+    {
+        sender: <priority number>, 
+        receiver: <broadcast=-1 | receiver_id>, 
+        message_type:<enum>
+    }, 
+    body:
+    { 
+        --payload--
+    }
+}
+```
+
+#### pytanie o listę nodów
+Jest to wiadomość unicast do wyróżnionego noda.
+
+```
+body:
+{ 
+
+}
+```
+
+#### odpowiedź z listą nodów
+
+Unicast od wyróżnionego noda do noda pytającego. Zawiera listę adresów publicznych nodów, listę nodów prywatnych oraz identyfikator zgłaszającego się noda.
+
+```
+body:
+{
+    public_nodes:
+    [
+        {id, adress_ip}
+    ],
+    connected_nodes:
+    [
+        id
+    ],
+    your_new_id: <int>,
+}
+```
+
+#### broadcast powitalny
+Pierwsza wiadomość służąca do poinformowania innych nodów o dołączeniu do sieci.
+
+```
+body:
+{
+    
+}
+```
+
+#### broadcast heart beat
+Co ustalony czas broadcast informujący o aktywaności noda w sieci. Jeśli node nie ortzyma takiej wiadomości po pewnym czasie, uznaje node za odłączony.
+
+```
+body:
+{
+    
+}
+```
+
+#### broadcast "zajmuję dane"
+Informuje pozostałe nody, że zajmuje zadanie.
+Może powodować konflikt.
+
+```
+body:
+{
+    task_id: <int>
+}
+```
+
+#### unicast "ok, zajmuj dane"
+Wysyłane po otrzymaniu wiadomości "zajmuję dane" oraz zaznaczeniu w swojej liście zadań jako zajęte. Służy do potwierdzenia, że dany node może zajmować się danym zadaniem.
+
+```
+body:
+{
+
+}
+```
+
+#### broadcast "obliczyłem"
+Informuje, że dane zadanie zostało wykonane. Przesyła wynik zadania.
+
+```
+body:
+{
+    task_id: <int>
+    result: --suitable--
+}
+```
+
+
+### Konflikty pobierania danych
+
+Jeśli dwa nody równocześnie wyślą wiadomość "zajmuję dane", powstaje konflikt, ponieważ do niektórych nodów dojdzie jedna wiadomość jako pierwsza, do innych druga.
+
+Rozwiązanie:
+
+Każdy node podczas dołączanie się do sieci, kiedy prosi node publiczny główny o listę adresów, dostaje od niego priorytet. Jako, że wszystkie priorytety ustala jeden node, każdy node będzie miał inny priorytet. Kiedy nastąpi konflikt, wygrywa go node z lepszym priorytetem. Jako, że wszystkie nody znają priorytety pozostałych, w tablicy zajętych danych będzie zapisany ten, o lepszym priorytecie, niezależnie od kolejności otrzymania wiadomości. Node, który przegrał konflikt, wybiera inne dane i ponawia próbę zajęcia ich. 
 
 ## Sieć peer to peer
 
 Składa się z nodów:
-- <font color="red">publicznych</font> - o adresie ip publicznym
-- <font color="green">prywatnych</font> - bez publicznego ip
-- **<font color="red">publicznego głównego</font>** - o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. 
+- <font color="red">publicznych</font> - o adresie ip publicznym (czerwone)
+- <font color="green">prywatnych</font> - bez publicznego ip (zielone)
+- **<font color="red">publicznego głównego</font>** - o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. (czerwony pogrubiony)
 
 ### Rodzaje połączeń
 
@@ -52,7 +153,7 @@ Składa się z nodów:
 
     Plus - dwukrotnie zmniejszamy ruch broadcastowy. Nie tworzymy osobnych połączeń dla każdej pary nodów prywatnych.
 
--   hybryda
+-   **hybryda**
 
     Prywatny node wysyła wiadomości bezpośrednio do nodów publicznych, ale za pośrednikiem reprezentanta do prywatnych. Broadcast wygląda następująco:
 
@@ -61,5 +162,3 @@ Składa się z nodów:
     Minus - każdy node przy wysyłaniu i pośredniczeniu musi sprawdzać, czy odbiorca jest publiczny, czy prywatny. Dodatkowo musi wiedzieć, czy sam jest publiczny, czy prywatny. Dodatkowe skomplikowanie kodu.
 
     Plus - Rozwiązanie maksymalnie optymalne pod względem obciążenia sieci oraz nodów publicznych. 
-
-
