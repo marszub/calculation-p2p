@@ -31,7 +31,7 @@ Rodzaje połączeń:
 
     <img style="height:300px" src="./img/komunikacja_reprezentant.PNG">
 
-    Każdy prywatny node wybiera swojego publicznego reprezentanta, do którego przesyła całą komunikację. Publiczny node musi przetworzyć i dalej rozesłać wiadomości. Broadcast może składać się tylko z jednej wiadomości do noda publicznego, który potem kopiuje i rozsyła wiadomość dalej:
+    Każdy prywatny node wybiera swojego publicznego reprezentanta, do którego przesyła całą komunikację. Może go wybrać jednorazowo, lub losować przy każdej próbie wysłania waidomości do noda prywatnego. Publiczny node musi przetworzyć i dalej rozesłać wiadomości. Broadcast może składać się tylko z jednej wiadomości do noda publicznego, który potem kopiuje i rozsyła wiadomość dalej:
 
     <img style="height:300px" src="./img/broadcast_opt.PNG">
 
@@ -41,7 +41,7 @@ Rodzaje połączeń:
 
 -   **hybryda**
 
-    Prywatny node wysyła wiadomości bezpośrednio do nodów publicznych, ale za pośrednikiem reprezentanta do prywatnych. Broadcast wygląda następująco:
+    Prywatny node wysyła wiadomości bezpośrednio do nodów publicznych, ale za pośrednictwem reprezentanta do prywatnych. Broadcast wygląda następująco:
 
     <img style="height:300px" src="./img/broadcast_hybryda.PNG">
 
@@ -73,7 +73,7 @@ Odbiorca:
 }
 ```
 
-```header``` zawiera:
+```header``` składa się z pól:
 - ```sender``` zawiera identyfikator noda w sieci. Jest to dodatnia liczba całkowita różna dla każdego noda, będąca równocześnie jego priorytetem. Aby zapewnić unikatowość id, node otrzymuje je od        publicznego noda głównego razem z listą nodów w sieci. 
 - ```receiver``` zawiera id noda, do którego wiadomość jest skierowana, lub ```-1``` gdy wiadomość jest typu broadcast.
 - ```message_type``` przechowuje liczbę będącą identyfikatorem typu wiadomości. Poniżej znajduje się lista typów wraz z ich identyfikatorem oraz opisem ciała.
@@ -175,7 +175,7 @@ body:
 ```
 
 
-## Konflikty pobierania danych
+## Konflikty rezerwowania danych
 
 ### Problem:
 
@@ -191,7 +191,7 @@ Każdy node składa się z dwóch głównych wątków, które muszą się komuni
 - **<font color="blue">Sieci</font>**
 - **<font color="green">Obliczeń</font>**
 
-Komunikacja między nimi przebiega dzięki wzorcowi ```Active Object```.
+Komunikacja między nimi przebiega z użyciem wzorca ```Active Object```.
 
 <img style="height:300px" src="./img/koncept_watkow.PNG">
 
