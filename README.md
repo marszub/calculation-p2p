@@ -200,6 +200,18 @@ Dzięki temu żaden wątek nigdy nie zostaje zablokowany w ramach komunikacji (t
 
 # Wątek Sieci
 
+Otrzymuje, przetwarza i wysyła wiadomości w sieci Nodów. Monitoruje ```heart beat``` wszystkich Nodów i zamyka połączenia po przekroczeniu ustalonego czasu bez wiadomości. Wywołuje metody na obiekcie ```Stanu``` i otrzymuje od niego zgłoszenia w ramach subskrypcji. 
+
+Generuje wątek ```Serwera```, który nasłuchuje nadchodzące połączenia. Wątek serwera w momencie otrzymania połączenia generuje wątek ```Połączenia```, który od teraz odbiera dane i kolejkuje je do obsłużenia przez wątek ```Sieci```. Dodatkowo przy uruchamianiu programu, wątek ```Sieci``` tworzy wątki ```Połączenia``` dla każdego publicznego Noda w sieci. 
+
+Wątek ```Sieci```, gdy nie ma nic do roboty, czeka nieaktywnie. Budzony jest przez wątki ```Stanu```, ```Połączenia```, lub ```Serwera``` (niekoniecznie). Wątki ```Serwera``` oraz ```Połączenia``` czekają nieaktywnie na operacjach odpowiednio: akceptacji połączenia oraz czytania ze strumienia (powinno być zaimplementowane w bibliotekach).
+
+Aby wysłać wiadomość, nie potrzeba synchronizacji z wątkiem odbierającym. Potrzebna jest ona natomiast przy kolejkowaniu i odbieraniu wiadomości na drodze wątek ```Połączenia``` -> wątek ```Sieci```. Jest to problem ```NP1C1B```. Rozwiązujemy w ramach wzorca```Monitor```.
+
+Wątek ```Heart``` wysyła wiadomość broadcast heart beat do wszystkich nodów w sieci (albo zleca wysłanie wątkowi ```Sieci```).
+
+Kolejną współdzeloną strukturą danych jest tablica aktywnych Nodów, która musi być chroniona. Wątek ```Serwera``` dodaje do niej nowe połączenia, wątki ```Połączenia``` usuwają z niej zapisy po wykryciu, że połączenie zostało urwane. Wymuszone zamknięcie połączenia na skutek nie otrzymania wiadomości ```heart beat``` realizowane przez wątek ```Sieci``` zostanie zauważone przez wątek ```Połączenia```. Problem można uprościć do problemu ```1PNC1B```. Rozwiązujemy w ramach wzorca ```Monitor```.
+
 # Wątek Stanu (Planisty)
 
 Jest to wątek ```Scheduler``` we wzorcu projektowym ```Active object```. Z tego powodu w tej sekcji opisuję cały wzorzec projektowy, a nie tylko elementy, które działają w tym wątku. 
@@ -250,8 +262,23 @@ Jest interfejsem dla stanu obiektu. Jego metody są jedyną drogą komunikacji m
 
 - Metody subskrybujące/odsubskrybujące
 
-- Metody informacyjne dla GUI
+- Metody informacyjne dla UI
 
 # Wątek Obliczeń
 
-# Wątek GUI
+Prosi o zadania obiekt ```Stanu```, oblicza zadanie, informuje o skończeniu zadania.
+
+Jest informowany o zajęciu aktualnie wykonywanego zadania przez inny node. Wtedy przerywa obliczenia i znów prosi o zadanie.
+
+Aby zmilimalizować szansę uśpienia, prosi o nowe zadanie jeszcze przed końcem poprzedniego.
+
+Edge case: 
+- Nie ma zadań, ale nie wszystko obliczone - zasypia w oczekiwaniu na powiadomienie o skończeniu wszystkich zadań, lub zwolnieniu zadania
+- Wszystko obliczone - zakończ działanie wątku
+
+# Wątek UI
+
+Interfejs użytkownika umożliwia: 
+- przerwanie programu (hard, soft)
+- wyświetlenie statystyk i postępu
+- wyświetlenie wyniku po zakończeniu
