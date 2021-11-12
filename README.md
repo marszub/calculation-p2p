@@ -114,12 +114,12 @@ body:
 ## Broadcast powitalny
 ```message_type: 3```
 
-Pierwsza wiadomość służąca do poinformowania innych nodów o dołączeniu do sieci.
+Pierwsza wiadomość służąca do poinformowania innych nodów o dołączeniu do sieci. Pole ```ip``` zawiera adres ip nadawcy jeśli posiada publiczny adres ip. W przeciwnym przypadku zawiera napis "None".
 
 ```
 body:
 {
-    
+    ip: <ip_address | None>,
 }
 ```
 
@@ -182,7 +182,7 @@ Jeśli dwa nody równocześnie wyślą wiadomość "zajmuję dane", powstaje kon
 
 ### Rozwiązanie:
 
-Każdy node podczas dołączanie się do sieci, kiedy prosi node publiczny główny o listę adresów, dostaje od niego priorytet. Jako, że wszystkie priorytety ustala jeden node, każdy node będzie miał inny priorytet. Kiedy nastąpi konflikt, wygrywa go node z lepszym priorytetem. Jako, że wszystkie nody znają priorytety pozostałych, w tablicy zajętych danych będzie zapisany ten, o lepszym priorytecie, niezależnie od kolejności otrzymania wiadomości. Node, który przegrał konflikt, wybiera inne dane i ponawia próbę zajęcia ich. 
+Każdy node podczas dołączania się do sieci, kiedy prosi node publiczny główny o listę adresów, dostaje od niego priorytet. Jako, że wszystkie priorytety ustala jeden node, każdy node będzie miał inny priorytet. Kiedy nastąpi konflikt, wygrywa go node z lepszym priorytetem. Jako, że wszystkie nody znają priorytety pozostałych, w tablicy zajętych danych będzie zapisany ten, o lepszym priorytecie, niezależnie od kolejności otrzymania wiadomości. Node, który przegrał konflikt, wybiera inne dane i ponawia próbę zajęcia ich. 
 
 # Node
 
@@ -212,6 +212,8 @@ Wątek ```Heart``` wysyła wiadomość broadcast heart beat do wszystkich nodów
 
 Kolejną współdzeloną strukturą danych jest tablica aktywnych Nodów, która musi być chroniona. Wątek ```Serwera``` dodaje do niej nowe połączenia, wątki ```Połączenia``` usuwają z niej zapisy po wykryciu, że połączenie zostało urwane. Wymuszone zamknięcie połączenia na skutek nie otrzymania wiadomości ```heart beat``` realizowane przez wątek ```Sieci``` zostanie zauważone przez wątek ```Połączenia```. Problem można uprościć do problemu ```1PNC1B```. Rozwiązujemy za pomocą synchronizowanej tablicy/listy.
 
+Gdy wątek ```Sieci``` otrzyma wiadomość powitalną od noda publicznego i sam jest nodem prywatnym, nawiązuje połączenie z nadawcą. (w pozostałych przypadnkach, połączenie nawiązuje adresat, lub połączenia ma nie być)
+
 # Wątek Stanu (Planisty)
 
 Jest to wątek ```Scheduler``` we wzorcu projektowym ```Active object```. Z tego powodu w tej sekcji opisuję cały wzorzec projektowy, a nie tylko elementy, które działają w tym wątku. 
@@ -225,6 +227,8 @@ Jest to wątek ```Scheduler``` we wzorcu projektowym ```Active object```. Z tego
 Klasa Servant jest rdzeniem całego wzorca. To tutaj znajdują się dane, na których operuje ```Active Object```. Dlatego wszystkie publiczne metody dzielą się na dwie kategorie:
 - Metody operacyjne - odpowiadają 1:1 wszystkim metodom ```Proxy``` oraz klasom implementującym ```MethodRequest```. Omawiam je w sekcji ```Proxy```.
 - Predykaty - używane w implementacji metod ```boolean guard()``` klas implementujących ```MethodRequest```. Udostępniają informacje, dzięki którym ```Scheduler``` może stwierdzić, czy dana metoda może być aktualnie wywołana. 
+
+**W tym przypadku nie zawiera Predykatów, ponieważ [Method Request](#method-request) nie implementuje funkcji ```gruard()```**
 
 Servant operuje na strukturach danych:
 - lista zadań i ich stan (wolne, zajęte, obliczone)
@@ -263,6 +267,29 @@ Jest interfejsem dla stanu obiektu. Jego metody są jedyną drogą komunikacji m
 - Metody subskrybujące/odsubskrybujące
 
 - Metody informacyjne dla UI
+
+## Scheduler
+
+Obsługuje ```Method Request``` pobierane z ```Activation Queue```. Dodatkowo, dodaje, usuwa i informuje subskrybentów wydarzeń. 
+
+Implementuje tworzenie i dodawanie do ```Activation Queue``` obiektów ```Method Request```. 
+
+## Activation Queue
+
+Jako ```Activation Queue``` użyta została kolejka ```LinkedBlockingQueue```. 
+Jest ona bezpieczna pod względem współbieżonści. 
+
+Elementy pobieramy blokująco, ponieważ jest to realizowane przez wątek ```Stanu```, który odpowiada jedynie za obsługę skolejkowanych metod.
+
+Elementy również kładziemy blokująco. Przepełnienie występuje jedynie na skutek "niedomagania" wątku ```Stanu``` i jest to sytuacja patologiczna, która nie powinna wystąpić. Dlatego pozostałe wątki zostaną jedynie spowolnione, a nie wpłynie to na poprawność ich działania. Nie nakładamy żadnych warunków dla wywoływania metod, dlatego mamy pewność, że kolejka kiedyś się opróżni (brak możliwości deadlocka). 
+
+## Method Request
+
+Jest w postaci obiektu ```Runnable```. Nie tylko wywołuje metody obiektu ```Servant```, ale również obsługuje subskrypcje. Nie obsługuje warunków wykonania metody (guard). Każdą metodę zawsze można wykonać, ewentualne nieprawidłowości jej wykonania są przekazywane do obiektu ```Future``` i obsługiwane przez zainteresowany wątek.
+
+## Future
+
+Standardowa implementacja
 
 # Wątek Obliczeń
 
