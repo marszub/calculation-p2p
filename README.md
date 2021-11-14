@@ -206,7 +206,7 @@ Generuje wątek ```Serwera```, który nasłuchuje nadchodzące połączenia. Wą
 
 Wątek ```Sieci```, gdy nie ma nic do roboty, czeka nieaktywnie. Budzony jest przez wątki ```Stanu```, ```Połączenia```, lub ```Serwera``` (niekoniecznie). Wątki ```Serwera``` oraz ```Połączenia``` czekają nieaktywnie na operacjach odpowiednio: akceptacji połączenia oraz czytania ze strumienia (powinno być zaimplementowane w bibliotekach).
 
-Aby wysłać wiadomość, nie potrzeba synchronizacji z wątkiem odbierającym. Potrzebna jest ona natomiast przy kolejkowaniu i odbieraniu wiadomości na drodze wątek ```Połączenia``` -> wątek ```Sieci```. Jest to problem ```NP1C1B```. Rozwiązujemy w ramach wzorca ```Monitor``` z linked listą.
+Aby wysłać wiadomość, nie potrzeba synchronizacji z wątkiem odbierającym. Potrzebna jest ona natomiast przy kolejkowaniu i odbieraniu wiadomości na drodze wątek ```Połączenia``` -> wątek ```Sieci```. Jest to problem ```NP1C1B```. Rozwiązujemy za pomocą ```LinkedBlockingQueue```.
 
 Wątek ```Heart``` wysyła wiadomość broadcast heart beat do wszystkich nodów w sieci (albo zleca wysłanie wątkowi ```Sieci```).
 
@@ -309,3 +309,7 @@ Interfejs użytkownika umożliwia:
 - przerwanie programu (hard, soft)
 - wyświetlenie statystyk i postępu
 - wyświetlenie wyniku po zakończeniu
+
+# Workflow systemu
+
+1. fdsaf
