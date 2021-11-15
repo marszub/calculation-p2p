@@ -199,6 +199,37 @@ body:
 }
 ```
 
+## Pytanie o stan zadań
+
+Unicast z listą zadań, które wymagają synchronizacji.
+
+```
+body:
+{
+    tasks: [
+        task_id
+    ]
+}
+```
+
+## Odpowiedź ze stanem zadań
+
+Odpowiedź unicast z listą stanów zadań, o które putał adresat.
+
+```
+body:
+{
+    tasks: [
+        {
+            task_id: <int>
+            state: <free|reserved|calculated>
+            owner: <null|node_id>
+            result: <null|result_obj>
+        }
+    ]
+}
+```
+
 
 ## Konflikty rezerwowania danych
 
@@ -240,8 +271,8 @@ Protokół jest zawodny w pewnym mało prawdopodobnym scenariuszu. Dlatego potrz
 ## Heart beat
 
 Potrzebne są dwie struktury danych: 
-- słownik ```id_noda : czas przedawnienia ostatniej wiadomości heart beat```. Elementy są dodawane podczas inicjalizacji na podstawie listy nodów, lub gdy node otrzyma [Wiadomość powitalną](#wiadomosc-powitalna). Jest aktalizowana przy każdym otrzymaniu wiadomości [Heart beat](#heart-beat).
-- kolejka priorytetowa zaiwerająca pary ```(id_noda, czas przedawnienia danej wiadomości heart beat)```. Priorytetem jest czas przedawnienia (od najwcześniejszych). Przy otrzymaniu wiadomości [Heart beat](#heart-beat) odpowiednia para jest dodawana do kolejki. Element jest ściągany, gdy czas przedawnienia upłynie. Wtedy jest sprawdzany czas przedawnienia w słowniku i jeśli równieżupłynoł, odpowiedni Node jest rozłączany. 
+- słownik ```id_noda : czas przedawnienia ostatniej wiadomości heart beat```. Elementy są dodawane podczas inicjalizacji na podstawie listy nodów, lub gdy node otrzyma [Wiadomość powitalną](#wiadomosc-powitalna). Jest aktualizowana przy każdym otrzymaniu wiadomości [Heart beat](#heart-beat).
+- kolejka priorytetowa zaiwerająca pary ```(id_noda, czas przedawnienia danej wiadomości heart beat)```. Priorytetem jest czas przedawnienia (od najwcześniejszych). Przy otrzymaniu wiadomości [Heart beat](#heart-beat) odpowiednia para jest dodawana do kolejki. Element jest ściągany, gdy czas przedawnienia upłynie. Wtedy jest sprawdzany czas przedawnienia w słowniku i jeśli również upłynął, odpowiedni Node jest rozłączany. 
 
 
 TODO: czy nie może być rozbieżności?
@@ -267,8 +298,8 @@ TODO: czy nie może być rozbieżności?
 ## Końcowa synchronizacja
 
 1. Kiedy wszystkie zadania w stanie lokalnym staną się zajęte, lub obliczone aktywowany zostaje protokół końcowej synchronizacji. 
-7. Wysyła wiadomość [Pytanie o stan obliczeń](#pytanie-o-stan-obliczen) do wszystkich Nodów.
-8. Otrzymuje wiadomości [Odpowiedź ze stanem obliczeń](#odpowiedz-ze-stanem-obliczen) i aktualizuje [Stan](#watek-stanu).
+2. Wysyła wiadomości [Pytanie o stan zadań](#pytanie-o-stan-zadan) do nodów, które nie ukończyły swojego zadania (według lokalnego stanu). Putanie dla każdego noda dotyczy tylko powiązanych z nim zadań. 
+3. Otrzymuje wiadomości [Odpowiedź ze stanem zadań](#odpowiedz-ze-stanem-zadan) i aktualizuje [Stan](#watek-stanu).
 
 # Node
 
