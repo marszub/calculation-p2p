@@ -93,7 +93,7 @@ body:
 ## Odpowiedź z listą nodów
 ```message_type: 2```
 
-Unicast od wyróżnionego noda do noda pytającego. Zawiera listę adresów publicznych nodów, listę nodów prywatnych oraz identyfikator zgłaszającego się noda. Informuje również o postępie obliczeń. 
+Unicast od wyróżnionego noda do noda pytającego. Zawiera listę adresów publicznych nodów, listę nodów prywatnych oraz identyfikator zgłaszającego się noda.
 
 ```
 body:
@@ -107,6 +107,29 @@ body:
         id
     ],
     your_new_id: <int>,
+}
+```
+
+## Pytanie o postęp obliczeń
+```message_type: 1```
+
+Jest to wiadomość unicast do losowego noda. 
+
+```
+body:
+{ 
+
+}
+```
+
+## Odpowiedź z postępem obliczeń
+```message_type: 2```
+
+Unicast od pytanego noda do noda pytającego. Zawiera stan obliczeń. 
+
+```
+body:
+{
     progress: --suitable--
 }
 ```
@@ -148,15 +171,18 @@ body:
 }
 ```
 
-## Bnicast "ok, zajmuj dane"
+## Unicast "ok"
 ```message_type: 6```
 
-Wysyłane po otrzymaniu wiadomości "zajmuję dane" oraz zaznaczeniu w swojej liście zadań jako zajęte. Służy do potwierdzenia, że dany node może zajmować się danym zadaniem.
+Wysyłane po otrzymaniu wiadomości "zajmuję dane" lub "obliczyłem" oraz zaktualizowaniu lokalnego ```Stanu```. Służy do potwierdzenia, że dany node może zajmować się danym zadaniem. Dodatkowo synchronizuje stany nodów. 
 
 ```
 body:
 {
-
+    task_id: <int>
+    state: <free|reserved|calculated>
+    owner: <null|node_id>
+    result: <null|result_obj>
 }
 ```
 
@@ -183,6 +209,66 @@ Jeśli dwa nody równocześnie wyślą wiadomość "zajmuję dane", powstaje kon
 ### Rozwiązanie:
 
 Każdy node podczas dołączania się do sieci, kiedy prosi node publiczny główny o listę adresów, dostaje od niego priorytet. Jako, że wszystkie priorytety ustala jeden node, każdy node będzie miał inny priorytet. Kiedy nastąpi konflikt, wygrywa go node z lepszym priorytetem. Jako, że wszystkie nody znają priorytety pozostałych, w tablicy zajętych danych będzie zapisany ten, o lepszym priorytecie, niezależnie od kolejności otrzymania wiadomości. Node, który przegrał konflikt, wybiera inne dane i ponawia próbę zajęcia ich. 
+
+
+# Protokół komunikacji
+
+## Priorytet stanu
+
+Używany podczas aktualizacji stanu od strony wątku Sieci. Ma zapewnić jednoznaczność stanu na podstawie zbioru przekształceń niezależnie od ich kolejności. Niższy numer - wyższy priorytet:
+1. Obliczone
+2. Zajęte
+3. Wolne
+
+W sytuacji konfliktu w ramach stanu wygrywa ten, którego właścicielem jest Node o niższym id.
+
+## Dołączanie do sieci
+
+1. Tworzy połączenie z [Nodem głównym](#siec-peer-to-peer).
+2. Wysyła wiadomość [Pytanie o listę nodów](#pytanie-o-liste-nodow) do [Noda głównego](#siec-peer-to-peer).
+3. Otrzymuje wiadomość [Odpowiedź z listą nodów](#odpowiedz-z-lista-nodow).
+4. Tworzy połączenie ze wszystkimi pozostałymi [Nodami publicznymi](#siec-peer-to-peer).
+5. Rozpoczyna kolejkowanie wiadomości z sieci.
+6. Wysyła [Broadcast powitalny](#broadcast-powitalny).
+7. Wysyła wiadomość [Pytanie o stan obliczeń](#pytanie-o-stan-obliczen) do losowego Noda.
+8. Otrzymuje wiadomość [Odpowiedź ze stanem obliczeń](#odpowiedz-ze-stanem-obliczen) i inicjalizuje [Stan](#watek-stanu).
+9. Aplikuje otrzymane zmiany stanu do obiektu [Stanu](#watek-stanu).
+10. Node rozpoczyna zwykłą pracę
+
+Protokół jest zawodny w pewnym mało prawdopodobnym scenariuszu. Dlatego potrzebna jest dodatkowa synchronizacja stanu obliczeń między nodami. Zapewnia ją protokół [Końcowa synchronizacja](#koncowa-synchronizacja)
+
+## Heart beat
+
+Potrzebne są dwie struktury danych: 
+- słownik ```id_noda : czas przedawnienia ostatniej wiadomości heart beat```. Elementy są dodawane podczas inicjalizacji na podstawie listy nodów, lub gdy node otrzyma [Wiadomość powitalną](#wiadomosc-powitalna). Jest aktalizowana przy każdym otrzymaniu wiadomości [Heart beat](#heart-beat).
+- kolejka priorytetowa zaiwerająca pary ```(id_noda, czas przedawnienia danej wiadomości heart beat)```. Priorytetem jest czas przedawnienia (od najwcześniejszych). Przy otrzymaniu wiadomości [Heart beat](#heart-beat) odpowiednia para jest dodawana do kolejki. Element jest ściągany, gdy czas przedawnienia upłynie. Wtedy jest sprawdzany czas przedawnienia w słowniku i jeśli równieżupłynoł, odpowiedni Node jest rozłączany. 
+
+
+TODO: czy nie może być rozbieżności?
+
+## Rezerwowanie zadania
+
+1. Wątek obliczeń prosi o zadanie.
+2. Wątek stanu daje zadanie i informuje wątek sieci o rezerwacji.
+3. Wątek sieci wysyła wiadomość [```Zajmuje dane```](#broadcast-zajmuje-dane).
+4. Pozostałe nody aktualizują swój stan na podstawie priorytetu i odsyłają odpowiedź [```Ok```](#unicast-ok) ze stanem po aktualizacji.
+5. Node otrzymuje odpowiedzi [```Ok```](#unicast-ok).
+6. Aktualizuje stan na podstawie odpowiedzi i jeśli to konieczne, przerywa odpowiedni wątek obliczeń oraz na jego miejsce generuje nowy.
+
+## Kończenie zadania
+
+1. Wątek obliczeń po zakończeniu zadania informuje o tym wątek Stanu.
+2. Wątek Stanu zmienia stan i informuje o tym wątek Sieci.
+3. Wątek Sieci wysyła wiadomość broadcast ```Obliczyłem```.
+4. Pozostałe nody aktualizują stan według priorytetu i odsyłają odpowiedź [```Ok```](#unicast-ok) ze stanem po aktualizacji. 
+5. Node otrzymuje odpowiedzi [```Ok```](#unicast-ok).
+6. Aktualizuje stan na podstawie odpowiedzi i jeśli to konieczne, przerywa odpowiedni wątek obliczeń oraz na jego miejsce generuje nowy.
+
+## Końcowa synchronizacja
+
+1. Kiedy wszystkie zadania w stanie lokalnym staną się zajęte, lub obliczone aktywowany zostaje protokół końcowej synchronizacji. 
+7. Wysyła wiadomość [Pytanie o stan obliczeń](#pytanie-o-stan-obliczen) do wszystkich Nodów.
+8. Otrzymuje wiadomości [Odpowiedź ze stanem obliczeń](#odpowiedz-ze-stanem-obliczen) i aktualizuje [Stan](#watek-stanu).
 
 # Node
 
@@ -214,7 +300,7 @@ Kolejną współdzeloną strukturą danych jest tablica aktywnych Nodów, która
 
 Gdy wątek ```Sieci``` otrzyma wiadomość powitalną od noda publicznego i sam jest nodem prywatnym, nawiązuje połączenie z nadawcą. (w pozostałych przypadnkach, połączenie nawiązuje adresat, lub połączenia ma nie być)
 
-# Wątek Stanu (Planisty)
+# Wątek Stanu
 
 Jest to wątek ```Scheduler``` we wzorcu projektowym ```Active object```. Z tego powodu w tej sekcji opisuję cały wzorzec projektowy, a nie tylko elementy, które działają w tym wątku. 
 
@@ -309,7 +395,8 @@ Interfejs użytkownika umożliwia:
 - przerwanie programu (hard, soft)
 - wyświetlenie statystyk i postępu
 - wyświetlenie wyniku po zakończeniu
+- dodawanie/usuwanie wątków obliczeń (tylko soft)
 
 # Workflow systemu
 
-1. fdsaf
+TODO: scenariusze
