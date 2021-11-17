@@ -7,54 +7,21 @@ Składa się z nodów:
 - <font color="green">prywatnych</font> - bez publicznego ip (zielone)
 - **<font color="red">publicznego głównego</font>** - o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. (czerwony pogrubiony)
 
-Rodzaje połączeń:
+## Połączenia w sieci
 
--   czysty p2p
+Ze względu na protokół NAT, niemożliwe jest połączenie się z Nodem prywatnym. Dlatego połączenie <font color="red">publiczny</font> -> <font color="green">prywatny</font> może być realizowane tylko przez połączenie Noda <font color="green">prywatnego</font> do <font color="red">publicznego</font>. Dodatkowo, bezpośrednie połączenie <font color="green">prywatny</font> -> <font color="green">prywatny</font> jest niemożliwe do realizacji. Takie połączenia realizowane są pośrednio poprzez dowolnego noda <font color="red">publicznego</font>.
 
-    Każdy node publiczny komunikuje się bezpośrednio z pozostałymi. Nody prywatne tworzą pośrednie połączenia z innymi nodami prywatnymi poprzez nody publiczne (jeden node prywatny ma nawet lilka połączeń z nodem publicznym. Każde do obsługi innego połączenia nodów prywatnych).
+<img style="height:300px" src="./img/siec_p2p.PNG">
 
-    Broadcast w sieci:
+*Rysunek 1: Połączenia w sieci peer to peer.*
 
-    <img style="height:300px" src="./img/broadcast_pure.PNG">
+Broadcast w sieci nadany przez noda <font color="red">publicznego</font> jest wysyłany w postaci wiadomości unicastowych do wszystkich pozostałych nodów bezpośrednimi połączeniami TCP. Node <font color="green">prywatny</font> aby wysłać broadcast losuje wśród nodów publicznych swojego reprezentanta. Wysyła do niego wiadomość oznaczoną jako broadcast, a do pozostałych nodów <font color="red">publicznych</font> wysyła wiadomości unicast. Reprezentant po otrzymaniu wiadomości broadcast przetwarza ją, i wysyła do wszystkich nodów prywatnych jako wiadomość unicast. 
 
-    Minus - niepotrzebne mnożenie obciążenia publicznych nodów, nierównomierne obciążenie
+<img style="height:300px" src="./img/broadcast_prywatny.PNG">
 
-    Plus - prosta implementacja. Osobne połączenie dla każdego noda. Broadcast: wysyłamy każdym połączeniem. Unicast: wysyłamy połączeniem przydzielonym do noda, nie musimy wiedzieć, czy jest bezpośrednie, czy nie.
-
--   Wspólne połączenie
-
-    Jak wyżej, ale "wiązki" połączeń są jednym połączeniem. Node publiczny na podstawie zawartości wiadomości (informacji o adresacie) wybiera dalszą drogę wiadomości. 
-
-    <img style="height:300px" src="./img/komunikacja_pure.PNG">
-
--   wybór reprezentanta
-
-    <img style="height:300px" src="./img/komunikacja_reprezentant.PNG">
-
-    Każdy prywatny node wybiera swojego publicznego reprezentanta, do którego przesyła całą komunikację. Może go wybrać jednorazowo, lub losować przy każdej próbie wysłania waidomości do noda prywatnego. Publiczny node musi przetworzyć i dalej rozesłać wiadomości. Broadcast może składać się tylko z jednej wiadomości do noda publicznego, który potem kopiuje i rozsyła wiadomość dalej:
-
-    <img style="height:300px" src="./img/broadcast_opt.PNG">
-
-    Minus - publiczne nody muszą przetwarzać wiadomości prywatnych nodów. Prywatny node ma bezpośrednie połączenie z innymi publicznymi nodami, którego nie wykorzystuje. Nody inaczej wysyłają wiadomości w zależności od publiczności ich adresu ip (komplikacja kodu)
-
-    Plus - dwukrotnie zmniejszamy ruch broadcastowy. Nie tworzymy osobnych połączeń dla każdej pary nodów prywatnych.
-
--   **hybryda**
-
-    Prywatny node wysyła wiadomości bezpośrednio do nodów publicznych, ale za pośrednictwem reprezentanta do prywatnych. Broadcast wygląda następująco:
-
-    <img style="height:300px" src="./img/broadcast_hybryda.PNG">
-
-    Minus - każdy node przy wysyłaniu i pośredniczeniu musi sprawdzać, czy odbiorca jest publiczny, czy prywatny. Dodatkowo musi wiedzieć, czy sam jest publiczny, czy prywatny. Dodatkowe skomplikowanie kodu.
-
-    Plus - Rozwiązanie maksymalnie optymalne pod względem obciążenia sieci oraz nodów publicznych. 
-
+*Rysunek 2: Broadcast nadany przez node <font color="green">prywatny</font> (Node 1).*
 
 # Wiadomości
-
-Odbiorca:
-- Unicast
-- Broadcast
 
 ```
 {
@@ -72,7 +39,7 @@ Odbiorca:
 ```
 
 ```header``` składa się z pól:
-- ```sender``` zawiera identyfikator noda w sieci. Jest to dodatnia liczba całkowita różna dla każdego noda, będąca równocześnie jego priorytetem. Aby zapewnić unikatowość id, node otrzymuje je od        publicznego noda głównego razem z listą nodów w sieci. 
+- ```sender``` zawiera identyfikator noda w sieci. Jest to dodatnia liczba całkowita różna dla każdego noda, będąca równocześnie jego priorytetem. Aby zapewnić unikatowość id, node otrzymuje je od publicznego noda głównego razem z listą nodów w sieci. 
 - ```receiver``` zawiera id noda, do którego wiadomość jest skierowana, lub ```-1``` gdy wiadomość jest typu broadcast.
 - ```message_type``` przechowuje liczbę będącą identyfikatorem typu wiadomości. Poniżej znajduje się lista typów wraz z ich identyfikatorem oraz opisem ciała.
 
