@@ -11,13 +11,13 @@ Składa się z nodów:
 
 Ze względu na protokół NAT, niemożliwe jest połączenie się z Nodem prywatnym. Dlatego połączenie <font color="red">publiczny</font> -> <font color="green">prywatny</font> może być realizowane tylko przez połączenie Noda <font color="green">prywatnego</font> do <font color="red">publicznego</font>. Dodatkowo, bezpośrednie połączenie <font color="green">prywatny</font> -> <font color="green">prywatny</font> jest niemożliwe do realizacji. Takie połączenia realizowane są pośrednio poprzez dowolnego noda <font color="red">publicznego</font>.
 
-<img style="height:300px" src="./img/siec_p2p.PNG">
+<img style="height:300px" src="./Documentation/img/siec_p2p.PNG">
 
 *Rysunek 1: Połączenia w sieci peer to peer.*
 
 Broadcast w sieci nadany przez noda <font color="red">publicznego</font> jest wysyłany w postaci wiadomości unicastowych do wszystkich pozostałych nodów bezpośrednimi połączeniami TCP. Node <font color="green">prywatny</font> aby wysłać broadcast losuje wśród nodów publicznych swojego reprezentanta. Wysyła do niego wiadomość oznaczoną jako broadcast, a do pozostałych nodów <font color="red">publicznych</font> wysyła wiadomości unicast. Reprezentant po otrzymaniu wiadomości broadcast przetwarza ją, i wysyła do wszystkich nodów prywatnych jako wiadomość unicast. 
 
-<img style="height:300px" src="./img/broadcast_prywatny.PNG">
+<img style="height:300px" src="./Documentation/img/broadcast_prywatny.PNG">
 
 *Rysunek 2: Broadcast nadany przez node <font color="green">prywatny</font> (Node 1).*
 
@@ -276,11 +276,11 @@ Każdy node składa się z dwóch głównych wątków, które muszą się komuni
 
 Komunikacja między nimi przebiega z użyciem wzorca ```Active Object```.
 
-<img style="height:300px" src="./img/koncept_watkow.PNG">
+<img style="height:300px" src="./Documentation/img/koncept_watkow.PNG">
 
 Dzięki temu żaden wątek nigdy nie zostaje zablokowany w ramach komunikacji (tak, jak to się dzieje np. przy użyciu wzorca ```Monitor```). ```Active Object``` operuje na strukturze danych obsługującej postęp oraz rezerwacje zadań. Implementacja ```Active object``` zakłada stworzenie kolejnego wątku, dalej nazywanego wątkiem **<font color="red">Planisty</font>**. Dzięki użyciu powyższej architektury, dodanie kolejnego wątku **<font color="green">Obliczeń</font>** nie wymaga żadnych zmian w kodzie. Dodatkowo, ```Active object``` udostępnia interfejs dla wątku **<font color="purple">GUI</font>**, dzięki któremu możliwe jest śledzenie stanu obiczeń. Zależności między wątkami będą zatem wyglądać następująco: 
 
-<img style="height:300px" src="./img/komunikacja_miedzy_watkami.PNG">
+<img style="height:300px" src="./Documentation/img/komunikacja_miedzy_watkami.PNG">
 
 # Wątek Sieci
 
