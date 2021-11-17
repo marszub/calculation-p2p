@@ -1,11 +1,13 @@
 # Wiadomości
 
-```json
+Każda wiadomość używana przy komunikacji między nodami ma postać pliku json o następującym formacie: 
+
+```java
 {
     "header":
     {
         "sender": <node_id>, 
-        "receiver": <broadcast=-1 | node_id>, 
+        "receiver": <node_id | -1>, 
         "message_type": <message_type>
     }, 
     "body":
@@ -23,13 +25,13 @@
 Pole ```body``` zawiera ciało odpowiednie dla danego typu wiadomości.
 
 ## Pytanie o listę nodów i nowe id
-```json
+```java
 "message_type": "get_init_data"
 ```
 
 Jest to wiadomość unicast do publicznego głównego noda. Pole ```sender``` i ```receiver``` są puste, ponieważ wysyłający nie ma informacji o sieci.
 
-```json
+```java
 "body":
 { 
 
@@ -37,13 +39,13 @@ Jest to wiadomość unicast do publicznego głównego noda. Pole ```sender``` i 
 ```
 
 ## Odpowiedź z listą nodów i nowym id
-```json
+```java
 "message_type": "give_init_data"
 ```
 
 Unicast od publicznego głównego noda do noda pytającego. Zawiera listę adresów publicznych nodów, listę nodów prywatnych oraz identyfikator zgłaszającego się noda. 
 
-```json
+```java
 "body":
 {
     "your_new_id": <node_id>,
@@ -59,13 +61,13 @@ Unicast od publicznego głównego noda do noda pytającego. Zawiera listę adres
 ```
 
 ## Wiadomość powitalna
-```json
+```java
 "message_type": "hello"
 ```
 
 Pierwsza wiadomość służąca do poinformowania innych nodów o dołączeniu do sieci. Pole ```ip``` zawiera adres ip nadawcy jeśli posiada publiczny adres ip. W przeciwnym przypadku jest puste.
 
-```json
+```java
 "body":
 {
     "ip": <ip_address | null>,
@@ -73,13 +75,13 @@ Pierwsza wiadomość służąca do poinformowania innych nodów o dołączeniu d
 ```
 
 ## Pytanie o postęp obliczeń
-```json
+```java
 "message_type": "get_progress"
 ```
 
 Jest to wiadomość unicast do losowego noda. Wysyłana po utworzeniu połączeń z pozostałymi nodami.
 
-```json
+```java
 "body":
 { 
 
@@ -87,13 +89,13 @@ Jest to wiadomość unicast do losowego noda. Wysyłana po utworzeniu połącze�
 ```
 
 ## Odpowiedź z postępem obliczeń
-```json
+```java
 "message_type": "give_progress"
 ```
 
 Unicast od pytanego noda do noda pytającego. Zawiera stan zadań. 
 
-```json
+```java
 "body":
 {
     "progress": --suitable--
@@ -101,13 +103,13 @@ Unicast od pytanego noda do noda pytającego. Zawiera stan zadań.
 ```
 
 ## Heart beat
-```json
+```java
 "message_type": "heart_beat"
 ```
 
 Co ustalony czas broadcast informujący o aktywaności noda w sieci. Jeśli pierwszy node nie otrzyma takiej wiadomości od drugiego, po pewnym czasie uznaje ten drugi za odłączony.
 
-```json
+```java
 "body":
 {
     
@@ -115,13 +117,13 @@ Co ustalony czas broadcast informujący o aktywaności noda w sieci. Jeśli pier
 ```
 
 ## Zajmuję dane
-```json
+```java
 "message_type": "reserve"
 ```
 
 Broadcast informujący pozostałe nody, że nadawca zajmuje dane zadanie.
 
-```json
+```java
 "body":
 {
     "task_id": <task_id>
@@ -129,13 +131,13 @@ Broadcast informujący pozostałe nody, że nadawca zajmuje dane zadanie.
 ```
 
 ## Potwierdzenie zajęcia danych lub zakończenia obliczeń
-```json
+```java
 "message_type": "confirmation"
 ```
 
 Unicast od noda informowanego do informującego. Wysyłany po otrzymaniu wiadomości ```zajmuję dane``` lub ```obliczyłem``` oraz zaktualizowaniu lokalnego ```Stanu```. Służy do synchronizacji struktur stanów zadań. 
 
-```json
+```java
 "body":
 {
     "task_id": <task_id>,
@@ -146,13 +148,13 @@ Unicast od noda informowanego do informującego. Wysyłany po otrzymaniu wiadomo
 ```
 
 ## Obliczyłem
-```json
+```java
 "message_type": "calculated"
 ```
 
 Informuje, że dane zadanie zostało wykonane. Przesyła wynik zadania.
 
-```json
+```java
 "body":
 {
     "task_id": <task_id>,
@@ -161,13 +163,13 @@ Informuje, że dane zadanie zostało wykonane. Przesyła wynik zadania.
 ```
 
 ## Pytanie o synchronizację niedokończonych zadań
-```json
+```java
 "message_type": "get_synchronization"
 ```
 
 Unicast z listą zadań, które wymagają synchronizacji. Wysyłany w momencie, gdy ostatnie zadanie zostało zajęte według stanu lokalnego. Prośba o odesłanie stanu zadań skierowana jest bezpośrednio do noda, który miał liczyć dane zadania (jeśli więcej nodów liczy zadania, do każdego jest wysyłane osobne pytanie tylko o jego zadania).
 
-```json
+```java
 "body":
 {
     "tasks": [
@@ -177,13 +179,13 @@ Unicast z listą zadań, które wymagają synchronizacji. Wysyłany w momencie, 
 ```
 
 ## Odpowiedź synchronizująca zadania
-```json
+```java
 "message_type": "give_synchronization"
 ```
 
 Wiadomość unicast z listą stanów zadań, o które pytał adresat. 
 
-```json
+```java
 "body":
 {
     "tasks": [
