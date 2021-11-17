@@ -1,25 +1,8 @@
-Obliczenia peer to peer
+# Obliczenia peer to peer
 
-# Sieć peer to peer
+- [Struktura sieci](./network_structure.md)
 
-Składa się z nodów:
-- <font color="red">publicznych</font> - o adresie ip publicznym (czerwone)
-- <font color="green">prywatnych</font> - bez publicznego ip (zielone)
-- **<font color="red">publicznego głównego</font>** - o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. (czerwony pogrubiony)
-
-## Połączenia w sieci
-
-Ze względu na protokół NAT, niemożliwe jest połączenie się z Nodem prywatnym. Dlatego połączenie <font color="red">publiczny</font> -> <font color="green">prywatny</font> może być realizowane tylko przez połączenie Noda <font color="green">prywatnego</font> do <font color="red">publicznego</font>. Dodatkowo, bezpośrednie połączenie <font color="green">prywatny</font> -> <font color="green">prywatny</font> jest niemożliwe do realizacji. Takie połączenia realizowane są pośrednio poprzez dowolnego noda <font color="red">publicznego</font>.
-
-<img style="height:300px" src="./img/siec_p2p.PNG">
-
-*Rysunek 1: Połączenia w sieci peer to peer.*
-
-Broadcast w sieci nadany przez noda <font color="red">publicznego</font> jest wysyłany w postaci wiadomości unicastowych do wszystkich pozostałych nodów bezpośrednimi połączeniami TCP. Node <font color="green">prywatny</font> aby wysłać broadcast losuje wśród nodów publicznych swojego reprezentanta. Wysyła do niego wiadomość oznaczoną jako broadcast, a do pozostałych nodów <font color="red">publicznych</font> wysyła wiadomości unicast. Reprezentant po otrzymaniu wiadomości broadcast przetwarza ją, i wysyła do wszystkich nodów prywatnych jako wiadomość unicast. 
-
-<img style="height:300px" src="./img/broadcast_prywatny.PNG">
-
-*Rysunek 2: Broadcast nadany przez node <font color="green">prywatny</font> (Node 1).*
+@@include[network_structure.md](./network_structure.md)
 
 # Wiadomości
 
@@ -27,8 +10,8 @@ Broadcast w sieci nadany przez noda <font color="red">publicznego</font> jest wy
 {
     header:
     {
-        sender: <priority number>, 
-        receiver: <broadcast=-1 | receiver_id>, 
+        sender: <node_id>, 
+        receiver: <broadcast=-1 | node_id>, 
         message_type: <enum>
     }, 
     body:
