@@ -1,4 +1,4 @@
-# Obliczenia peer to peer
+Obliczenia peer to peer
 
 # Sieć peer to peer
 
