@@ -5,10 +5,8 @@
 > [Wiadomości](./messages.md)
 
 
-| Syntax      | Description |
-| ----------- | ----------- |
-| Header      | Title       |
-| Paragraph   | Text        |
+| [Struktura sieci](./network_structure.md)|
+| [Wiadomości](./messages.md)              |
 
 ---
 
