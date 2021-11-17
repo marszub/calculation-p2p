@@ -1,14 +1,14 @@
 # Wiadomości
 
-```
+```json
 {
-    header:
+    "header":
     {
-        sender: <node_id>, 
-        receiver: <broadcast=-1 | node_id>, 
-        message_type: <enum>
+        "sender": <node_id>, 
+        "receiver": <broadcast=-1 | node_id>, 
+        "message_type": <message_type>
     }, 
-    body:
+    "body":
     { 
         --payload--
     }
@@ -22,153 +22,176 @@
 
 Pole ```body``` zawiera ciało odpowiednie dla danego typu wiadomości.
 
-## Pytanie o listę nodów
-```message_type: 1```
-
-Jest to wiadomość unicast do wyróżnionego noda. 
-
+## Pytanie o listę nodów i nowe id
+```json
+"message_type": "get_init_data"
 ```
-body:
+
+Jest to wiadomość unicast do publicznego głównego noda. Pole ```sender``` i ```receiver``` są puste, ponieważ wysyłający nie ma informacji o sieci.
+
+```json
+"body":
 { 
 
 }
 ```
 
-## Odpowiedź z listą nodów
-```message_type: 2```
-
-Unicast od wyróżnionego noda do noda pytającego. Zawiera listę adresów publicznych nodów, listę nodów prywatnych oraz identyfikator zgłaszającego się noda.
-
+## Odpowiedź z listą nodów i nowym id
+```json
+"message_type": "give_init_data"
 ```
-body:
+
+Unicast od publicznego głównego noda do noda pytającego. Zawiera listę adresów publicznych nodów, listę nodów prywatnych oraz identyfikator zgłaszającego się noda. 
+
+```json
+"body":
 {
-    public_nodes:
+    "your_new_id": <node_id>,
+    "public_nodes":
     [
-        {id, adress_ip}
+        {"id": <node_id>, "ip_address":<ip_address>}
     ],
-    connected_nodes:
+    "connected_nodes":
     [
-        id
-    ],
-    your_new_id: <int>,
+        {"id": <node_id>}
+    ]
+}
+```
+
+## Wiadomość powitalna
+```json
+"message_type": "hello"
+```
+
+Pierwsza wiadomość służąca do poinformowania innych nodów o dołączeniu do sieci. Pole ```ip``` zawiera adres ip nadawcy jeśli posiada publiczny adres ip. W przeciwnym przypadku jest puste.
+
+```json
+"body":
+{
+    "ip": <ip_address | null>,
 }
 ```
 
 ## Pytanie o postęp obliczeń
-```message_type: 1```
-
-Jest to wiadomość unicast do losowego noda. 
-
+```json
+"message_type": "get_progress"
 ```
-body:
+
+Jest to wiadomość unicast do losowego noda. Wysyłana po utworzeniu połączeń z pozostałymi nodami.
+
+```json
+"body":
 { 
 
 }
 ```
 
 ## Odpowiedź z postępem obliczeń
-```message_type: 2```
-
-Unicast od pytanego noda do noda pytającego. Zawiera stan obliczeń. 
-
+```json
+"message_type": "give_progress"
 ```
-body:
+
+Unicast od pytanego noda do noda pytającego. Zawiera stan zadań. 
+
+```json
+"body":
 {
-    progress: --suitable--
+    "progress": --suitable--
 }
 ```
 
-## Broadcast powitalny
-```message_type: 3```
-
-Pierwsza wiadomość służąca do poinformowania innych nodów o dołączeniu do sieci. Pole ```ip``` zawiera adres ip nadawcy jeśli posiada publiczny adres ip. W przeciwnym przypadku zawiera napis "None".
-
-```
-body:
-{
-    ip: <ip_address | None>,
-}
+## Heart beat
+```json
+"message_type": "heart_beat"
 ```
 
-## Broadcast heart beat
-```message_type: 4```
+Co ustalony czas broadcast informujący o aktywaności noda w sieci. Jeśli pierwszy node nie otrzyma takiej wiadomości od drugiego, po pewnym czasie uznaje ten drugi za odłączony.
 
-Co ustalony czas broadcast informujący o aktywaności noda w sieci. Jeśli node nie ortzyma takiej wiadomości po pewnym czasie, uznaje node za odłączony.
-
-```
-body:
+```json
+"body":
 {
     
 }
 ```
 
-## Broadcast "zajmuję dane"
-```message_type: 5```
-
-Informuje pozostałe nody, że zajmuje zadanie.
-Może powodować konflikt.
-
+## Zajmuję dane
+```json
+"message_type": "reserve"
 ```
-body:
+
+Broadcast informujący pozostałe nody, że nadawca zajmuje dane zadanie.
+
+```json
+"body":
 {
-    task_id: <int>
+    "task_id": <task_id>
 }
 ```
 
-## Unicast "ok"
-```message_type: 6```
-
-Wysyłane po otrzymaniu wiadomości "zajmuję dane" lub "obliczyłem" oraz zaktualizowaniu lokalnego ```Stanu```. Służy do potwierdzenia, że dany node może zajmować się danym zadaniem. Dodatkowo synchronizuje stany nodów. 
-
+## Potwierdzenie zajęcia danych lub zakończenia obliczeń
+```json
+"message_type": "confirmation"
 ```
-body:
+
+Unicast od noda informowanego do informującego. Wysyłany po otrzymaniu wiadomości ```zajmuję dane``` lub ```obliczyłem``` oraz zaktualizowaniu lokalnego ```Stanu```. Służy do synchronizacji struktur stanów zadań. 
+
+```json
+"body":
 {
-    task_id: <int>
-    state: <free|reserved|calculated>
-    owner: <null|node_id>
-    result: <null|result_obj>
+    "task_id": <task_id>,
+    "state": <"free" | "reserved" | "calculated">,
+    "owner": <null | node_id>,
+    "result": <null | result_obj>
 }
 ```
 
-## Broadcast "obliczyłem"
-```message_type: 7```
+## Obliczyłem
+```json
+"message_type": "calculated"
+```
 
 Informuje, że dane zadanie zostało wykonane. Przesyła wynik zadania.
 
-```
-body:
+```json
+"body":
 {
-    task_id: <int>
-    result: --suitable--
+    "task_id": <task_id>,
+    "result": --suitable--
 }
 ```
 
-## Pytanie o stan zadań
-
-Unicast z listą zadań, które wymagają synchronizacji.
-
+## Pytanie o synchronizację niedokończonych zadań
+```json
+"message_type": "get_synchronization"
 ```
-body:
+
+Unicast z listą zadań, które wymagają synchronizacji. Wysyłany w momencie, gdy ostatnie zadanie zostało zajęte według stanu lokalnego. Prośba o odesłanie stanu zadań skierowana jest bezpośrednio do noda, który miał liczyć dane zadania (jeśli więcej nodów liczy zadania, do każdego jest wysyłane osobne pytanie tylko o jego zadania).
+
+```json
+"body":
 {
-    tasks: [
-        task_id
+    "tasks": [
+        {"task_id": <task_id>}
     ]
 }
 ```
 
-## Odpowiedź ze stanem zadań
-
-Odpowiedź unicast z listą stanów zadań, o które putał adresat.
-
+## Odpowiedź synchronizująca zadania
+```json
+"message_type": "give_synchronization"
 ```
-body:
+
+Wiadomość unicast z listą stanów zadań, o które pytał adresat. 
+
+```json
+"body":
 {
-    tasks: [
+    "tasks": [
         {
-            task_id: <int>
-            state: <free|reserved|calculated>
-            owner: <null|node_id>
-            result: <null|result_obj>
+            "task_id": <task_id>,
+            "state": <"free" | "reserved" | "calculated">,
+            "owner": <null | node_id>,
+            "result": <null | result_obj>
         }
     ]
 }
