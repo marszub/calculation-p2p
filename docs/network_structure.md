@@ -1,9 +1,9 @@
 # Struktura sieci
 
 Sieć peer to peer się z nodów:
-- <font color="red">publicznych</font> \- o adresie ip publicznym (czerwone)
-- <font color="lightgreen">prywatnych</font> \- bez publicznego ip (zielone)
-- **<font color="red">publicznego głównego</font>** \- o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. (czerwony pogrubiony)
+- <font color="red">publicznych</font> \- o publicznym adresie ip.
+- <font color="lightgreen">prywatnych</font> \- bez publicznego adresu ip.
+- **<font color="red">publicznego głównego</font>** \- o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. Jego adres ip jest udostępniony wraz z programem.
 
 ## Połączenia w sieci
 

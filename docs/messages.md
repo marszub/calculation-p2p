@@ -130,12 +130,12 @@ Broadcast informujący pozostałe nody, że nadawca zajmuje dane zadanie.
 }
 ```
 
-## Potwierdzenie zajęcia danych lub zakończenia obliczeń
+## Potwierdzenie zajęcia danych
 ```java
 "message_type": "confirmation"
 ```
 
-Unicast od noda informowanego do informującego. Wysyłany po otrzymaniu wiadomości ```zajmuję dane``` lub ```obliczyłem``` oraz zaktualizowaniu lokalnego ```Stanu```. Służy do synchronizacji struktur stanów zadań. 
+Unicast od noda informowanego do informującego. Wysyłany po otrzymaniu wiadomości ```zajmuję dane``` oraz zaktualizowaniu lokalnego ```Stanu```. Służy do synchronizacji struktur stanów zadań. 
 
 ```java
 "body":
@@ -198,16 +198,5 @@ Wiadomość unicast z listą stanów zadań, o które pytał adresat.
     ]
 }
 ```
-
-
-## Konflikty rezerwowania danych
-
-### Problem:
-
-Jeśli dwa nody równocześnie wyślą wiadomość "zajmuję dane", powstaje konflikt, ponieważ do niektórych nodów dojdzie jedna wiadomość jako pierwsza, do innych druga.
-
-### Rozwiązanie:
-
-Każdy node podczas dołączania się do sieci, kiedy prosi node publiczny główny o listę adresów, dostaje od niego priorytet. Jako, że wszystkie priorytety ustala jeden node, każdy node będzie miał inny priorytet. Kiedy nastąpi konflikt, wygrywa go node z lepszym priorytetem. Jako, że wszystkie nody znają priorytety pozostałych, w tablicy zajętych danych będzie zapisany ten, o lepszym priorytecie, niezależnie od kolejności otrzymania wiadomości. Node, który przegrał konflikt, wybiera inne dane i ponawia próbę zajęcia ich. 
 
 [Home](./index.md)
