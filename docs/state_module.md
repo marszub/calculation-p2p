@@ -1,6 +1,6 @@
-# Wątek Stanu
+# Moduł stanu
 
-Jest to wątek ```Scheduler``` we wzorcu projektowym ```Active object```. Z tego powodu w tej sekcji opisuję cały wzorzec projektowy, a nie tylko elementy, które działają w tym wątku. 
+Działa w ramach wzorca ```Active Object```, dlatego ma własny wątek kątroli wykonujący zlecenia innych wątków dotyczące stanu programu. 
 
 <img style="height:600px" src="./img/active_object_pl.svg">
 

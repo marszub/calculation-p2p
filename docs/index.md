@@ -4,6 +4,7 @@
 >[Wiadomości](./messages.md)\
 >[Protokół komunikacji](./communication_protocol.md)\
 >[Struktura programu](./program_structure.md)
+>- [Moduł połączeń](./connections_module.md)
 >- [Moduł sieci](./network_module.md)
 >- [Moduł stanu](./state_module.md)
 >- [Moduł obliczeń](./calculation_module.md)
