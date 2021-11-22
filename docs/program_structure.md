@@ -17,7 +17,7 @@ Program skłąda się z pięciu modułów:
 
 Każdy moduł działa w ramach osobnego wątku.
 
-Komunikacja między wątkami ```Network```, ```Calculation``` i ```UI``` przebiega z użyciem wzorca ```Active Object```, który realizuje moduł ```State```.
+Komunikacja między wątkami ```Message```, ```Calculation``` i ```UI``` przebiega z użyciem wzorca ```Active Object```, który realizuje moduł ```State```.
 Dzięki temu żaden wątek nigdy nie zostaje zablokowany w ramach komunikacji. Implementacja ```Active object``` zakłada stworzenie wątku ```State```. Dzięki użyciu powyższej architektury, dodanie kolejnego wątku ```Calculation``` nie wymaga żadnych zmian w kodzie. Zależności między wątkami będą zatem wyglądać następująco: 
 
 <img style="height:400px" src="./img/thread_communication.PNG">
