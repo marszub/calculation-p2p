@@ -1,13 +1,11 @@
 # Struktura programu
 
 Program skłąda się z pięciu modułów:
-- [Connections](connections-module.md) \- tworzy nowe połączenia TCP, wznawia przerwane oraz odbiera ruch sieci. \
-- [Network](./network_module.md) \- obsługuje protokoły sieci, przetwarza i wysyła wiadomości \
-- [State](./state_module.md) \- przechowuje i obsługuje postęp obliczeń i inne współdzielone zmienne programu.\
-- [Calculation](./calculation_module.md) \- odpowiada za prowadzenie obliczeń i podział problemu na zadania.\
+- [Network](network-module.md) \- tworzy nowe połączenia TCP, wznawia przerwane, wysyła i odbiera wiadomości z sieci.
+- [Message](./message_module.md) \- obsługuje protokoły sieci, przetwarza i konstruuje.
+- [State](./state_module.md) \- przechowuje i obsługuje postęp obliczeń i inne współdzielone zmienne programu.
+- [Calculation](./calculation_module.md) \- odpowiada za prowadzenie obliczeń i podział problemu na zadania.
 - [UI](./ui_module.md) \- udostępnia komunikację użytkownika z programem.
-
-Moduł sieci komunikuje się z resztą węzłów w sieci. W całym przepływie informacji wewnątrz programu uczestniczy moduł stanu. Pozostałe moduły nie komunikują się bezpośrednio ze sobą. 
 
 <img style="height:300px" src="./img/module_communication.PNG">
 

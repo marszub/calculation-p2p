@@ -1,9 +1,9 @@
 # Struktura sieci
 
 Sieć peer to peer składa się z węzłów:
-- <font color="red">publicznych</font> - o publicznym adresie ip.
-- <font color="lightgreen">prywatnych</font> - bez publicznego adresu ip.
-- **<font color="red">publicznego głównego</font>** - o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. Jego adres ip jest udostępniony wraz z programem.
+- <font color="red">publicznych</font> o publicznym adresie ip.
+- <font color="lightgreen">prywatnych</font>  bez publicznego adresu ip.
+- **<font color="red">publicznego głównego</font>** o publicznym adresie ip, z którym ma się łączyć każdy node dołączający do sieci. Jego adres ip jest udostępniony wraz z programem.
 
 ## Połączenia w sieci
 
