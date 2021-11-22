@@ -1,5 +1,9 @@
 # Moduł połączeń
 
+<img src="./img/uml_network.png">
+
+*Diagram UML modułu połączeń*
+
 Nieaktywnie oczekuje na nadchodzące połączenia oraz nasłuchuje równocześnie na wszystkich połączeniach. Gdy z któregoś połączenia nadejdzie wiadomość, przekazuje ją wątkowi ```Network``` za pośrednictwem kolejki ```mssagesToProcess```. Jeśli zostanie utworzone nowe połączenie, żaden inny wątek nie jest informowany. 
 
 Wątek ```Connections``` tworzy ```Selector selector```, w którym rejestrują się gniazda połączeń i serwera. 
@@ -16,7 +20,7 @@ Nowe połączenia tworzy wątek ```Network``` po otrzymaniu adresu ip danego wę
 
 ## Nadejście wiadomości
 
-Każdemu połączeniu odpowiada osobny obiekt typu ```Connection```. W jego skład wchodzi ```SocketChannel socket``` oraz ```Selector selector```. Jeśli na kanale ```socket```pojawi się wiadomość, ```selector``` wybudzi wątek, wiadomość zostanie odebrana i skonwertowana na typ ```Message```. Utworzony obiekt zostaje położony na kolejkę ```BlockingQueue<Message> messagesToProcess```.
+Każdemu połączeniu odpowiada osobny obiekt typu ```Connection```. W jego skład wchodzi ```SocketChannel socket``` oraz ```Selector selector```. Jeśli na kanale ```socket``` pojawi się wiadomość, ```selector``` wybudzi wątek, wiadomość zostanie odebrana i skonwertowana na typ ```Message```. Utworzony obiekt zostaje położony na kolejkę ```BlockingQueue<Message> messagesToProcess```.
 
 ## Odnawianie połączenia
 

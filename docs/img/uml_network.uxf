@@ -1,0 +1,59 @@
+<diagram program="umletino" version="14.3.0"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>508</x><y>622</y><w>210</w><h>30</h></coordinates><panel_attributes>network.MessageQueueEntry</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>208</x><y>462</y><w>370</w><h>110</h></coordinates><panel_attributes>network.ConnectionManager
+--
+~ConnectionManager(messageQueueEntry: MessageQueueEntry)
+-.
+~addStaticConnection(connection: StaticConnection)
+~removeStaticConnection(connection: StaticConnection)
+-.
+-incomingConnectionOrMessage: Selector</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>318</x><y>622</y><w>100</w><h>30</h></coordinates><panel_attributes>Thread</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>138</x><y>262</y><w>350</w><h>100</h></coordinates><panel_attributes>&lt;&lt;abstract&gt;&gt;
+network.Connection
+--
+~send(message: Message): bool = null
+--
+~subscribe(selector: Selector, events: int)
+~close()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1138</x><y>702</y><w>170</w><h>30</h></coordinates><panel_attributes>protocol.Message</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>648</x><y>382</y><w>370</w><h>200</h></coordinates><panel_attributes>network.Router
+--
++Router()
+-.
++createInterface(nodeId: int)
++createInterface(nodeId: int, ipAddress: InetSocketAddress)
++deleteInterface(nodeId: int)
+-..
++send(message: Message)
++getMessages(): List&lt;Message&gt;
+--
+Responsibilities:
+-- based on incomming messages updates RoutingTable
+-- changes incomming broadcast into many unicasts
+-- makes shure to send broadcast right now (queues if not possible)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>728</x><y>622</y><w>200</w><h>30</h></coordinates><panel_attributes>network.MessageQueueExit</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>808</x><y>702</y><w>350</w><h>40</h></coordinates><panel_attributes>lt=&lt;.
+m1=0..n</panel_attributes><additional_attributes>330;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>628</x><y>702</y><w>190</w><h>30</h></coordinates><panel_attributes>network.MessageQueue</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>803</x><y>642</y><w>30</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>633</x><y>642</y><w>30</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>803</x><y>572</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>543</x><y>562</y><w>30</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>568</x><y>462</y><w>100</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>80;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>358</x><y>562</y><w>30</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>668</x><y>92</y><w>290</w><h>250</h></coordinates><panel_attributes>network.RoutingTable
+--
+~RoutingTable()
+-.
+~addInterface(id: int)
+~removeInterface(id: int)
+~bind(id: int, connection: Connection)
+~unbind(connection: Connection)
+-.
+~send(id: int, message: Message)
+~trySend(id: int, message: Message): boolean
+~resend(id: int)
+-.
+-writeReady: Selector
+--
+Responsibilities:
+-- binds id -&gt; connection
+-- queues outgoing messages when no connection
+-- resends queued messages on connection restore</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>802</x><y>332</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>328</x><y>162</y><w>280</w><h>60</h></coordinates><panel_attributes>network.StaticConnection
+--
+~StaticConnection(ipAddress: InetSocketAddress)
+~send(message: Message): bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>442</x><y>212</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>48</x><y>162</y><w>260</w><h>60</h></coordinates><panel_attributes>network.DynamicConnection
+--
+~DynamicConnection(socket: SocketChannel)
+~send(message: Message): bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>172</x><y>212</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>238</x><y>352</y><w>50</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..n</panel_attributes><additional_attributes>10;110;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>478</x><y>272</y><w>210</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=0..n</panel_attributes><additional_attributes>190;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>478</x><y>342</y><w>190</w><h>70</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>10;10;170;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1138</x><y>452</y><w>170</w><h>30</h></coordinates><panel_attributes>protocol.MessageProcessor</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1009</x><y>450</y><w>150</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>130;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1009</x><y>540</y><w>220</w><h>180</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>200;160;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1079</x><y>400</y><w>270</w><h>370</h></coordinates><panel_attributes>Module protocol
+bg=blue
+layer=-1
+
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>
