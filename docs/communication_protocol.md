@@ -52,4 +52,6 @@ Potrzebne są dwie struktury danych:
 2. Wysyła [pytania o synchronizację niedokończonych zadań](./messages.md#pytanie-o-synchronizacje-niedokonczonych-zadan) do nodów, które nie ukończyły swojego zadania (według lokalnego stanu). Pytanie dla każdego noda dotyczy tylko powiązanych z nim zadań. 
 3. Otrzymuje [odpowiedzi synchronizujące zadania](./messages.md#odpowiedz-synchronizujaca-zadania) i aktualizuje [stan](./state_module.md).
 
+---
+
 [Home](./index.md)

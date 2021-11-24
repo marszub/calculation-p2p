@@ -75,4 +75,6 @@ Jest w postaci obiektu ```Runnable```. Nie tylko wywołuje metody obiektu ```Ser
 
 Standardowa implementacja
 
+---
+
 [Home](./index.md)

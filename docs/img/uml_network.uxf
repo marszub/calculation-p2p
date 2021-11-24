@@ -1,21 +1,22 @@
-<diagram program="umletino" version="14.3.0"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>408</x><y>562</y><w>130</w><h>30</h></coordinates><panel_attributes>MessageQueueEntry
-group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>338</x><y>362</y><w>370</w><h>100</h></coordinates><panel_attributes>network.ConnectionManager
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>330</x><y>507</y><w>130</w><h>30</h></coordinates><panel_attributes>MessageQueueEntry
+group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>260</x><y>307</y><w>370</w><h>100</h></coordinates><panel_attributes>network.ConnectionManager
 --
 +ConnectionManager(messageQueueEntry: MessageQueueEntry)
 -.
 +addStaticConnection(connection: StaticConnection)
 +removeStaticConnection(connection: StaticConnection)
 -.
--incomingConnectionOrMessage: Selector</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>68</x><y>362</y><w>100</w><h>30</h></coordinates><panel_attributes>Thread</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>348</x><y>112</y><w>350</w><h>100</h></coordinates><panel_attributes>&lt;&lt;abstract&gt;&gt;
+-incomingConnectionOrMessage: Selector</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>307</y><w>100</w><h>30</h></coordinates><panel_attributes>Runnable</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>270</x><y>57</y><w>350</w><h>100</h></coordinates><panel_attributes>&lt;&lt;abstract&gt;&gt;
 network.Connection
 --
 +send(message: Message): bool = null
 +subscribe(selector: Selector, events: int)
 -.
-~close()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1358</x><y>632</y><w>170</w><h>30</h></coordinates><panel_attributes>Message</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>878</x><y>382</y><w>370</w><h>220</h></coordinates><panel_attributes>Router
+~close()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1280</x><y>577</y><w>170</w><h>30</h></coordinates><panel_attributes>Message</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>800</x><y>327</y><w>370</w><h>220</h></coordinates><panel_attributes>Router
 --
 +Router()
 -.
++setId(id: int)
 +createInterface(nodeId: int)
 +createInterface(nodeId: int, ipAddress: InetSocketAddress)
 +deleteInterface(nodeId: int)
@@ -27,9 +28,9 @@ Responsibilities:
 -- based on incomming messages updates RoutingTable
 -- changes incomming broadcast into many unicasts
 -- makes sure to send broadcast and indirect unicast right now
--- queues if not possible</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>558</x><y>562</y><w>120</w><h>30</h></coordinates><panel_attributes>MessageQueueExit
-group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>488</x><y>632</y><w>110</w><h>30</h></coordinates><panel_attributes>MessageQueue
-group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>493</x><y>452</y><w>40</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>15;10;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>698</x><y>412</y><w>200</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>180;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>362</y><w>200</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;180;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>918</x><y>112</y><w>290</w><h>220</h></coordinates><panel_attributes>RoutingTable
+-- queues if not possible</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>480</x><y>507</y><w>120</w><h>30</h></coordinates><panel_attributes>MessageQueueExit
+group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>410</x><y>577</y><w>110</w><h>30</h></coordinates><panel_attributes>MessageQueue
+group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>265</x><y>397</y><w>80</w><h>140</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>15;10;20;120;65;120</additional_attributes></element><element><id>Relation</id><coordinates><x>620</x><y>357</y><w>200</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>180;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>90</x><y>307</y><w>190</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;170;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>840</x><y>57</y><w>290</w><h>220</h></coordinates><panel_attributes>RoutingTable
 --
 ~RoutingTable()
 -.
@@ -44,35 +45,32 @@ group=5</panel_attributes><additional_attributes></additional_attributes></eleme
 Responsibilities:
 -- binds id -&gt; connection
 -- queues outgoing messages when no connection
--- resends queued messages on connection restore</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1042</x><y>322</y><w>40</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>16;58;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>528</x><y>242</y><w>280</w><h>80</h></coordinates><panel_attributes>network.StaticConnection
+-- resends queued messages on connection restore</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>964</x><y>267</y><w>30</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>16;58;16;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>450</x><y>187</y><w>280</w><h>80</h></coordinates><panel_attributes>network.StaticConnection
 --
 +StaticConnection(ipAddress: InetSocketAddress)
 +send(message: Message): bool
-~reconnect()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>652</x><y>202</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>UMLClass</id><coordinates><x>248</x><y>242</y><w>260</w><h>60</h></coordinates><panel_attributes>network.DynamicConnection
+~reconnect()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>574</x><y>147</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>UMLClass</id><coordinates><x>170</x><y>187</y><w>260</w><h>60</h></coordinates><panel_attributes>network.DynamicConnection
 --
 ~DynamicConnection(socket: SocketChannel)
-+send(message: Message): bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>382</x><y>202</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>648</x><y>312</y><w>50</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
-m1=0..n</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1358</x><y>552</y><w>170</w><h>30</h></coordinates><panel_attributes>MessageProcessor</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1239</x><y>550</y><w>140</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>120;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1239</x><y>590</y><w>220</w><h>60</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>200;40;200;10;10;12</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1319</x><y>500</y><w>240</w><h>210</h></coordinates><panel_attributes>message
++send(message: Message): bool</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>304</x><y>147</y><w>30</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>570</x><y>257</y><w>50</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..n</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1161</x><y>535</y><w>220</w><h>60</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>200;40;200;10;10;12</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1241</x><y>505</y><w>240</w><h>130</h></coordinates><panel_attributes>message
 --
 bg=orange
 layer=-1
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>190</x><y>30</y><w>1100</w><h>680</h></coordinates><panel_attributes>network
---
-bg=blue
-layer=-5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>230</x><y>70</y><w>600</w><h>420</h></coordinates><panel_attributes>connection
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>152</x><y>15</y><w>600</w><h>420</h></coordinates><panel_attributes>network.connection
 --
 bg=green
-layer=-4</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>850</x><y>70</y><w>420</w><h>550</h></coordinates><panel_attributes>routing
+layer=-4</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>772</x><y>15</y><w>420</w><h>550</h></coordinates><panel_attributes>network.routing
 --
-bg=orange
-layer=-4</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>688</x><y>112</y><w>250</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m1=0..n</panel_attributes><additional_attributes>230;10;10;10</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>388</x><y>520</y><w>320</w><h>170</h></coordinates><panel_attributes>messagequeue
+bg=blue
+layer=-4</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>610</x><y>57</y><w>250</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=0..n</panel_attributes><additional_attributes>230;10;10;10</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>310</x><y>465</y><w>320</w><h>170</h></coordinates><panel_attributes>network.messagequeue
 --
 bg=red
 layer=-4
 
-group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>498</x><y>580</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>568</x><y>580</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>588</x><y>640</y><w>790</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m1=0..n</panel_attributes><additional_attributes>10;10;770;10</additional_attributes></element><element><id>Relation</id><coordinates><x>663</x><y>552</y><w>240</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>215;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>378</x><y>292</y><w>50</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
-m1=0..n</panel_attributes><additional_attributes>10;70;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>198</x><y>122</y><w>310</w><h>560</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>420</x><y>525</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;12;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>525</y><w>30</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;12;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>510</x><y>585</y><w>790</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=0..n</panel_attributes><additional_attributes>10;10;770;10</additional_attributes></element><element><id>Relation</id><coordinates><x>585</x><y>497</y><w>240</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>215;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>300</x><y>237</y><w>50</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..n</panel_attributes><additional_attributes>10;70;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>120</x><y>67</y><w>310</w><h>560</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m1=0..n</panel_attributes><additional_attributes>290;530;10;530;10;10;150;10</additional_attributes></element></diagram>

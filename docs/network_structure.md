@@ -25,4 +25,6 @@ Węzeł <font color="lightgreen">prywatny</font> aby wysłać broadcast losuje w
 
 *Rysunek 3: Broadcast nadany przez węzeł <font color="lightgreen">prywatny</font> (Node 1).*
 
+---
+
 [Home](./index.md)

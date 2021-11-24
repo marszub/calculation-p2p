@@ -10,4 +10,6 @@ Edge case:
 - Nie ma zadań, ale nie wszystko obliczone - zasypia w oczekiwaniu na powiadomienie o skończeniu wszystkich zadań, lub zwolnieniu zadania
 - Wszystko obliczone - zakończ działanie wątku
 
+---
+
 [Home](./index.md)

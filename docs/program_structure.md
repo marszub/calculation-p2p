@@ -1,7 +1,7 @@
 # Struktura programu
 
 Program skłąda się z pięciu modułów:
-- [Network](network-module.md) \- tworzy nowe połączenia TCP, wznawia przerwane, wysyła i odbiera wiadomości z sieci.
+- [Network](./network_module.md) \- tworzy nowe połączenia TCP, wznawia przerwane, wysyła i odbiera wiadomości z sieci.
 - [Message](./message_module.md) \- obsługuje protokoły sieci, przetwarza i konstruuje.
 - [State](./state_module.md) \- przechowuje i obsługuje postęp obliczeń i inne współdzielone zmienne programu.
 - [Calculation](./calculation_module.md) \- odpowiada za prowadzenie obliczeń i podział problemu na zadania.
@@ -23,5 +23,7 @@ Dzięki temu żaden wątek nigdy nie zostaje zablokowany w ramach komunikacji. I
 <img style="height:400px" src="./img/thread_communication.PNG">
 
 *Rysunek 2: Komunikacja między wątkami.*
+
+---
 
 [Home](./index.md)

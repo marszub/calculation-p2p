@@ -6,4 +6,6 @@ Interfejs użytkownika umożliwia:
 - wyświetlenie wyniku po zakończeniu
 - dodawanie/usuwanie wątków obliczeń (tylko soft)
 
+---
+
 [Home](./index.md)

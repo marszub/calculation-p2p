@@ -26,7 +26,7 @@ Pole ```body``` zawiera ciało odpowiednie dla danego typu wiadomości.
 
 ## Pytanie o listę nodów i nowe id
 ```java
-"message_type": "get_init_data"
+"message_type": "get_init"
 ```
 
 Jest to wiadomość unicast do publicznego głównego noda. Pole ```sender``` i ```receiver``` są puste, ponieważ wysyłający nie ma informacji o sieci.
@@ -40,7 +40,7 @@ Jest to wiadomość unicast do publicznego głównego noda. Pole ```sender``` i 
 
 ## Odpowiedź z listą nodów i nowym id
 ```java
-"message_type": "give_init_data"
+"message_type": "give_init"
 ```
 
 Unicast od publicznego głównego noda do noda pytającego. Zawiera listę adresów publicznych nodów, listę nodów prywatnych oraz identyfikator zgłaszającego się noda. 
@@ -53,7 +53,7 @@ Unicast od publicznego głównego noda do noda pytającego. Zawiera listę adres
     [
         {"id": <node_id>, "ip_address":<ip_address>}
     ],
-    "connected_nodes":
+    "private_nodes":
     [
         {"id": <node_id>}
     ]
@@ -132,7 +132,7 @@ Broadcast informujący pozostałe nody, że nadawca zajmuje dane zadanie.
 
 ## Potwierdzenie zajęcia danych
 ```java
-"message_type": "confirmation"
+"message_type": "confirm"
 ```
 
 Unicast od noda informowanego do informującego. Wysyłany po otrzymaniu wiadomości ```zajmuję dane``` oraz zaktualizowaniu lokalnego ```Stanu```. Służy do synchronizacji struktur stanów zadań. 
@@ -198,5 +198,7 @@ Wiadomość unicast z listą stanów zadań, o które pytał adresat.
     ]
 }
 ```
+
+---
 
 [Home](./index.md)

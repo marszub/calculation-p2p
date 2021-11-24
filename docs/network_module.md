@@ -77,4 +77,6 @@ Zawiera kolejkę par ```(Message, Connection)``` oraz interfejsy ```MessageQueue
 
 Kolejka używana w ```MessageQueue``` musi być bezpieczna pod względem wielowątkowości, dlatego została użyta ```LinkedBlockingQueue<>```.
 
+---
+
 [Home](./index.md)

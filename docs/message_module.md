@@ -1,5 +1,13 @@
 # Moduł message
 
+<img src="./img/uml_message.png">
+
+MESSAGE - prototype, state/strategy, template method
+
+MESSAGE PARSER - builder
+
+
+
 Jest odpowiedzialny za przetwarzanie ruchu z sieci oraz wysyłanie wiadmości zleconych przez moduł ```State```. 
 
 Aby uniknąć aktywnego oczekiwania, wątek ```Network``` zasypia gdy nie ma wiadomości do przetworzenia, ani wysłania. Ma on dwa źródła zadań: wątki ```Network``` i ```State```. Każdy z nich ma możliwość wybudzenia wątku za pomocą metody ```Thread.interrupt()```.
@@ -19,5 +27,7 @@ Gdy wątek otrzyma wiadomość, która informuje o zmianie stanu, zostaje wywoł
 ## Heart beat
 
 Czas od ostatniego broadcastu ```heart beat``` jest monitorowany i gdy przekroczy wartość podaną w pliku konfiguracyjnym, wysyła kolejny broadcast, a czas jest resetowany. Kiedy wątek zasypia, jako maksymalny czas bezczynności podaje taki, aby po wybudzeniu należało wysłać kolejny ```heart beat```.
+
+---
 
 [Home](./index.md)
