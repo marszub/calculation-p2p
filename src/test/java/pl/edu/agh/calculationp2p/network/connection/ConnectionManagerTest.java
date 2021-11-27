@@ -25,7 +25,7 @@ class ConnectionManagerTest {
     }
 
     @Test
-    void run2() {
+    void run() {
 
         /*** test wymaga odpalonej drugiego programu na lokalnej maszynie */
         MessageQueue messageQueue = new MessageQueue();
@@ -38,12 +38,17 @@ class ConnectionManagerTest {
         StaticConnection staticConnection = new StaticConnection(inetSocketAddress);
 
         connectionManager.addStaticConnection(staticConnection);
-
-        staticConnection.send(new Message("chalo world"));
         connectionManager.start();
+        staticConnection.send(new Message("chalo swiat0"));
+        staticConnection.send(new Message("chalo swiat1"));
+        staticConnection.send(new Message("chalo swiat2"));
+        staticConnection.send(new Message("chalo swiat3"));
+        staticConnection.send(new Message("chalo swiat4"));
+
+
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(500000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -60,7 +65,7 @@ class ConnectionManagerTest {
 
         ConnectionManager connectionManager = new ConnectionManager(messageQueueEntry, false);
 
-        //connectionManager.start();
+        connectionManager.start();
 
 
 

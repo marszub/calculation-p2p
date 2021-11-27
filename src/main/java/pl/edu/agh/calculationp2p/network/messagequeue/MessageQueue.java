@@ -12,7 +12,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageQueue implements MessageQueueEntry, MessageQueueExit {
-
+    // TODO: coo tu ma byc
     Collection<Connection> queue = Collections.synchronizedCollection(new ArrayList<>());
 
     public MessageQueue(){

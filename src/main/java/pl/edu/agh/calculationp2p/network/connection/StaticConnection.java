@@ -4,7 +4,11 @@ import pl.edu.agh.calculationp2p.network.message.Message;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 
@@ -18,13 +22,14 @@ public class StaticConnection {
     }
 
 
-
-
     public boolean send(Message message) {
-        // TODO napisz wysyłanie wiadomości ? do kogo kurwa XD do chuja Twego
-
         try {
-            this.socketChannel.write(ByteBuffer.wrap(message.getValue().getBytes(StandardCharsets.UTF_8)));
+            String data = message.getValue();
+            ByteBuffer buff = ByteBuffer.allocate(2048);
+            buff.clear();
+            buff.put(data.getBytes());
+            buff.flip();
+            ((SocketChannel)this.selectionKey.channel()).write(buff); // call me boss (▀̿Ĺ̯▀̿ ̿)
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,16 +37,11 @@ public class StaticConnection {
         }
     }
 
-    protected void reconnect(){
-        // TODO Ma możliwość odnowienia połączenia, gdy zostanie urwane.
-
-    }
-
-    public InetSocketAddress getIpAddress(){
+    public InetSocketAddress getIpAddress() {
         return this.ipAddress;
     }
 
-    public void setSocketChannel(SocketChannel socketChannel){
-        this.socketChannel = socketChannel;
+    public void setSelectionKey(SelectionKey selectionKey) {
+        this.selectionKey = selectionKey;
     }
 }

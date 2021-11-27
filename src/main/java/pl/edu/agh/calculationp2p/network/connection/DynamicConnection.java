@@ -17,22 +17,9 @@ public class DynamicConnection extends Connection {
         this.socket = socket;
     }
 
-    public boolean send(Message message){
-        // TODO : ogarnąć bytebuffer
-        //ByteBuffer byteBuffer = new ByteBuffer();
-        //try {
-        //    socket.write(byteBuffer);
-        //    return true;
-        //} catch (IOException e) {
-        //    e.printStackTrace();
-        //    return false;
-        //}
-        return true;
-    }
 
     @Override
-    public void subscribe(Selector selector, int event) {
-
+    public boolean send(Message message) {
+        return false;
     }
-
 }
