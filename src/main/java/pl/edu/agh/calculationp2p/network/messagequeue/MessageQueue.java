@@ -3,13 +3,11 @@ package pl.edu.agh.calculationp2p.network.messagequeue;
 
 
 import pl.edu.agh.calculationp2p.network.connection.Connection;
-import pl.edu.agh.calculationp2p.network.message.Message;
+import pl.edu.agh.calculationp2p.message.Message;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageQueue implements MessageQueueEntry, MessageQueueExit {
     // TODO: coo tu ma byc

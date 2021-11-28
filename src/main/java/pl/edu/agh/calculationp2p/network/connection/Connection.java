@@ -1,10 +1,7 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
 
-import pl.edu.agh.calculationp2p.network.message.Message;
-
-import java.nio.channels.Selector;
-
+import pl.edu.agh.calculationp2p.message.Message;
 
 
 // Klasa abstrakcyjna odpowiadająca połączeniu TCP.

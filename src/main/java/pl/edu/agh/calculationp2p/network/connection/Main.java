@@ -1,11 +1,8 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
-import pl.edu.agh.calculationp2p.network.message.Message;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueue;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueEntry;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
-
-import java.net.InetSocketAddress;
 
 public class Main {
     public static void main(String[] args) {

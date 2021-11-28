@@ -1,16 +1,12 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
-import pl.edu.agh.calculationp2p.network.message.Message;
+import pl.edu.agh.calculationp2p.message.Message;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
 
 public class StaticConnection {
 

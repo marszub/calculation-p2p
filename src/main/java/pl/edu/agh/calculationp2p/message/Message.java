@@ -1,4 +1,4 @@
-package pl.edu.agh.calculationp2p.network.message;
+package pl.edu.agh.calculationp2p.message;
 
 public class Message {
     String payload;
