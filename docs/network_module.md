@@ -44,7 +44,7 @@ Odpowiada za niezawodne wysyłanie wiadomości na odpowiednie połączenia. Zarz
 
 Metoda ```createInterface(int node_id)``` zleca stworzenie nowego wpisu w ```RoutingTable```. 
 
-Metoda ```createInterface(int node_id, InetSocketAddress)``` oprócz stworzenia nowego woisu, tworzy obiekt ```StaticConnection``` z podanym adresem. Następnie dodaje połączenie do listy połączeń statycznych w ```ConnectionManager``` i wiąże ```node_id``` z nowym połączeniem w ```RoutingTable```. 
+Metoda ```createInterface(int node_id, InetSocketAddress)``` oprócz stworzenia nowego wpisu, tworzy obiekt ```StaticConnection``` z podanym adresem. Następnie dodaje połączenie do listy połączeń statycznych w ```ConnectionManager``` i wiąże ```node_id``` z nowym połączeniem w ```RoutingTable```. 
 
 Aby przerwać połączenie z nodem, który opuścił sieć, wywoływana jest metoda ```deleteInterface(int node_id)```. Usuwa ona wpis w ```RoutingTable``` oraz wymusza zamknięcie powiązanego połączenia. 
 
@@ -58,6 +58,8 @@ Jeśli dany węzeł jest publiczny, każda wiadomość broadcast jest zamieniana
 Jeśli któraś z otrzymanych wiadomości jest typu broadcast, zamienia ją na wiele wiadomości unicast i rozsyła do wszystkich węzłów prywatnych (posiada odpowiednią listę uzupełnianą podczas wywoływania metody ```createInterface()```). Dodatkowo, porzekazuje przekształconą wiadomość unicast do zwracanej listy.
 
 Jeśli wiadomość jest typu unicast, ale nie jest skierowana do obecnego węzła, jest przesyłana dalej odpowiednim połączeniem. I zostaje usunięta ze zwracanej listy. 
+
+### PublicRouter
 
 ### RoutingTable
 

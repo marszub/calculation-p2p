@@ -1,144 +1,121 @@
-<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLPackage</id><coordinates><x>1258</x><y>59</y><w>640</w><h>1480</h></coordinates><panel_attributes>message.body
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLPackage</id><coordinates><x>743</x><y>18</y><w>640</w><h>1520</h></coordinates><panel_attributes>message.body
 --
 bg=green
-layer=-5
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>928</x><y>229</y><w>250</w><h>50</h></coordinates><panel_attributes>MessageProcessor
+layer=-5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>143</x><y>258</y><w>230</w><h>50</h></coordinates><panel_attributes>MessageProcessor
 --
-MessageProcessor(state: StateUpdater)
-group=3</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>928</x><y>99</y><w>150</w><h>60</h></coordinates><panel_attributes>MessageProcessContext
+MessageProcessor(state: StateUpdater)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>503</x><y>268</y><w>160</w><h>80</h></coordinates><panel_attributes>MessageProcessContext
 --
 +router: final Router
 +state: final StateUpdater
-group=3</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>408</x><y>589</y><w>210</w><h>70</h></coordinates><panel_attributes>MessageParser
++register: final NodeRegister</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>393</x><y>648</y><w>270</w><h>70</h></coordinates><panel_attributes>MessageParser
 --
 +MessageParser()
 +parse(message: String): Message
-
-group=4</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>678</x><y>589</y><w>500</w><h>250</h></coordinates><panel_attributes>MessageBuilder
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>538</x><y>1008</y><w>130</w><h>30</h></coordinates><panel_attributes>TaskResult
+group=6</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>538</x><y>868</y><w>140</w><h>90</h></coordinates><panel_attributes>TaskRecord
 --
-+MessageBuilder()
-+reset()
-+setHeader(sender: int, receiver: int)
-+setBodyGetInit()
-+setBodyGiveInit(newId: int, publicNodes: Map&lt;Integer, String&gt;, connectedNodes: List&lt;Integer&gt;)
-+setBodyHello(ip: String)
-+setBodyProgress(progress: CalculationProgress)
-+setBodyReserve(taskId: int)
-+setBodyConfirm(taskRecord: TaskRecord)
-+setBodyCalculated(task: int, result: TaskResult)
-+setBodyGetSynchronization(tasks: List&lt;Integer&gt;)
-+setBodyGiveSynchronization(tasks: List&lt;TaskRecord&gt;)
-+getResult(): Message
---
-builder DP
-group=4</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>608</x><y>589</y><w>90</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;70;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>603</x><y>99</y><w>130</w><h>30</h></coordinates><panel_attributes>TaskResult</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>413</x><y>99</y><w>140</w><h>90</h></coordinates><panel_attributes>TaskRecord
---
-+task: int
-+state: TaskState
-+owner: int
-+result: TaskResult</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1278</x><y>99</y><w>280</w><h>120</h></coordinates><panel_attributes>&lt;&lt;abstract&gt;&gt;
+-task: int
+-state: TaskState
+-owner: int
+-result: TaskResult
+group=6</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>763</x><y>58</y><w>280</w><h>120</h></coordinates><panel_attributes>&lt;&lt;interface&gt;&gt;
 Body
 --
 +typeString(): String = null
-+contentString(): String
-+process(context: MessageProcessContext) = null
++contentString(): String = null
++process(sender: int, context: MessageProcessContext) = null
 --
-strategy DP
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>259</y><w>530</w><h>80</h></coordinates><panel_attributes>GetInit
+strategy DP</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>218</y><w>530</w><h>90</h></coordinates><panel_attributes>GetInit
 --
 +GetInit()
 +typeString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60;40;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>369</y><w>530</w><h>90</h></coordinates><panel_attributes>GiveInit
++contentString(): String
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;60;40;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>338</y><w>530</w><h>90</h></coordinates><panel_attributes>GiveInit
 --
 +GiveInit(newId: int, publicNodes: Map&lt;Integer, InetSocketAddress&gt;, privateNodes: List&lt;Integer&gt;)
 +typeString(): String
 +contentString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>190</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;170;40;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>489</y><w>530</w><h>90</h></coordinates><panel_attributes>Hello
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;180;40;180</additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>458</y><w>530</w><h>90</h></coordinates><panel_attributes>Hello
 --
 +Hello(ip: InetSocketAddress)
 +typeString(): String
 +contentString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>949</y><w>530</w><h>90</h></coordinates><panel_attributes>Reserve
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>938</y><w>530</w><h>90</h></coordinates><panel_attributes>Reserve
 --
 +Reserve(taskId: int)
 +typeString(): String
 +contentString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>609</y><w>530</w><h>80</h></coordinates><panel_attributes>GetProgress
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>578</y><w>530</w><h>90</h></coordinates><panel_attributes>GetProgress
 --
 +GetProgress()
 +typeString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>839</y><w>530</w><h>80</h></coordinates><panel_attributes>HeartBeat
++contentString(): String
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>818</y><w>530</w><h>90</h></coordinates><panel_attributes>HeartBeat
 --
 +HeartBeat()
 +typeString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>719</y><w>530</w><h>90</h></coordinates><panel_attributes>GiveProgress
++contentString(): String
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>698</y><w>530</w><h>90</h></coordinates><panel_attributes>GiveProgress
 --
 +GiveProgress(progress: CalculationProgress)
 +typeString(): String
 +contentString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>1309</y><w>530</w><h>90</h></coordinates><panel_attributes>GetSynchronization
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>1298</y><w>530</w><h>90</h></coordinates><panel_attributes>GetSynchronization
 --
 +GetSynchronization(tasks: List&lt;Integer&gt;)
 +typeString(): String
 +contentString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>1069</y><w>530</w><h>90</h></coordinates><panel_attributes>Confirm
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>1058</y><w>530</w><h>90</h></coordinates><panel_attributes>Confirm
 --
 +Confirm(taskRecord: TaskRecord)
 +typeString(): String
 +contentString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>1189</y><w>530</w><h>90</h></coordinates><panel_attributes>Calculated
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>1178</y><w>530</w><h>90</h></coordinates><panel_attributes>Calculated
 --
 +Calculated(taskId: int, result: TaskResult)
 +typeString(): String
 +contentString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1338</x><y>1429</y><w>530</w><h>90</h></coordinates><panel_attributes>GiveSynchronization
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>823</x><y>1418</y><w>530</w><h>90</h></coordinates><panel_attributes>GiveSynchronization
 --
 +GiveSynchronization(tasks: List&lt;TaskRecord&gt;)
 +typeString(): String
 +contentString(): String
-+process(context: MessageProcessContext)
-group=2</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>310</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;290;40;290</additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>430</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;410;40;410</additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>540</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;520;40;520</additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>660</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;640;40;640</additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>770</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;750;40;750</additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>890</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;870;40;870</additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>1010</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;990;40;990</additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>1130</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;1110;40;1110</additional_attributes></element><element><id>Relation</id><coordinates><x>1299</x><y>209</y><w>60</w><h>1250</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;1230;40;1230</additional_attributes></element><element><id>Relation</id><coordinates><x>538</x><y>93</y><w>80</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>15;16;65;16</additional_attributes></element><element><id>UMLClass</id><coordinates><x>928</x><y>389</y><w>250</w><h>100</h></coordinates><panel_attributes>Message
++process(sender: int, context: MessageProcessContext)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>320</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;300;40;300</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>440</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;420;40;420</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>560</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;540;40;540</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>680</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;660;40;660</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>800</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;780;40;780</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>920</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;900;40;900</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>1040</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;1020;40;1020</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>1160</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;1140;40;1140</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>168</y><w>60</w><h>1280</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;10;1260;40;1260</additional_attributes></element><element><id>Relation</id><coordinates><x>593</x><y>942</y><w>30</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>15;16;15;66</additional_attributes></element><element><id>UMLClass</id><coordinates><x>393</x><y>468</y><w>270</w><h>120</h></coordinates><panel_attributes>Message
 --
++Message(sender: int, receiver: int, body: Body)
 +clone(receiverId: int): Message
 -.
 +toString(): String
-+process(router: Router, state: StateUpdater)
++process(context: MessageProcessContext)
 --
-toString() is a template method
-group=3</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>729</x><y>229</y><w>100</w><h>30</h></coordinates><panel_attributes>Runnable
-group=3
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>819</x><y>229</y><w>130</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>944</x><y>147</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>14;12;14;82</additional_attributes></element><element><id>Relation</id><coordinates><x>948</x><y>474</y><w>30</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;115;10;15</additional_attributes></element><element><id>Relation</id><coordinates><x>940</x><y>267</y><w>30</w><h>140</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>18;120;18;12</additional_attributes></element><element><id>Relation</id><coordinates><x>1069</x><y>99</y><w>230</w><h>30</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>10;10;210;10</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>898</x><y>57</y><w>310</w><h>460</h></coordinates><panel_attributes>message.process
+toString() is a template method</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>154</x><y>408</y><w>100</w><h>30</h></coordinates><panel_attributes>Thread
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>194</x><y>298</y><w>30</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;110;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>523</x><y>573</y><w>30</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;75;10;15</additional_attributes></element><element><id>Relation</id><coordinates><x>325</x><y>296</y><w>80</w><h>210</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>68;190;20;190;18;12</additional_attributes></element><element><id>Relation</id><coordinates><x>654</x><y>58</y><w>130</w><h>240</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>10;220;70;220;70;10;110;10</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>113</x><y>16</y><w>580</w><h>360</h></coordinates><panel_attributes>message.process
 --
 bg=orange
-layer=-5
-group=3</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1169</x><y>209</y><w>140</w><h>210</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;190;120;190;120;10</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>378</x><y>532</y><w>830</w><h>330</h></coordinates><panel_attributes>message.build
+layer=-5</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>654</x><y>168</y><w>140</w><h>330</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;310;120;310;120;10</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>363</x><y>411</y><w>330</w><h>340</h></coordinates><panel_attributes>message
 --
 bg=red
-layer=-5
-group=4</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>694</x><y>296</y><w>160</w><h>110</h></coordinates><panel_attributes>network.routing
+layer=-5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>169</x><y>465</y><w>160</w><h>110</h></coordinates><panel_attributes>network.routing
 --
 bg=blue
-group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>724</x><y>345</y><w>100</w><h>30</h></coordinates><panel_attributes>Router
-group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>814</x><y>254</y><w>140</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>114;10;60;10;60;110;10;110</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>389</x><y>54</y><w>370</w><h>160</h></coordinates><panel_attributes>state
+group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>199</x><y>514</y><w>100</w><h>30</h></coordinates><panel_attributes>Router
+group=5</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>269</x><y>293</y><w>40</w><h>240</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>14;15;10;220</additional_attributes></element><element><id>UMLPackage</id><coordinates><x>524</x><y>833</y><w>170</w><h>230</h></coordinates><panel_attributes>state
 --
 bg=yellow
-layer=-5</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>406</x><y>14</y><w>900</w><h>70</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>10;40;10;10;880;10;880;45</additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>285</y><w>260</w><h>190</h></coordinates><panel_attributes>NodeRegister
+layer=-5
+group=6</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>541</x><y>763</y><w>220</w><h>90</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>10;70;10;20;200;15</additional_attributes></element><element><id>UMLClass</id><coordinates><x>145</x><y>64</y><w>300</w><h>140</h></coordinates><panel_attributes>NodeRegister
 --
 +NodeRegister(validityTime: int)
-+updatePrivateNode(id: int)
 +addPublicNode(id: int, ip: InetSocketAddress)
-+getOutdatedNodes(): List&lt;Integer&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>330</x><y>285</y><w>190</w><h>80</h></coordinates><panel_attributes>HeartBeatEmiter
++addPrivateNode(id: int)
++updateNode(id: int)
++getOutdatedNodes(): List&lt;Integer&gt;
++getPublicNodes(): Map&lt;Integer, InetSocketAddress&gt;
++getPrivateNodes(): List&lt;Integer&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>475</x><y>154</y><w>190</w><h>80</h></coordinates><panel_attributes>HeartBeatEmiter
 --
 +HeartBeatEmiter(timePeroid: int)
-+beat()
-+nextBeatTime(): int</panel_attributes><additional_attributes></additional_attributes></element></diagram>
++beat(): Optional&lt;Message&gt;
++nextBeatTime(): int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>455</x><y>64</y><w>210</w><h>60</h></coordinates><panel_attributes>StateObserver
+--
++StateObserver(state: StateUpdater)
++getMessages(): List&lt;Message&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>201</x><y>189</y><w>40</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;70;14;15</additional_attributes></element><element><id>Relation</id><coordinates><x>365</x><y>111</y><w>110</w><h>180</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;160;90;160;90;13</additional_attributes></element><element><id>Relation</id><coordinates><x>365</x><y>261</y><w>160</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;90;10;90;20;138;13</additional_attributes></element><element><id>Relation</id><coordinates><x>365</x><y>141</y><w>130</w><h>150</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;130;90;130;90;20;108;17</additional_attributes></element></diagram>

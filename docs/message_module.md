@@ -2,31 +2,67 @@
 
 <img src="./img/uml_message.png">
 
-MESSAGE - prototype, state/strategy, template method
+## Pakiet message
 
-MESSAGE PARSER - builder
+Zajmuje się reprezentacją wiadomości przesyłanej między węzłami oraz jej konstrukcją. 
+
+### Message
+
+Reprezentuje wiadomość przesyłaną w sieci. 
+
+Konstruktor przyjmuje identyfikatory nadawcy i adresata oraz obiekt ```Body``` odpowiedni dla typu wiadomości. 
+
+Metoda ```clone(int receiver)``` klonuje dany obliekt ze zmienionym adresatem. Używana podczas wysyłania wiadomości broadcastowych. Jest implementacją wzorca projektowego "Prototyp". 
+
+```toString()``` implementuje wzorzec projektowy "template method". Zwraca ciąg reprezentujący wiadomość w formacie json takim, jak [tutaj](./messages.md). Używa do tego celu metod ```Body.typeString()``` i ```Body.contentString()```. 
+
+Metoda ```process(MessageProcessContext context)``` wywołuje ```process(int sender, MessageProcessContext context)``` na obiekcie ```Body``` w ramach wzorca "strategy".
+
+### MessageParser
+
+Zamienia string z wiadomością w formacie ```json``` na obiekt ```Message```.
 
 
+## Pakiet body
 
-Jest odpowiedzialny za przetwarzanie ruchu z sieci oraz wysyłanie wiadmości zleconych przez moduł ```State```. 
+Zajmuje się działaniem ciała wiadomości.
 
-Aby uniknąć aktywnego oczekiwania, wątek ```Network``` zasypia gdy nie ma wiadomości do przetworzenia, ani wysłania. Ma on dwa źródła zadań: wątki ```Network``` i ```State```. Każdy z nich ma możliwość wybudzenia wątku za pomocą metody ```Thread.interrupt()```.
+### Body
 
-## Wysyłanie wiadomości
+Jest interfejsem dla każdej wiadomości. 
 
-Aby wysłać wiadomość, wywoływana jest metoda ```network.routing.Router.send(Message message)```.
+```typeString()``` i ```contentString()``` zwracają odpowiednio ciąg reprezentujący typ wiadomości oraz jej ciało w formacie ```json```. Używane do komponowania znakowej reprezentacji obiektu.
 
-## Odbieranie wiadomości
+Metoda ```process(int sender, MessageProcessContext context)``` realizuje wzorzec projetkowy "strategy". Przetwarza wiadomość i aplikuje jej efekty na zgrupowanych obiektach w zmiennej ```context```.
 
-Wątek ```Message``` odbiera wiadomości w postaci listy dzięki metodzie ```network.routing.Router.getMessages()```, a nastęnie je przetwarza.
+### Implementacje Body
 
-## Zmiana stanu
+Odpowiadają wszystkim typom [wiadomości](./messages.md). Implementują ich efekty i budowę.
 
-Gdy wątek otrzyma wiadomość, która informuje o zmianie stanu, zostaje wywołana odpowiednia metoda na obiekcie ```StateUpdater``` pełni on funkcję proxy dla modułu ```State```.
 
-## Heart beat
+## Pakiet process
 
-Czas od ostatniego broadcastu ```heart beat``` jest monitorowany i gdy przekroczy wartość podaną w pliku konfiguracyjnym, wysyła kolejny broadcast, a czas jest resetowany. Kiedy wątek zasypia, jako maksymalny czas bezczynności podaje taki, aby po wybudzeniu należało wysłać kolejny ```heart beat```.
+Odpowiada za przetwarzanie wiadomości i zmian stanu. Implementuje protokoły sieci peer to peer.
+
+### MessageProcessor
+
+Przetwarza wiadomości w ramach osobnego wątku. Odpowiada za cykliczne wołanie metod ```NodeRegister```, ```HeartBeatEmiter``` i ```StateObserver```. Wątek zasypia maksymalnie na czas ```HeartBeatEmiter.nextBeatTime()``` gdy nie ma nic do roboty. Jest budzony metodą ```Thread.interrupt()``` przez wątek, który dodał jakąś pracę.
+
+### NodeRegister
+
+Kontroluje heart beat pozostałych węzłów oraz składuje informacje o pozostałych węzłach w sieci. 
+
+### StateObserver
+
+Obserwuje zmiany stanu i tworzy wiadomości, gdy zmiana wymaga poinformowania innych węzłów. 
+
+### HeartBeatEmiter
+
+Kontroluje częstotliwość emitowania wiadomości heart beat. Generuje odpowiednią wiadomość.
+
+### MessageProcessContext
+
+Zawiera obiekty, na które może wpłynąć przetworzenie wiadomości.
 
 ---
 
