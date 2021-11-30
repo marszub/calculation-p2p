@@ -2,9 +2,9 @@
 
 Działa w ramach wzorca ```Active Object```, dlatego ma własny wątek kątroli wykonujący zlecenia innych wątków dotyczące stanu programu. 
 
-<img style="height:600px" src="./img/active_object_pl.svg">
+<img src="./img/uml_state.png">
 
-*Źródło: https://upload.wikimedia.org/wikipedia/commons/f/f8/Active_object_pl.svg*
+*Diagram UML modułu stanu*
 
 ## Servant
 
