@@ -14,7 +14,7 @@ W sytuacji konfliktu w ramach stanu wygrywa ten, którego właścicielem jest No
 1. Tworzy połączenie z nodem **<font color="red">głównym publicznym</font>**.
 2. Wysyła wiadomość [pytanie o listę nodów](./messages.md#pytanie-o-liste-nodow-i-nowe-id) do **<font color="red">głównego publicznego</font>**.
 3. Otrzymuje wiadomość [odpowiedź z listą nodów](./messages.md#odpowiedz-z-lista-nodow-i-nowym-id).
-4. Tworzy połączenie ze wszystkimi pozostałymi nodami <font color="red">publiczneymi</font>.
+4. Tworzy połączenie ze wszystkimi pozostałymi nodami <font color="red">publicznymi</font>.
 5. Rozpoczyna kolejkowanie wiadomości z sieci.
 6. Wysyła [wiadomość powitalną](./messages.md#wiadomosc-powitalna) do wszystkich nodów.
 7. Wysyła [pytanie o postęp obliczeń](./messages.md#pytanie-o-postep-obliczen) do losowego noda.
