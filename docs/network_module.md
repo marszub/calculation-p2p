@@ -42,24 +42,28 @@ Odpowiada za niezawodne wysyłanie wiadomości na odpowiednie połączenia. Zarz
 
 ### Router
 
-Metoda ```createInterface(int node_id)``` zleca stworzenie nowego wpisu w ```RoutingTable```. 
+Metoda ```createInterface(int node_id)``` tworzy interfejs dla odpowiedniego węzła. Od tego momentu możliwe jest niezawodne wysyłanie wiadomości do danego węzła. 
 
-Metoda ```createInterface(int node_id, InetSocketAddress)``` oprócz stworzenia nowego wpisu, tworzy obiekt ```StaticConnection``` z podanym adresem. Następnie dodaje połączenie do listy połączeń statycznych w ```ConnectionManager``` i wiąże ```node_id``` z nowym połączeniem w ```RoutingTable```. 
+Metoda ```createInterface(int node_id, InetSocketAddress)```, tworzy obiekt ```StaticConnection``` z podanym adresem. Następnie dodaje połączenie do listy połączeń statycznych w ```ConnectionManager``` i wiąże ```node_id``` z nowym połączeniem w ```RoutingTable```. 
 
 Aby przerwać połączenie z nodem, który opuścił sieć, wywoływana jest metoda ```deleteInterface(int node_id)```. Usuwa ona wpis w ```RoutingTable``` oraz wymusza zamknięcie powiązanego połączenia. 
 
-Metoda ```send(Message message)``` implementuje niezawodne wysłanie wiadomości w odpowiednie miejssce. Jeśli podana wiadomość jest typu unicast do noda, którego id znajduje się w ```RoutingTable``` (czyli powinno istnieć bezpośrednie połączenie między nodami), wiadomość jest wysyłana za pomocą metody ```RoutingTable.send(Message message)```. Jeżeli wiadomość jest typu broadcast, lub inny node ma pośredniczyć w jej wysłaniu, wysyłana jest metodą ```Router.sendNow(Message message)``` do losowego węzła. W przypadku niepowodzenia, proces jest powtarzany, aż nie skończą się możliwe połączenia. Wtedy wiadomość jest dodawana na odpowiednią kolejkę. Gdy wysyłania wiadomości broadcast się powiedzie, na pozostałe połączenia
-wysyłane są unicastowe kopie wiadomości (patrz, [Struktura sieci](./network_structure.md)).
+Metoda ```send(Message message)``` implementuje niezawodne wysłanie wiadomości w odpowiednie miejssce. 
 
-Jeśli dany węzeł jest publiczny, każda wiadomość broadcast jest zamieniana na wiadomości unicast wysyłane metodą ```send(Message message)```
-
-```Router``` przekazuje otrzymane wiadomości dzięki metodzie ```getMessages()```. Wyciąga ona wszystkie wiadomości z kolejki ```MessageQueueExit```. Dla każdej wiadomości z id nadawcy znajdującym się w ```RoutingTable``` aktualizuje połączenie z nim powiązane. Po aktualizacji połączeń wywołuje metodę ```RoutingTable.resendAll()```, próbuje wysłać wszystkie wiadomości pośrednie oczekujące w kolejce. 
-
-Jeśli któraś z otrzymanych wiadomości jest typu broadcast, zamienia ją na wiele wiadomości unicast i rozsyła do wszystkich węzłów prywatnych (posiada odpowiednią listę uzupełnianą podczas wywoływania metody ```createInterface()```). Dodatkowo, porzekazuje przekształconą wiadomość unicast do zwracanej listy.
-
-Jeśli wiadomość jest typu unicast, ale nie jest skierowana do obecnego węzła, jest przesyłana dalej odpowiednim połączeniem. I zostaje usunięta ze zwracanej listy. 
+```Router``` przekazuje otrzymane wiadomości dzięki metodzie ```getMessages()```. Wyciąga ona wiadomość z kolejki ```MessageQueueExit```. Jeśli id nadawcy znajduje się w ```RoutingTable```, aktualizuje połączenie z nim powiązane. 
 
 ### PublicRouter
+
+Każda wychodząca wiadomość broadcast jest zamieniana na wiadomości unicast wysyłane metodą ```send(Message message)```.
+
+Jeśli któraś z otrzymanych wiadomości jest typu broadcast, metoda ```getMessage()``` zamienia ją na wiele wiadomości unicast i rozsyła do wszystkich węzłów prywatnych (posiada odpowiednią listę uzupełnianą podczas wywoływania metody ```createInterface()```). Dodatkowo, zwraca przekształconą wiadomość unicast.
+
+Jeśli wiadomość jest typu unicast, ale nie jest skierowana do obecnego węzła, jest przesyłana dalej odpowiednim połączeniem. Nie jest zwracana, zamiast tego ```Router``` pobiera kolejną wiadomość z ```MessageQueueExit``` i standardowo ją przetwarza.
+
+### PrivateRouter
+
+Metoda ```send(Message message)``` implementuje niezawodne wysłanie wiadomości w odpowiednie miejssce. Jeśli podana wiadomość jest typu unicast do noda, którego id znajduje się w ```RoutingTable``` (czyli powinno istnieć bezpośrednie połączenie między nodami), wiadomość jest wysyłana za pomocą metody ```RoutingTable.send(Message message)```. Jeżeli wiadomość jest typu broadcast, lub inny node ma pośredniczyć w jej wysłaniu, wysyłana jest metodą ```Router.sendNow(Message message)``` do losowego węzła. W przypadku niepowodzenia, proces jest powtarzany, aż nie skończą się możliwe połączenia. Wtedy wiadomość jest dodawana na odpowiednią kolejkę. Gdy wysłanie wiadomości broadcast się powiedzie, na pozostałe połączenia
+wysyłane są unicastowe kopie wiadomości (patrz, [Struktura sieci](./network_structure.md)).
 
 ### RoutingTable
 

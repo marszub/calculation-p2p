@@ -53,12 +53,12 @@ group=7</panel_attributes><additional_attributes></additional_attributes></eleme
 Scheduler in active object DP</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>658</x><y>300</y><w>160</w><h>50</h></coordinates><panel_attributes>Servant
 --
 Servant in active object DP
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>668</x><y>190</y><w>30</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1098</x><y>480</y><w>150</w><h>80</h></coordinates><panel_attributes>Future
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>668</x><y>190</y><w>30</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1098</x><y>480</y><w>150</w><h>80</h></coordinates><panel_attributes>Future&lt;ResponseType&gt;
 --
 +isReady(): boolean
-+get(): Object
++get(): ResponseType
 --
-+put(response: Object)
++put(response: ResponseType)
 group=6</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>258</x><y>1210</y><w>140</w><h>50</h></coordinates><panel_attributes>Reserve
 --
 reserves task
