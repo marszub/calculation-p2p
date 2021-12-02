@@ -1,7 +1,11 @@
 package pl.edu.agh.calculationp2p.state;
 
-public class Servant {
-    Servant(){
+//TODO: Implement
 
+public class Servant {
+    private Progress progress;
+
+    Servant(Progress progress){
+        this.progress = progress;
     }
 }

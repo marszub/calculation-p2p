@@ -83,15 +83,17 @@ Wynik obliczonego zadania.
 
 ## Pakiet state.future
 
-### Future
+### Future\<ResponseType\>
 
-Kalsa realizująca asynchroniczne zwracanie wyniku we wzorcu "Active object". Nie zawiera żadnej synchronizacji, dlatego ważne jest sprawdzenie gotowości wyniku przez jego pobraniem.
+Kalsa realizująca asynchroniczne zwracanie wyniku we wzorcu "Active object". Nie zawiera żadnej synchronizacji, dlatego ważne jest sprawdzenie gotowości wyniku przed jego pobraniem.
 
 Metoda ```isReady()``` zwraca prawdę, jeśli wynik żądania jest gotowy.
 
 ```get()``` zwraca przechowywany wynik. 
 
-```put(result: Object)``` zapisuje wynik, a następnie ustawia flagę gotowości wyniku.
+```put(result: ResponseType)``` zapisuje wynik, a następnie ustawia flagę gotowości wyniku.
+
+Dla skrócenia zapisu na *Rysunku 1* obiekt ```Future``` jest w pozostałych klasach zapisywany bez specyfikacji typu (lecz w implementacji występuje).
 
 ### Observation
 
