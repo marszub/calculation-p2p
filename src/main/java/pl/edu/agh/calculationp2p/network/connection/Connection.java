@@ -3,15 +3,32 @@ package pl.edu.agh.calculationp2p.network.connection;
 
 import pl.edu.agh.calculationp2p.message.Message;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 
-// Klasa abstrakcyjna odpowiadająca połączeniu TCP.
-// Umożliwia rejestrację kanału w selektorze na dane wydarzenia
-// oraz wysyłanie wiadomości odpowiednim połączeniem.
 
 public abstract class Connection {
+    SocketChannel socketChannel;
+
+    protected void unsafeSend(Message message) throws IOException {
+        String data = message.serialize();
+        ByteBuffer buff = ByteBuffer.allocate(2048);
+        buff.clear();
+        buff.put(data.getBytes());
+        buff.flip();
+        socketChannel.write(buff);
+    }
+
     public abstract boolean send (Message message);
-   // public abstract void subscribe(Selector selector, int event);
-    protected void close(){
+
+    public void subscribe(Selector selector, int event) throws ClosedChannelException {
+        socketChannel.register(selector, event, this);
+    }
+
+    public void close(){
 
     }
 
