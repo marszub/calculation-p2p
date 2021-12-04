@@ -10,5 +10,5 @@ import org.junit.jupiter.api.Test;
 import java.net.InetSocketAddress;
 
 class ConnectionManagerTest {
-    
+
 }
