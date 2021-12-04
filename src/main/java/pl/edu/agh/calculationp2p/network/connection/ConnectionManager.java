@@ -28,23 +28,32 @@ public class ConnectionManager extends Thread {
     private final int someSize = 1024;
     boolean canBind;
 
-    public ConnectionManager(MessageQueueEntry messageQueueEntry, boolean canBind) {
+    public ConnectionManager(MessageQueueEntry messageQueueEntry, InetSocketAddress localListeningAddress) {
         this.messageQueueEntry = messageQueueEntry;
         try {
             this.incomingConnectionOrMessage = Selector.open();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.canBind = canBind;
+
+        try {
+            serverSocketChannel = ServerSocketChannel.open(); // Opens a server-socket channel.
+            ServerSocket serverSocket = serverSocketChannel.socket(); // Retrieves a server socket associated with this channel.
+            serverSocket.bind(localListeningAddress); //Binds the channel's socket to a local address and configures the socket to listen for connections.
+            serverSocketChannel.configureBlocking(false);
+            Selector.open(); // incomingConnectionOrMessage.open() -> IntelliJ cleanup
+            //int ops = socket.validOps(); //Returns an operation set identifying this channel's supported operations. here: SelectionKey.OP_ACCEPT
+            serverSocketChannel.register(incomingConnectionOrMessage, SelectionKey.OP_ACCEPT, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addStaticConnection(StaticConnection staticConnection) {
         try {
             SocketChannel socketChannel = SocketChannel.open(staticConnection.getIpAddress());
-            removeFromSelector(socketChannel);
             socketChannel.configureBlocking(false);
-            SelectionKey key = socketChannel.register(incomingConnectionOrMessage, SelectionKey.OP_READ | SelectionKey.OP_WRITE, null);
-            staticConnection.setSelectionKey(key);
+            socketChannel.register(incomingConnectionOrMessage, SelectionKey.OP_READ, null);
             if(!outgoingConnections.contains(staticConnection)){
                 this.outgoingConnections.add(staticConnection);
             }
@@ -52,14 +61,6 @@ public class ConnectionManager extends Thread {
             e.printStackTrace();
         }
     }
-
-    private void removeFromSelector(SocketChannel socketChannel) {
-        if (socketChannel.isRegistered()) {
-            SelectionKey key = socketChannel.keyFor(incomingConnectionOrMessage);
-            key.cancel(); // Requests that the registration of this key's channel with its selector be cancelled.
-        }
-    }
-
 
     public void removeStaticConnection(StaticConnection staticConnection) {
         // TODO: wyrejestrowac z selector
@@ -71,24 +72,7 @@ public class ConnectionManager extends Thread {
         }
     }
 
-    private void init() {
-        try {
-            serverSocketChannel = ServerSocketChannel.open(); // Opens a server-socket channel.
-            ServerSocket serverSocket = serverSocketChannel.socket(); // Retrieves a server socket associated with this channel.
-            serverSocket.bind(new InetSocketAddress(addressIp, port)); //Binds the channel's socket to a local address and configures the socket to listen for connections.
-            serverSocketChannel.configureBlocking(false);
-            Selector.open(); // incomingConnectionOrMessage.open() -> IntelliJ cleanup
-            //int ops = socket.validOps(); //Returns an operation set identifying this channel's supported operations. here: SelectionKey.OP_ACCEPT
-            serverSocketChannel.register(incomingConnectionOrMessage, SelectionKey.OP_ACCEPT, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void run() {
-        if (canBind) {
-            init();
-        }
         while (true) {
             try {
                 incomingConnectionOrMessage.select();
