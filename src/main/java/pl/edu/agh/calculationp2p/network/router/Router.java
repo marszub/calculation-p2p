@@ -48,6 +48,7 @@ public abstract class Router
         }
     }
 
+    //TODO
     public Message getMessage()
     {
         return MessageQueue.get();
