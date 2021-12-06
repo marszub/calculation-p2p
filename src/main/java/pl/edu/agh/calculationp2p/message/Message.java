@@ -1,12 +1,9 @@
 package pl.edu.agh.calculationp2p.message;
 
-public class Message {
-    String payload;
+import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
-    public Message(String payload){
-        this.payload = payload;
-    }
-    public String getValue(){
-        return this.payload;
-    }
+public interface Message {
+    Message clone(int receiverId);
+    String serialize();
+    void process(MessageProcessContext context);
 }

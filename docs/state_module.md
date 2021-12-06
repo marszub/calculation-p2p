@@ -1,64 +1,22 @@
-# Moduł stanu
+# Moduł state
 
 Działa w ramach wzorca ```Active Object```, dlatego ma własny wątek kątroli wykonujący zlecenia innych wątków dotyczące stanu programu. 
 
 <img src="./img/uml_state.png">
 
-*Diagram UML modułu stanu*
+*Rysunek 1: Diagram UML modułu stanu*
 
-## Servant
+## Pakiet state
 
-Klasa Servant jest rdzeniem całego wzorca. To tutaj znajdują się dane, na których operuje ```Active Object```. Dlatego wszystkie publiczne metody dzielą się na dwie kategorie:
-- Metody operacyjne - odpowiadają 1:1 wszystkim metodom ```Proxy``` oraz klasom implementującym ```MethodRequest```. Omawiam je w sekcji ```Proxy```.
-- Predykaty - używane w implementacji metod ```boolean guard()``` klas implementujących ```MethodRequest```. Udostępniają informacje, dzięki którym ```Scheduler``` może stwierdzić, czy dana metoda może być aktualnie wywołana. 
+Zawiera implementację aktywnego obiektu oraz wszystkich obsługiwanych przez niego zbiorów danch.
 
-**W tym przypadku nie zawiera Predykatów, ponieważ [Method Request](#method-request) nie implementuje funkcji ```gruard()```**
+### Scheduler
 
-Servant operuje na strukturach danych:
-- lista zadań i ich stan (wolne, zajęte, obliczone)
-- lista/y subskrybentów wzorca ```Observer``` jako obiekty Future zwrócone po użyciu odpowiednich metod. Służą do zawiadamiania innych wątków o zmianie stanu. 
+Implementacja jest zgodna z wzorcem projektowym "Active object".
 
-Przykład: ```Wątek Obliczeń``` bierze zadanie i zaczyna liczyć. ```Wątek Sieci``` Zmienia stan tego samego zadania jako zajęte przez inny node na podstawie priorytetu. ```Wątek Obliczeń```, który zasubskrybował o otrzymywanie takiej informacji dostaje nakaz przerwania obliczeń za pośrednictwem zmiany stanu obiektu ```Future```
+Konstruktor poza inicjalizacją pól, uruchamia nowy wątek. Kod jego przebiegu implementuje w metodzie ```run()```. 
 
-## Proxy
-
-Jest interfejsem dla stanu obiektu. Jego metody są jedyną drogą komunikacji między innymi wątkami a obiektem. 
-
-- ```Future Proxy.Initialize(myID, progress)```
-
-    Wołane przez wątek ```Sieci```. Inicjuje tablicę postępu oraz informuje o przydzielonym id.
-
-- ```Future Proxy.GetTask()```
-
-    Wołane przez wątek ```Obliczeń```.
-
-    Wybiera pierwsze dostępne zadanie i oznacza jako zajęte przez dany Node. Następnie informuje wątek ```Sieci``` o zajęciu zadania orza zwraca do ```Future``` zadanie.
-
-    Informowanie wątku ```Sieci``` jest zaimplementowane za pomocą wzorca ```Observer``` subskrybującym jest obiekt ```Future```. Informowanie składa się ze zmiany stanu odpowiedniego ```Future``` oraz wybudzenia zainteresowanego wątku.
-
-- ```Future Proxy.ReserveTask(id, task)```
-
-    Wołane przez wątek ```Sieci``` w sytuacji konfliktu przegranego przez noda, dodatkowo informuje wątek ```Obliczeń``` o zmianie rezerwacji.
-
-- ```Future Proxy.CompleteMyTask(task, result)```
-
-    Wołane przez wątek ```Obliczeń``` oznacza zadanie jako wykonane oraz informuje wątek ```Sieci```.
-
-- ```Future Proxy.CompleteTask(id, task, result)```
-
-    Wołane przez wątek ```Sieci```
-
-- Metody subskrybujące/odsubskrybujące
-
-- Metody informacyjne dla UI
-
-## Scheduler
-
-Obsługuje ```Method Request``` pobierane z ```Activation Queue```. Dodatkowo, dodaje, usuwa i informuje subskrybentów wydarzeń. 
-
-Implementuje tworzenie i dodawanie do ```Activation Queue``` obiektów ```Method Request```. 
-
-## Activation Queue
+Metoda ```enqueue(request: MethodRequest)``` jest wołana przez inne wątki. Dodaje żądania w synchronizowanej kolejce aktywacyjnej.
 
 Jako ```Activation Queue``` użyta została kolejka ```LinkedBlockingQueue```. 
 Jest ona bezpieczna pod względem współbieżonści. 
@@ -67,13 +25,83 @@ Elementy pobieramy blokująco, ponieważ jest to realizowane przez wątek ```Sta
 
 Elementy również kładziemy blokująco. Przepełnienie występuje jedynie na skutek "niedomagania" wątku ```Stanu``` i jest to sytuacja patologiczna, która nie powinna wystąpić. Dlatego pozostałe wątki zostaną jedynie spowolnione, a nie wpłynie to na poprawność ich działania. Nie nakładamy żadnych warunków dla wywoływania metod, dlatego mamy pewność, że kolejka kiedyś się opróżni (brak możliwości deadlocka). 
 
-## Method Request
+### Servant
 
-Jest w postaci obiektu ```Runnable```. Nie tylko wywołuje metody obiektu ```Servant```, ale również obsługuje subskrypcje. Nie obsługuje warunków wykonania metody (guard). Każdą metodę zawsze można wykonać, ewentualne nieprawidłowości jej wykonania są przekazywane do obiektu ```Future``` i obsługiwane przez zainteresowany wątek.
+Dla każdej klasy implementującej interfejs ```MethodRequest``` zawiera odpowiadającą jej publiczną metodę. 
 
-## Future
+### Progress
 
-Standardowa implementacja
+Reprezentuje postęp obliczeń, zajętość zadań oraz ich właścicieli. 
+
+### Publisher
+
+```Servant``` zawiera listę obiektów ```Publisher```, po których iteruje wywołując metodę ```look(previous: TaskRecord, current: TaskRecord)``` przy każdej zmianie stanu obliczeń. 
+
+### CalculatedPublisher
+
+Jest asynchroniczną implementacją wzorca projektowego "Observer". Monitoruje zmiany stanów zadań. Jeśli któreś zostanie policzone, informuje obserwujące wątki poprzez przerwanie oraz zwrócenie wartości do obiektu ```Future```. Gdy informuje o zmianie, podmienia obiekt ```Future``` na ten zwrócony w komunikacie. 
+
+### ReservedPublisher
+
+Jest asynchroniczną implementacją wzorca projektowego "Observer". Monitoruje zmiany stanów zadań. Jeśli któreś zostanie zarezerwowane, informuje obserwujące wątki poprzez przerwanie oraz zwrócenie wartości do obiektu ```Future```. Gdy informuje o zmianie, podmienia obiekt ```Future``` na ten zwrócony w komunikacie. 
+
+### TaskPublisher
+
+Obserwuje stan konkretnych zadań. Gdy stan zadania się zmieni, informuje subskrybentów oraz usuwa ich subskrybcję. Wątki są przerywane oraz flaga ```isReady()``` powiązanego obiektu ```Future``` zostaje podniesiona. 
+
+## Pakiet state.proxy
+
+Zawiera pośredników aktywnego obiektu. Mają dwa zadania. Po pierwsze ukrywają nieergonomiczny kod dostępu do aktywnego obiektu. Po drugie, ograniczają możliwości ingerencji w stan. Konkretnym obiektom przekazujemy tylko te funkcjonalności, których potrzebują. 
+
+### StateUpdater
+
+Wykożystywany przez ```message.process.MessageProcessor``` do aktualizacji stanu na podstawie ruchu z sieci. 
+
+### TaskGiver
+
+Udostępnia funkcjonalności wymagane przez moduł obliczeń.
+
+### StatusInformer
+
+Umożliwia różne metody odczytu postępu obliczeń.
+
+## Pakiet state.task
+
+Odpowiada za reprezentację zadań w systemie
+
+### TaskRecord
+
+Zawiera informacje na temat postępu i ewentualnie wyniku zadania.
+
+### TaskState
+
+Stan zadania: wolne, liczone, obliczone.
+
+### TaskResult
+
+Wynik obliczonego zadania.
+
+## Pakiet state.future
+
+### Future\<ResponseType\>
+
+Kalsa realizująca asynchroniczne zwracanie wyniku we wzorcu "Active object". Nie zawiera żadnej synchronizacji, dlatego ważne jest sprawdzenie gotowości wyniku przed jego pobraniem.
+
+Metoda ```isReady()``` zwraca prawdę, jeśli wynik żądania jest gotowy.
+
+```get()``` zwraca przechowywany wynik. 
+
+```put(result: ResponseType)``` zapisuje wynik, a następnie ustawia flagę gotowości wyniku.
+
+Dla skrócenia zapisu na *Rysunku 1* obiekt ```Future``` jest w pozostałych klasach zapisywany bez specyfikacji typu (lecz w implementacji występuje).
+
+### Observation
+
+Klasa używana przy ciągłej subskrypcji na zmiany stanu obliczeń. Gdy zdarzenie zajdzie, ```Future``` zwróci obiekt ```Observation``` zawierający informacje o zdarzeniu oraz kolejny ```Future``` dalej obserwujący zdarzenia. 
+
+## Pakit state.request
+
+Interfejs ```MethodRequest``` reprezentuje żądanie wywołania metody na obliekcie ```Servant```. Implementujące go klasy posiadają konstruktor przyjmujący obiekt ```Servant``` oraz dodatkowe parametry. Metoda ```call()``` odpowiada wykonaniu żądania.
 
 ---
 
