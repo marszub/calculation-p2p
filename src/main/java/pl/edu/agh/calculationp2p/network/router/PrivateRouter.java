@@ -7,7 +7,7 @@ import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrivateRouter extends Router
+public class PrivateRouter extends RouterImpl
 {
     List<Integer> PrivateNodes = new ArrayList<>();
 
@@ -20,21 +20,17 @@ public class PrivateRouter extends Router
     public void createInterface(int nodeId) throws InterfaceExistsException
     {
         if(PrivateNodes.contains(nodeId))
-        {
             throw new InterfaceExistsException(nodeId);
-        }
-        else
-        {
-            PrivateNodes.add(nodeId);
-        }
+        PrivateNodes.add(nodeId);
     }
 
     @Override
-    public void deleteInterface(int nodeId)
+    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
     {
         if(PrivateNodes.contains(nodeId))
-        {
-        }
+            PrivateNodes.remove(nodeId);
+        else
+            super.deleteInterface(nodeId);
     }
 
     @Override

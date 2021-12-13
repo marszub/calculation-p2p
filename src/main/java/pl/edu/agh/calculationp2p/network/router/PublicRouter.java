@@ -4,10 +4,7 @@ import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PublicRouter extends Router
+public class PublicRouter extends RouterImpl
 {
     public PublicRouter(ConnectionManager ConnectionManager, MessageQueueExit MessageQueue, RoutingTable RoutingTable)
     {
@@ -17,7 +14,6 @@ public class PublicRouter extends Router
     @Override
     public void createInterface(int nodeId)
     {
-
     }
 
     @Override

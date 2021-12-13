@@ -75,20 +75,18 @@ public class RoutingTableImpl {
 
     public void resendAll()
     {
-        List<Integer> idList= new ArrayList<>();
-        List<Message> messageList= new ArrayList<>();
+        List<MessageIdPair> messageList= new ArrayList<>();
 
         Set<Integer> KeySet= MessageInterfaceQueue.keySet();
         for (int id : KeySet) {
-            messageList.addAll(MessageInterfaceQueue.get(id));
-            for (int i = 0; i < MessageInterfaceQueue.get(id).size(); i++) {
-                idList.add(id);
+            for(Message message : MessageInterfaceQueue.get(id))
+            {
+                messageList.add(new MessageIdPair(message, id));
             }
             MessageInterfaceQueue.get(id).clear();
         }
-        for(int i = 0; i < idList.size(); i++)
-        {
-            send(idList.get(i), messageList.get(i));
+        for (MessageIdPair messageIdPair : messageList) {
+            send(messageIdPair.getId(), messageIdPair.getMessage());
         }
     }
 
