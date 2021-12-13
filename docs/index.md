@@ -9,5 +9,7 @@
 >- [Moduł state](./state_module.md)
 >- [Moduł calculation](./calculation_module.md)
 >- [Moduł UI](./ui_module.md)
+>
+>[Wzorce projektowe](./design_patterns.md)
 
 ---

@@ -5,39 +5,72 @@ import pl.edu.agh.calculationp2p.message.Message;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-public class StaticConnection {
+public class StaticConnection extends Connection {
 
-    private InetSocketAddress ipAddress;
-    private SocketChannel socketChannel;
+    private final InetSocketAddress ipAddress;
+    private Selector selector;
+    private int event;
 
-    public StaticConnection(InetSocketAddress ipAddress) {
+    public StaticConnection(InetSocketAddress ipAddress){
         this.ipAddress = ipAddress;
-    }
-
-
-    public boolean send(Message message) {
         try {
-            String data = message.getValue();
-            ByteBuffer buff = ByteBuffer.allocate(2048);
-            buff.clear();
-            buff.put(data.getBytes());
-            buff.flip();
-            ((SocketChannel)this.selectionKey.channel()).write(buff); // call me boss (▀̿Ĺ̯▀̿ ̿)
-            return true;
+            socketChannel = SocketChannel.open(ipAddress);
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+
+            //TODO: make sure that socketChannel is not null
         }
+    }
+
+    @Override
+    public boolean send(Message message) {
+        try {
+            unsafeSend(message);
+            return true;
+        } catch(ClosedChannelException e){
+            reconnect();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public void subscribe(Selector selector, int event) throws ClosedChannelException {
+        this.selector = selector;
+        this.event = event;
+        super.subscribe(selector, event);
     }
 
     public InetSocketAddress getIpAddress() {
         return this.ipAddress;
     }
 
-    public void setSelectionKey(SelectionKey selectionKey) {
-        this.selectionKey = selectionKey;
+    public SocketChannel getSocketChannel() {
+        return socketChannel;
+    }
+
+    private void reconnect(){
+        try {
+            socketChannel = SocketChannel.open(ipAddress);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //TODO: make sure that socketChannel is not null
+        }
+
+        try {
+            socketChannel.register(selector, event);
+        } catch (ClosedChannelException e) {
+            e.printStackTrace();
+
+            //TODO: handle exception
+        }
     }
 }
