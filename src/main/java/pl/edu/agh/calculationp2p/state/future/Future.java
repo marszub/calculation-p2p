@@ -1,21 +1,24 @@
 package pl.edu.agh.calculationp2p.state.future;
 
-//TODO: Implement
-
 public class Future<ResponseType> {
+    private boolean ready;
+    private ResponseType response;
+
     public Future(){
-        throw new UnsupportedOperationException("Will be implemented");
+        ready = false;
+        response = null;
     }
 
     public boolean isReady(){
-        throw new UnsupportedOperationException("Will be implemented");
+        return ready;
     }
 
     public ResponseType get(){
-        throw new UnsupportedOperationException("Will be implemented");
+        return response;
     }
 
     public void put(ResponseType response){
-        throw new UnsupportedOperationException("Will be implemented");
+        this.response = response;
+        ready = true;
     }
 }
