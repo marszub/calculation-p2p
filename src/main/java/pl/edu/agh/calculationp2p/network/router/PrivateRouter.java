@@ -6,6 +6,8 @@ import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class PrivateRouter extends RouterImpl
 {
@@ -34,7 +36,31 @@ public class PrivateRouter extends RouterImpl
     }
 
     @Override
-    public void send(Message message)
+    public void send(Message message) throws ConnectionLostException
     {
+        int receiverId = 1; //TODO message.getReceiver().
+        if(PrivateNodes.contains(receiverId))
+        {
+            Set<Integer> publicNodesSet = staticInterfaces.keySet();
+            List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
+            Random random = new Random();
+            while(publicNodesList.size() > 0)
+            {
+                int id = publicNodesList.get(random.nextInt(publicNodesList.size()));
+                if(!routingTable.trySend(id, message))
+                    publicNodesList.remove(id);
+                else
+                {
+                    routingTable.resendAll();
+                    return;
+                }
+            }
+            throw new ConnectionLostException();
+        }
+        else
+        {
+            routingTable.send(receiverId, message);
+            routingTable.resendAll();
+        }
     }
 }

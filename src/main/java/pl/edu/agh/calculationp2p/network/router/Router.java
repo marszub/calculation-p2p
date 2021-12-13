@@ -11,7 +11,7 @@ public interface Router {
 
     void createInterface(int nodeId);
 
-    void deleteInterface(int nodeId) throws interfaceExistsException;
+    void deleteInterface(int nodeId);
 
     List<Message> getMessage();
 

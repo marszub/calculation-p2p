@@ -9,7 +9,6 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public abstract class RouterImpl implements Router {
     final ConnectionManager connectionManager;
@@ -35,7 +34,7 @@ public abstract class RouterImpl implements Router {
     }
 
     @Override
-    public void deleteInterface(int nodeId) throws InterfaceExistsException
+    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
     {
         if(routingTable.interfaceListContains(nodeId))
         {
@@ -47,13 +46,15 @@ public abstract class RouterImpl implements Router {
             }
             routingTable.removeInterface(nodeId);
         }
+        else
+            throw new InterfaceDoesNotExistException(nodeId);
     }
 
     //TODO
     @Override
     public List<Message> getMessage()
     {
-        return null;
+        throw new UnsupportedOperationException("Will be implemented");
     }
 
 }
