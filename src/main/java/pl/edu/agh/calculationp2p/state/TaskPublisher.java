@@ -5,7 +5,7 @@ import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 //TODO: implement
 
-public class TaskPublisher implements Publisher{
+public class TaskPublisher{
     public TaskPublisher(){
         throw new UnsupportedOperationException("Will be implemented");
     }
@@ -18,7 +18,6 @@ public class TaskPublisher implements Publisher{
         throw new UnsupportedOperationException("Will be implemented");
     }
 
-    @Override
     public void look(Thread changing, TaskRecord previous, TaskRecord current) {
         throw new UnsupportedOperationException("Will be implemented");
     }
