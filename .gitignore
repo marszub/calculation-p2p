@@ -19,8 +19,8 @@
 *.tar.gz
 *.rar
 
-.gradle/*
-build/*
+.gradle/
+build/
 
 # include gradle wrapper
 !/gradle/wrapper/gradle-wrapper.jar
