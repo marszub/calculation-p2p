@@ -46,7 +46,7 @@ Odpowiada za przetwarzanie wiadomości i zmian stanu. Implementuje protokoły si
 
 ### MessageProcessor
 
-Przetwarza wiadomości w ramach osobnego wątku. Odpowiada za cykliczne wołanie metod ```NodeRegister```, ```HeartBeatEmiter``` i ```StateObserver```. Wątek zasypia maksymalnie na czas ```HeartBeatEmiter.nextBeatTime()``` gdy nie ma nic do roboty. Jest budzony metodą ```Thread.interrupt()``` przez wątek, który dodał jakąś pracę.
+Przetwarza wiadomości w ramach osobnego wątku. Odpowiada za cykliczne wołanie metod ```NodeRegister```, ```HeartBeatEmiter``` i ```StateObserver```. Wątek zasypia maksymalnie na czas ```HeartBeatEmiter.nextBeatTime()``` za pomocą metody ```Idle.sleep(float)``` gdy nie ma nic do roboty . Jest budzony metodą ```IdleInterrupter.interrupt()``` przez wątek, który dodał jakąś pracę.
 
 ### StateObserver
 

@@ -34,7 +34,7 @@ Gdy połączenie przychodzące zostanie urwane, jest usuwane z listy ```incoming
 
 Połączenia wychodzące dodawane są metodą ```addStaticConnection(StaticConnection connection)``` dodawane są do listy ```List<StaticConnection> outgoingConnections```. Jedynym sposobem na usunięcie połączenia statycznego jest wywołanie metody ```remoceStaticConnection(StaticConnection connection)```
 
-W sytuacji otrzymania wiadomości, jest ona parsowana na obiekt ```Message```, a następnie zostaje przekazana do kolejki ```MessageQueueEntry``` razem z obiektem ```Connection```, z którego wiadomość przyszła.
+W sytuacji otrzymania wiadomości, jest ona parsowana na obiekt ```Message```, a następnie zostaje przekazana do kolejki ```MessageQueueEntry``` razem z obiektem ```Connection```, z którego wiadomość przyszła. Dodatkowo, wątek "Message" jest budzony dzięki ```IdleInterrupter.interrupt()```.
 
 ## Pakiet network.routing
 

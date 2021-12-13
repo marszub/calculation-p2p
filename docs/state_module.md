@@ -33,21 +33,17 @@ Dla każdej klasy implementującej interfejs ```MethodRequest``` zawiera odpowia
 
 Reprezentuje postęp obliczeń, zajętość zadań oraz ich właścicieli. 
 
-### Publisher
-
-```Servant``` zawiera listę obiektów ```Publisher```, po których iteruje wywołując metodę ```look(previous: TaskRecord, current: TaskRecord)``` przy każdej zmianie stanu obliczeń. 
-
 ### CalculatedPublisher
 
-Jest asynchroniczną implementacją wzorca projektowego "Observer". Monitoruje zmiany stanów zadań. Jeśli któreś zostanie policzone, informuje obserwujące wątki poprzez przerwanie oraz zwrócenie wartości do obiektu ```Future```. Gdy informuje o zmianie, podmienia obiekt ```Future``` na ten zwrócony w komunikacie. 
+Jest asynchroniczną implementacją wzorca projektowego "Observer". Monitoruje zmiany stanów zadań. Jeśli któreś zostanie policzone, informuje obserwujące wątki poprzez metodę ```IdleInterrupter.interrupt()``` oraz zwrócenie wartości do obiektu ```Future```. Gdy informuje o zmianie, podmienia obiekt ```Future``` na ten zwrócony w komunikacie. 
 
 ### ReservedPublisher
 
-Jest asynchroniczną implementacją wzorca projektowego "Observer". Monitoruje zmiany stanów zadań. Jeśli któreś zostanie zarezerwowane, informuje obserwujące wątki poprzez przerwanie oraz zwrócenie wartości do obiektu ```Future```. Gdy informuje o zmianie, podmienia obiekt ```Future``` na ten zwrócony w komunikacie. 
+Jest asynchroniczną implementacją wzorca projektowego "Observer". Monitoruje zmiany stanów zadań. Jeśli któreś zostanie zarezerwowane, informuje obserwujące wątki poprzez metodę ```IdleInterrupter.interrupt()``` oraz zwrócenie wartości do obiektu ```Future```. Gdy informuje o zmianie, podmienia obiekt ```Future``` na ten zwrócony w komunikacie. 
 
 ### TaskPublisher
 
-Obserwuje stan konkretnych zadań. Gdy stan zadania się zmieni, informuje subskrybentów oraz usuwa ich subskrybcję. Wątki są przerywane oraz flaga ```isReady()``` powiązanego obiektu ```Future``` zostaje podniesiona. 
+Obserwuje stan konkretnych zadań. Gdy stan zadania się zmieni, informuje subskrybentów oraz usuwa ich subskrybcję. Wywoływana jest metoda ```IdleInterrupter.interrupt()``` oraz flaga ```isReady()``` powiązanego obiektu ```Future``` zostaje podniesiona. 
 
 ## Pakiet state.proxy
 
@@ -99,9 +95,13 @@ Dla skrócenia zapisu na *Rysunku 1* obiekt ```Future``` jest w pozostałych kla
 
 Klasa używana przy ciągłej subskrypcji na zmiany stanu obliczeń. Gdy zdarzenie zajdzie, ```Future``` zwróci obiekt ```Observation``` zawierający informacje o zdarzeniu oraz kolejny ```Future``` dalej obserwujący zdarzenia. 
 
-## Pakit state.request
+## Pakiet state.request
 
 Interfejs ```MethodRequest``` reprezentuje żądanie wywołania metody na obliekcie ```Servant```. Implementujące go klasy posiadają konstruktor przyjmujący obiekt ```Servant``` oraz dodatkowe parametry. Metoda ```call()``` odpowiada wykonaniu żądania.
+
+## Pakiet state.idle
+
+Klasa ```Idle``` umożliwia kontrolowane uśpienie wątku na określony czas. Śpiący wątek może być wybudzony wcześniej dzięki metodzie ```IdleInterrupter.interrupt()```
 
 ---
 

@@ -28,9 +28,25 @@ Metoda ```Message.serialize()``` jest metodą szablonową. Definiuje kolejność
 
 Dzięki zastosowaniu wzorca "template method" zyskujemy na czytelności kodu oraz skalowalności rozwiązania. Nawet, gdy dodamy więcej implementacji ```Body```, treść metody ```Message.serialize()``` się nie zmieni. 
 
+## Dependency injection
+
+- ```network.routing.RoutingTable```, ```network.messagequeue.MessageQueueExit``` i ```network.connection.ConnectionManager``` są wstrzykiwane w konstruktorze do ```network.routing.Router```. 
+
+- ```network.routing.Router```, ```state.proxy.StateUpdater```, ```state.proxy.StateInformer``` oraz klasy paczki ```message.process``` odpowiednio oznaczone [tutaj](./message_module.md) są wstrzykiwane do ```message.process.MessageProcessor```. 
+
+- ```state.Scheduler``` jest wstrzykiwany do wszystkich klas paczki ```state.proxy```.
+
+- ```state.Servant``` jest wstrzykiwany do ```state.Scheduler```.
+
+- ```state.Progress``` jest wstrzykiwany do ```state.Servant``` za pomocą "settera".
+
+- ```state.CalculatedPublisher```, ```state.ReservedPublisher``` i ```state.TaskPublisher``` są wstrzykiwane do ```state.Servant```.
+
+Główną zaletą zastosowania wzorca ```Dependency injection``` jest umożliwienie bardziej precyzyjnych testów jednostkowych. Dodatkowo, w przypadku klasy ```state.Progress``` możliwe jest opóźnienie inicjalizacji tablicy postępu oraz stworzenie jej w różny sposób w zależności od tego, czy udało się połączyć z siecią. 
+
 ## Active object
 
-Cały moduł [state](./state_module.md) jest implementacją wzorca projektowego ```Active object```. Jest on opisany dokładnie w donumentacji modułu. 
+Większość modułu [state](./state_module.md) jest implementacją wzorca projektowego ```Active object```. Jest on opisany dokładnie w donumentacji modułu. 
 
 Dzięki użyciu tego wzorca projektowego możliwy jest asynchroniczny dostęp do tablicy postępu oraz innych zmiennych stanu. Pozwala to na nieprzerwaną pracę komunikujących się wątków i lepszą skalowalność. Możliwy jest nawet podział programu między wiele komputerów (lecz w tym przypadku jest on niepraktyczny). Dodatkowo, można bez dodatkowego nakładu kodu dodać więcej wątków obliczeń, czy UI. Pozwala to na dopasowanie użycia procesora wielordzeniowego do potrzeb użytkownika (może chcieć swobodnie używać komputera podczas obliczeń, lub nie). 
 
