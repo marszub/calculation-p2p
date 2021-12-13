@@ -3,13 +3,14 @@
 bg=green
 layer=-5</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>20</x><y>452</y><w>330</w><h>50</h></coordinates><panel_attributes>MessageProcessor
 --
-+MessageProcessor(router: Router, scheduler: Scheduler)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>370</x><y>412</y><w>200</w><h>110</h></coordinates><panel_attributes>MessageProcessContext
++MessageProcessor(Router, StateUpdater, StateInformer)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>370</x><y>412</y><w>200</w><h>120</h></coordinates><panel_attributes>MessageProcessContext
 --
-+router: final Router
-+stateUpdater: final StateUpdater
-+stateInformerr: final StateInformer
-+register: final NodeRegister
-+futureProcessor: FutureProcessor</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>300</x><y>822</y><w>270</w><h>70</h></coordinates><panel_attributes>MessageParser
++router: Router
++stateUpdater: StateUpdater
++stateInformerr: StateInformer
++register: NodeRegister
++futureProcessor: FutureProcessor
++interrupter: IdleInterrupter</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>300</x><y>822</y><w>270</w><h>70</h></coordinates><panel_attributes>MessageParser
 --
 +MessageParser()
 +parse(message: String): Message
@@ -107,21 +108,24 @@ bg=yellow
 layer=-5
 group=6</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>272</x><y>48</y><w>300</w><h>140</h></coordinates><panel_attributes>NodeRegister
 --
-~NodeRegister(validityTime: int)
-~getOutdatedNodes(): List&lt;Integer&gt;
++NodeRegister(validityTime: int)
++getOutdatedNodes(): List&lt;Integer&gt;
+-.
 +addPublicNode(id: int, ip: InetSocketAddress)
 +addPrivateNode(id: int)
 +updateNode(id: int)
 +getPublicNodes(): Map&lt;Integer, InetSocketAddress&gt;
 +getPrivateNodes(): List&lt;Integer&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>292</x><y>308</y><w>280</w><h>80</h></coordinates><panel_attributes>HeartBeatEmiter
 --
-~HeartBeatEmiter(timePeroid: int, router: Router)
-~beat()
-~nextBeatTime(): int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>22</x><y>48</y><w>230</w><h>60</h></coordinates><panel_attributes>StateObserver
++HeartBeatEmiter(timePeroid: int, router: Router)
++beat()
++nextBeatTime(): int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>22</x><y>48</y><w>230</w><h>60</h></coordinates><panel_attributes>StateObserver
 --
-~StateObserver(informer: StateInformer)
-~getMessages(): List&lt;Message&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>252</x><y>208</y><w>320</w><h>80</h></coordinates><panel_attributes>FutureProcessor
++StateObserver(informer: StateInformer)
++getMessages(): List&lt;Message&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>252</x><y>208</y><w>320</w><h>80</h></coordinates><panel_attributes>FutureProcessor
 --
-~FutureProcessor()
-~tryProcessAll()
-+addFutureProcess(condition: Future, process: Runnable)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>453</x><y>948</y><w>220</w><h>80</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>10;60;10;10;200;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>100</y><w>40</w><h>370</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;350;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>140</y><w>140</w><h>330</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;310;10;10;114;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>210</y><w>120</w><h>260</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;240;10;10;94;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>310</y><w>160</w><h>160</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;140;10;10;134;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>410</y><w>240</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;40;10;10;212;10</additional_attributes></element><element><id>Relation</id><coordinates><x>214</x><y>486</y><w>110</w><h>190</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>86;170;10;170;10;16</additional_attributes></element></diagram>
++FutureProcessor()
++tryProcessAll()
+-.
++addFutureProcess(condition: Future, process: Runnable)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>453</x><y>948</y><w>220</w><h>80</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>10;60;10;10;200;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>100</y><w>40</w><h>370</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;350;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>140</y><w>140</w><h>330</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;310;10;10;114;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>210</y><w>120</w><h>260</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;240;10;10;94;10</additional_attributes></element><element><id>Relation</id><coordinates><x>158</x><y>310</y><w>160</w><h>160</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=injection</panel_attributes><additional_attributes>12;140;10;10;134;10</additional_attributes></element><element><id>Relation</id><coordinates><x>318</x><y>410</y><w>80</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>12;40;10;10;52;10</additional_attributes></element><element><id>Relation</id><coordinates><x>214</x><y>486</y><w>110</w><h>190</h></coordinates><panel_attributes>lt=&lt;.</panel_attributes><additional_attributes>86;170;10;170;10;16</additional_attributes></element></diagram>
