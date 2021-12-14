@@ -6,13 +6,22 @@ import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
+import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 public class ServantImpl implements Servant {
-    private Progress progress;
+    private final Progress progress;
+    private final TaskPublisher taskPublisher;
+    private final ReservedPublisher reservedPublisher;
+    private final CalculatedPublisher calculatedPublisher;
 
-    ServantImpl(Progress progress){
+    ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher){
         this.progress = progress;
+        this.taskPublisher = taskPublisher;
+        this.reservedPublisher = reservedPublisher;
+        this.calculatedPublisher = calculatedPublisher;
     }
 
     @Override
