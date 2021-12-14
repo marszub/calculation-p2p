@@ -1,16 +1,16 @@
-package pl.edu.agh.calculationp2p.state;
+package pl.edu.agh.calculationp2p.state.publisher;
 
 import pl.edu.agh.calculationp2p.state.future.Future;
+import pl.edu.agh.calculationp2p.state.future.Observation;
+import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
-//TODO: implement
-
-public class TaskPublisher{
+public class TaskPublisher {
     public TaskPublisher(){
         throw new UnsupportedOperationException("Will be implemented");
     }
 
-    public void subscribe(int taskId, Future flag, Thread observer){
+    public void subscribe(Integer taskId, Future<Void> flag, Thread thread){
         throw new UnsupportedOperationException("Will be implemented");
     }
 
@@ -18,7 +18,7 @@ public class TaskPublisher{
         throw new UnsupportedOperationException("Will be implemented");
     }
 
-    public void look(Thread changing, TaskRecord previous, TaskRecord current) {
+    public void look(TaskRecord previous, TaskRecord current){
         throw new UnsupportedOperationException("Will be implemented");
     }
 }
