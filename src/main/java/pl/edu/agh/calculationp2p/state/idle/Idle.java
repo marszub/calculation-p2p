@@ -46,6 +46,8 @@ public class Idle implements IdleInterrupter{
 
     @Override
     public void wake() {
+        if(hasWork)
+            return;
         try {
             lock.lock();
             hasWork = true;
