@@ -24,6 +24,6 @@ class FutureTest {
         Future<Integer> future = new Future<>();
         Integer resource = 354;
         future.put(resource);
-        assertEquals(future.get(), resource);
+        assertEquals(resource, future.get());
     }
 }
