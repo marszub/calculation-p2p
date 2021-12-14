@@ -1,57 +1,29 @@
 package pl.edu.agh.calculationp2p.state;
 
-//TODO: Implement
-
 import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
-public class Servant {
-    private Progress progress;
+public interface Servant {
+    TaskRecord getTaskProgress(Integer taskId);
 
-    Servant(Progress progress){
-        this.progress = progress;
-    }
+    Progress getProgress();
 
-    public TaskRecord getTaskProgress(Integer taskId){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
+    void observeReserved(Future<Observation> observer, IdleInterrupter interrupter);
 
-    public Progress getProgress(){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
+    void observeCalculated(Future<Observation> observer, IdleInterrupter interrupter);
 
-    public void observeReserved(Future<Observation> observer, IdleInterrupter interrupter){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
+    void updateProgress(Progress progress);
 
-    public void observeCalculated(Future<Observation> observer, IdleInterrupter interrupter){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
+    Integer getTask();
 
-    public void updateProgress(Progress progress){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
+    void observeTask(Integer taskId, Future<Void> flag, Thread thread);
 
-    public Integer getTask(){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
+    void finishTask(Integer taskId, TaskResult result);
 
-    public void observeTask(Integer taskId, Future<Void> flag, Thread thread){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
+    TaskRecord calculate(Integer taskId, Integer nodeId, TaskResult result);
 
-    public void finishTask(Integer taskId, TaskResult result){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
-
-    public TaskRecord calculate(Integer taskId, Integer nodeId, TaskResult result){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
-
-    public TaskRecord reserve(Integer taskId, Integer nodeId){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
+    TaskRecord reserve(Integer taskId, Integer nodeId);
 }
