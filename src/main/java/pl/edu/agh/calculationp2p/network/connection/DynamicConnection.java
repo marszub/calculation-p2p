@@ -6,7 +6,7 @@ import java.nio.channels.SocketChannel;
 
 
 // Reprezentuje połączenie nawiązane przez inny węzeł.
-public class DynamicConnection extends Connection {
+public class DynamicConnection extends ConnectionImpl {
 
     private SocketChannel socket;
 
