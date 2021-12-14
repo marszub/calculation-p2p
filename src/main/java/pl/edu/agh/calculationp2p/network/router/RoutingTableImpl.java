@@ -23,6 +23,7 @@ public class RoutingTableImpl implements RoutingTable{
             messageInterfaceQueue.put(id, new LinkedList<>());
         }
     }
+
     public void removeInterface(int id) throws InterfaceDoesNotExistException
     {
         if(interfaces.containsKey(id))
@@ -94,10 +95,21 @@ public class RoutingTableImpl implements RoutingTable{
         return interfaces.containsKey(id);
     }
 
+    // GETTERS USED ONLY IN TESTS
+    //------------------------------------------------------------------------------------------------------------------
+
     public Map<Integer, Connection> getInterfaces()
     {
         return interfaces;
     }
+
+    public Map<Integer, LinkedList<Message>> getMessageInterfaceQueue()
+    {
+        return messageInterfaceQueue;
+    }
+
+    // PRIVATE FUNCTIONS
+    //------------------------------------------------------------------------------------------------------------------
 
     private void sendTroughConnection(int id, Connection connection, Message message)
     {

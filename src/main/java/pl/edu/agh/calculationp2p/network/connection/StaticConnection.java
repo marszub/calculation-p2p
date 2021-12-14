@@ -4,13 +4,11 @@ import pl.edu.agh.calculationp2p.message.Message;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-public class StaticConnection extends Connection {
+public class StaticConnection extends ConnectionImpl {
 
     private final InetSocketAddress ipAddress;
     private Selector selector;
