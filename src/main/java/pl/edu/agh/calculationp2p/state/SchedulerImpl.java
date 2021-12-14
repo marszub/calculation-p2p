@@ -15,6 +15,7 @@ public class SchedulerImpl implements Runnable, Scheduler {
         this.servant = servant;
 
         thread = new Thread(this);
+        thread.start();
     }
 
     @Override
