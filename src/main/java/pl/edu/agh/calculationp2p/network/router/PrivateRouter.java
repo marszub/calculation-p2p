@@ -2,12 +2,10 @@ package pl.edu.agh.calculationp2p.network.router;
 
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
+import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class PrivateRouter extends RouterImpl
 {
@@ -62,5 +60,28 @@ public class PrivateRouter extends RouterImpl
             routingTable.send(receiverId, message);
             routingTable.resendAll();
         }
+    }
+
+    @Override
+    public List<Message> getMessage()
+    {
+        if(super.myId == -1)
+        {
+            return super.getMessageWithoutHavingId();
+        }
+        return getMessageHavingId();
+    }
+
+    private List<Message> getMessageHavingId()
+    {
+        List<Message> list = new LinkedList<>();
+        MessageConnectionPair result = messageQueue.get();
+        while(result != null)
+        {
+            //if(result.getReceiver())
+            list.add(result.message());
+            result = messageQueue.get();
+        }
+        return list;
     }
 }
