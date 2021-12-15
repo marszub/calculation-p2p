@@ -24,7 +24,8 @@ public class MessageQueue implements MessageQueueEntry, MessageQueueExit {
     }
 
     @Override
-    public void get() {
+    public MessageConnectionPair get() {
+        throw new UnsupportedOperationException("Will be implemented");
         //TODO pobiera parę (Message, Connection) z kolejki
     }
 

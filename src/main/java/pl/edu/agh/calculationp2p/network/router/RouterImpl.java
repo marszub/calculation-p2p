@@ -3,18 +3,21 @@ package pl.edu.agh.calculationp2p.network.router;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.connection.StaticConnection;
+import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public abstract class RouterImpl implements Router {
     final ConnectionManager connectionManager;
-    private final MessageQueueExit messageQueue;
+    final MessageQueueExit messageQueue;
     final RoutingTable routingTable;
     final Map<Integer, StaticConnection> staticInterfaces = new HashMap<>();
+    int myId = -1;
 
     public RouterImpl(ConnectionManager connectionManager, MessageQueueExit messageQueue, RoutingTable routingTable)
     {
@@ -50,11 +53,20 @@ public abstract class RouterImpl implements Router {
             throw new InterfaceDoesNotExistException(nodeId);
     }
 
-    //TODO
-    @Override
-    public List<Message> getMessage()
+    public void setId(int id)
     {
-        throw new UnsupportedOperationException("Will be implemented");
+        this.myId = id;
     }
 
+    List<Message> getMessageWithoutHavingId()
+    {
+        List<Message> list = new LinkedList<>();
+        MessageConnectionPair result = messageQueue.get();
+        while(result != null)
+        {
+            list.add(result.message());
+            result = messageQueue.get();
+        }
+        return list;
+    }
 }

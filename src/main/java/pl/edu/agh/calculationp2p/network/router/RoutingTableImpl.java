@@ -94,20 +94,6 @@ public class RoutingTableImpl implements RoutingTable{
     {
         return interfaces.containsKey(id);
     }
-
-    // GETTERS USED ONLY IN TESTS
-    //------------------------------------------------------------------------------------------------------------------
-
-    public Map<Integer, Connection> getInterfaces()
-    {
-        return interfaces;
-    }
-
-    public Map<Integer, LinkedList<Message>> getMessageInterfaceQueue()
-    {
-        return messageInterfaceQueue;
-    }
-
     // PRIVATE FUNCTIONS
     //------------------------------------------------------------------------------------------------------------------
 

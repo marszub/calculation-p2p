@@ -16,4 +16,6 @@ public interface Router {
     List<Message> getMessage();
 
     void send(Message message);
+
+    void setId(int id);
 }
