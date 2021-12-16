@@ -1,32 +1,34 @@
 package pl.edu.agh.calculationp2p.network.messagequeue;
 
-
-
 import pl.edu.agh.calculationp2p.network.connection.Connection;
 import pl.edu.agh.calculationp2p.message.Message;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.NoSuchElementException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageQueue implements MessageQueueEntry, MessageQueueExit {
-    // TODO: coo tu ma byc
-    Collection<Connection> queue = Collections.synchronizedCollection(new ArrayList<>());
+    LinkedBlockingQueue<MessageConnectionPair> messageQueue = new LinkedBlockingQueue<>();
 
-    public MessageQueue(){
-
+    public MessageQueue()
+    {
     }
 
     @Override
-    public void add(Message msg, Connection connection) {
-        //TODO dodaje parę (Message, Connection) do kolejki
-        //this.queue.add()
+    public void add(MessageConnectionPair pair)
+    {
+        messageQueue.add(pair);
     }
 
     @Override
-    public MessageConnectionPair get() {
-        throw new UnsupportedOperationException("Will be implemented");
-        //TODO pobiera parę (Message, Connection) z kolejki
+    public MessageConnectionPair get()
+    {
+        try
+        {
+            return messageQueue.remove();
+        }
+        catch (NoSuchElementException exception)
+        {
+            return null;
+        }
     }
-
 }
