@@ -12,4 +12,7 @@ public interface Connection {
     void subscribe(Selector selector, int event) throws ClosedChannelException;
 
     void close();
+
+//    Message read();
+    String read();
 }
