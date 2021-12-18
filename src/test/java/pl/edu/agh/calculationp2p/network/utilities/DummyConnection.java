@@ -55,4 +55,10 @@ public class DummyConnection implements Connection {
     {
         return list;
     }
+
+//    public Message read()
+    public String read()
+    {
+        return null;
+    }
 }

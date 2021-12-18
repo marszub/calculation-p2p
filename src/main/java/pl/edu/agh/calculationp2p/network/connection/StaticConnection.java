@@ -16,28 +16,24 @@ public class StaticConnection extends ConnectionImpl {
 
     public StaticConnection(InetSocketAddress ipAddress){
         this.ipAddress = ipAddress;
-        try {
-            socketChannel = SocketChannel.open(ipAddress);
-        } catch (IOException e) {
+        try
+        {
+            socketChannel = SocketChannel.open();
+            socketChannel.connect(ipAddress);
+        } catch(IOException e)
+        {
             e.printStackTrace();
-
-            //TODO: make sure that socketChannel is not null
         }
     }
 
     @Override
     public boolean send(Message message) {
-        try {
-            unsafeSend(message);
-            return true;
-        } catch(ClosedChannelException e){
+        if(!super.send(message))
+        {
             reconnect();
+            return false;
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        return true;
     }
 
     @Override
@@ -60,15 +56,11 @@ public class StaticConnection extends ConnectionImpl {
             socketChannel = SocketChannel.open(ipAddress);
         } catch (IOException e) {
             e.printStackTrace();
-            //TODO: make sure that socketChannel is not null
         }
-
         try {
             socketChannel.register(selector, event);
         } catch (ClosedChannelException e) {
             e.printStackTrace();
-
-            //TODO: handle exception
         }
     }
 }

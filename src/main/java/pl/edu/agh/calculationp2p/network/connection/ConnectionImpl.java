@@ -10,26 +10,76 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
 
-public abstract class ConnectionImpl implements Connection {
+public abstract class ConnectionImpl implements Connection
+{
     SocketChannel socketChannel;
+    int bufferSize;
 
-    protected void unsafeSend(Message message) throws IOException {
-        String data = message.serialize();
-        ByteBuffer buff = ByteBuffer.allocate(2048);
-        buff.clear();
-        buff.put(data.getBytes());
-        buff.flip();
-        socketChannel.write(buff);
+    @Override
+    public boolean send(Message message)
+    {
+        try {
+            trySend(message);
+        }catch(ClosedChannelException e)
+        {
+            return false;
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public void subscribe(Selector selector, int event) throws ClosedChannelException {
+    public void subscribe(Selector selector, int event) throws ClosedChannelException
+    {
         socketChannel.register(selector, event, this);
     }
 
     @Override
-    public void close(){
-
+    public void close()
+    {
+        try
+        {
+            socketChannel.close();
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
+    @Override
+//    public Message read()
+    public String read()
+    {
+        ByteBuffer buf = ByteBuffer.allocate(bufferSize);
+        try
+        {
+            socketChannel.read(buf);
+        }catch(ClosedChannelException e)
+        {
+            return null;
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        //return ;
+        String msg = new String(buf.array()).trim();
+        return msg;
+}
+
+    private void trySend(Message message) throws IOException
+    {
+        String data = message.serialize();
+        ByteBuffer buff = ByteBuffer.allocate(bufferSize);
+        buff.clear();
+        buff.put(data.getBytes());
+        buff.flip();
+        while(buff.hasRemaining())
+        {
+            socketChannel.write(buff);
+        }
+    }
 }
