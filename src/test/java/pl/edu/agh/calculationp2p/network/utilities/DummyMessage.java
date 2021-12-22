@@ -16,7 +16,7 @@ public class DummyMessage implements Message {
 
     @Override
     public String serialize() {
-        return null;
+        return "TESTOWA WIADOMOSC";
     }
 
     @Override

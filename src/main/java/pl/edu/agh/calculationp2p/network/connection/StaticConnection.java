@@ -20,6 +20,7 @@ public class StaticConnection extends ConnectionImpl {
         {
             socketChannel = SocketChannel.open();
             socketChannel.connect(ipAddress);
+            socketChannel.configureBlocking(false);
         } catch(IOException e)
         {
             e.printStackTrace();
@@ -37,10 +38,10 @@ public class StaticConnection extends ConnectionImpl {
     }
 
     @Override
-    public void subscribe(Selector selector, int event) throws ClosedChannelException {
+    public void register(Selector selector, int event) throws ClosedChannelException {
         this.selector = selector;
         this.event = event;
-        super.subscribe(selector, event);
+        super.register(selector, event);
     }
 
     public InetSocketAddress getIpAddress() {

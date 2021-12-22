@@ -32,7 +32,7 @@ public class DummyConnection implements Connection {
     }
 
     @Override
-    public void subscribe(Selector selector, int event) throws ClosedChannelException {
+    public void register(Selector selector, int event) throws ClosedChannelException {
         return;
     }
 

@@ -9,7 +9,7 @@ import java.nio.channels.Selector;
 public interface Connection {
     boolean send(Message message);
 
-    void subscribe(Selector selector, int event) throws ClosedChannelException;
+    void register(Selector selector, int event) throws ClosedChannelException;
 
     void close();
 

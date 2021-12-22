@@ -13,7 +13,7 @@ import java.nio.channels.SocketChannel;
 public abstract class ConnectionImpl implements Connection
 {
     SocketChannel socketChannel;
-    int bufferSize;
+    final int bufferSize = 1024;
 
     @Override
     public boolean send(Message message)
@@ -32,7 +32,7 @@ public abstract class ConnectionImpl implements Connection
     }
 
     @Override
-    public void subscribe(Selector selector, int event) throws ClosedChannelException
+    public void register(Selector selector, int event) throws ClosedChannelException
     {
         socketChannel.register(selector, event, this);
     }
