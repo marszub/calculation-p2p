@@ -6,27 +6,17 @@ import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueEntry;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class ConnectionManager extends Thread {
-
-    // TODO czy 2 listy Static/Dynamic? ArrayListy?
-
     private final MessageQueueEntry messageQueueEntry;
     private final List<DynamicConnection> incomingConnections = new ArrayList<>();
     private final List<StaticConnection> outgoingConnections = new ArrayList<>();
     private Selector incomingConnectionOrMessage;
     private ServerSocketChannel serverSocketChannel;
-
-    private final int someSize = 1024;
-    boolean canBind;
 
     public ConnectionManager(MessageQueueEntry messageQueueEntry, InetSocketAddress localListeningAddress) {
         this.messageQueueEntry = messageQueueEntry;
@@ -35,15 +25,13 @@ public class ConnectionManager extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         try {
-            serverSocketChannel = ServerSocketChannel.open(); // Opens a server-socket channel.
-            ServerSocket serverSocket = serverSocketChannel.socket(); // Retrieves a server socket associated with this channel.
-            serverSocket.bind(localListeningAddress); //Binds the channel's socket to a local address and configures the socket to listen for connections.
+            serverSocketChannel = ServerSocketChannel.open();
+            ServerSocket serverSocket = serverSocketChannel.socket();
+            serverSocket.bind(localListeningAddress);
             serverSocketChannel.configureBlocking(false);
-            Selector.open(); // incomingConnectionOrMessage.open() -> IntelliJ cleanup
-            //int ops = socket.validOps(); //Returns an operation set identifying this channel's supported operations. here: SelectionKey.OP_ACCEPT
-            serverSocketChannel.register(incomingConnectionOrMessage, SelectionKey.OP_ACCEPT, null);
+            Selector.open();
+            serverSocketChannel.register(incomingConnectionOrMessage, SelectionKey.OP_ACCEPT, serverSocketChannel);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,22 +39,19 @@ public class ConnectionManager extends Thread {
 
     public void addStaticConnection(StaticConnection staticConnection) {
         try {
-            SocketChannel socketChannel = SocketChannel.open(staticConnection.getIpAddress());
-            socketChannel.configureBlocking(false);
-            socketChannel.register(incomingConnectionOrMessage, SelectionKey.OP_READ, null);
-            if(!outgoingConnections.contains(staticConnection)){
-                this.outgoingConnections.add(staticConnection);
-            }
-        } catch (IOException e) {
+            staticConnection.register(incomingConnectionOrMessage, SelectionKey.OP_READ);
+        } catch (ClosedChannelException e) {
             e.printStackTrace();
+        }
+        if(!outgoingConnections.contains(staticConnection)){
+            outgoingConnections.add(staticConnection);
         }
     }
 
     public void removeStaticConnection(StaticConnection staticConnection) {
-        // TODO: wyrejestrowac z selector
         this.outgoingConnections.remove(staticConnection);
         try {
-            staticConnection.getSocketChannel().finishConnect(); //Finishes the process of connecting a socket channel.
+            staticConnection.getSocketChannel().finishConnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,54 +68,25 @@ public class ConnectionManager extends Thread {
             while (keys.hasNext()) {
                 SelectionKey key = keys.next();
                 keys.remove();
-
-                if (key.isAcceptable()) { // accept connection
-                    System.out.println("NEW PEER");
-                    addDynamicConnection(key);
+                if (key.isAcceptable()) {
+                    handleNewConnection(key);
                 } else if (key.isReadable()) {
-                    System.out.println("READING");
-                    try {
-                        handleRead(key);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Connection connection = (Connection) key.attachment();
+                    connection.read();
                 }
             }
         }
     }
 
-
-    private void handleRead(SelectionKey key) throws IOException {
-        // TODO: write msg to queue
-        SocketChannel channel = (SocketChannel) key.channel();
-        ByteBuffer buffer = ByteBuffer.allocate(someSize);
-        channel.read(buffer);
-        String msg = new String(buffer.array()).trim();
-        System.out.println(msg);
-        channel.close();
-    }
-
-
-    private void addDynamicConnection(SelectionKey key) {
+    private void handleNewConnection(SelectionKey key) {
         ServerSocketChannel server = (ServerSocketChannel) key.channel();
-        SocketChannel channel = null;
         try {
-            // accepts incoming connection and binds it with the selector
-            channel = server.accept();
-            channel.configureBlocking(false);
-            channel.register(this.incomingConnectionOrMessage, SelectionKey.OP_READ, ByteBuffer.allocate(this.someSize));
-
-            // get random word
-            // send random word
-            // hash word
-            // f00k your mother if hash are different
-
+            SocketChannel connection = server.accept();
+            connection.configureBlocking(false);
+            DynamicConnection dynamicConnection = new DynamicConnection(connection);
+            dynamicConnection.register(incomingConnectionOrMessage, SelectionKey.OP_READ);
         } catch (IOException e) {
             e.printStackTrace();
-            incomingConnections.add(new DynamicConnection(channel));
         }
     }
-
-}
-
-// ServersocketChannel -> for listening
+ }
