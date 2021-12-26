@@ -18,4 +18,6 @@ public interface Router {
     void send(Message message);
 
     void setId(int id);
+
+    int getId();
 }
