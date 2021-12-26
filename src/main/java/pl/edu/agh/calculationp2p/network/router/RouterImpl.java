@@ -69,4 +69,9 @@ public abstract class RouterImpl implements Router {
         }
         return list;
     }
+
+    public int getId()
+    {
+        return myId;
+    }
 }
