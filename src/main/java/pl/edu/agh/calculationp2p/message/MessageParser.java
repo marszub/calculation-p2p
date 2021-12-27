@@ -3,7 +3,7 @@ package pl.edu.agh.calculationp2p.message;
 public class MessageParser {
     public MessageParser(){
     }
-    public Message parse(String message){
+    public static Message parse(String message){
         message.replaceAll("\\s+","");
         message.replaceAll("^[\n\r]", "").replaceAll("[\n\r]$", "");
 
