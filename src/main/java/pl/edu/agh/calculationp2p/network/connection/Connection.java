@@ -14,5 +14,5 @@ public interface Connection {
     void close();
 
 //    Message read();
-    String read();
+    String read() throws ConnectionLostException;
 }
