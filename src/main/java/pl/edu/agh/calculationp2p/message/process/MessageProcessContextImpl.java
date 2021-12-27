@@ -7,15 +7,13 @@ import pl.edu.agh.calculationp2p.state.proxy.StatusInformer;
 
 public class MessageProcessContextImpl implements MessageProcessContext{
 
-    private final Router router = null;
-    private final StateUpdater stateUpdater = null;
-    private final StatusInformer stateInformer = null;
-    private final NodeRegister nodeRegister = null;
-    private final FutureProcessor futureProcessor = null;
+    private Router router;
+    private StateUpdater stateUpdater;
+    private StatusInformer stateInformer;
+    private NodeRegister nodeRegister;
+    private FutureProcessor futureProcessor;
 
-    public void MessageProcessContext(){
-
-    }
+    public void MessageProcessContext(){}
 
     @Override
     public Router getRouter() {
@@ -41,4 +39,16 @@ public class MessageProcessContextImpl implements MessageProcessContext{
     public FutureProcessor getFutureProcessor() {
         return this.futureProcessor;
     }
+
+    @Override
+    public void setRouter(Router router){this.router = router;}
+    @Override
+    public void setStateUpdater(StateUpdater stateUpdater) {this.stateUpdater = stateUpdater;}
+    @Override
+    public void setStateInformer(StatusInformer stateInformer) {this.stateInformer = stateInformer;}
+    @Override
+    public void setNodeRegister(NodeRegister nodeRegister) {this.nodeRegister = nodeRegister;}
+    @Override
+    public void setFutureProcessor(FutureProcessor futureProcessor) {this.futureProcessor = futureProcessor;}
+
 }
