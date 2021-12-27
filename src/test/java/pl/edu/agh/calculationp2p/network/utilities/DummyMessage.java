@@ -23,4 +23,14 @@ public class DummyMessage implements Message {
     public void process(MessageProcessContext context)
     {
     }
+    @Override
+    public int getReceiver()
+    {
+        return 1;
+    }
+    @Override
+    public int getSender()
+    {
+        return 1;
+    }
 }
