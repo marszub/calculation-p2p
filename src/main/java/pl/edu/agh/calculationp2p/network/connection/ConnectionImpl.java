@@ -1,8 +1,6 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
-
 import pl.edu.agh.calculationp2p.message.Message;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
@@ -13,7 +11,7 @@ import java.nio.channels.SocketChannel;
 public abstract class ConnectionImpl implements Connection
 {
     SocketChannel socketChannel;
-    final int bufferSize = 1024;
+    final int bufferSize = 2048;
 
     @Override
     public boolean send(Message message)
@@ -51,12 +49,13 @@ public abstract class ConnectionImpl implements Connection
 
     @Override
 //    public Message read()
-    public String read()
+    public String read() throws ConnectionLostException
     {
         ByteBuffer buf = ByteBuffer.allocate(bufferSize);
+        int bytesRead = 0;
         try
         {
-            socketChannel.read(buf);
+            bytesRead = socketChannel.read(buf);
         }catch(ClosedChannelException e)
         {
             return null;
@@ -65,7 +64,8 @@ public abstract class ConnectionImpl implements Connection
             e.printStackTrace();
             return null;
         }
-        //return ;
+        if(bytesRead == -1)
+            throw new ConnectionLostException();
         String msg = new String(buf.array()).trim();
         return msg;
 }

@@ -16,7 +16,6 @@ public class ConnectionManager extends Thread {
     private final List<DynamicConnection> incomingConnections = new ArrayList<>();
     private final List<StaticConnection> outgoingConnections = new ArrayList<>();
     private Selector incomingConnectionOrMessage;
-    private ServerSocketChannel serverSocketChannel;
 
     public ConnectionManager(MessageQueueEntry messageQueueEntry, InetSocketAddress localListeningAddress) {
         this.messageQueueEntry = messageQueueEntry;
@@ -26,7 +25,7 @@ public class ConnectionManager extends Thread {
             e.printStackTrace();
         }
         try {
-            serverSocketChannel = ServerSocketChannel.open();
+            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
             ServerSocket serverSocket = serverSocketChannel.socket();
             serverSocket.bind(localListeningAddress);
             serverSocketChannel.configureBlocking(false);
@@ -50,11 +49,7 @@ public class ConnectionManager extends Thread {
 
     public void removeStaticConnection(StaticConnection staticConnection) {
         this.outgoingConnections.remove(staticConnection);
-        try {
-            staticConnection.getSocketChannel().finishConnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        staticConnection.disconnect();
     }
 
     public void run() {
@@ -72,7 +67,20 @@ public class ConnectionManager extends Thread {
                     handleNewConnection(key);
                 } else if (key.isReadable()) {
                     Connection connection = (Connection) key.attachment();
-                    connection.read();
+                    try {
+                        //TODO INSERT TO QUEUE, after message parser
+                        connection.read();
+                    }catch(ConnectionLostException e)
+                    {
+                        if(outgoingConnections.contains(connection)) {
+                            StaticConnection staticConnection = (StaticConnection) connection;
+                            staticConnection.reconnect();
+                        }
+                        else
+                        {
+                            incomingConnections.remove(connection);
+                        }
+                    }
                 }
             }
         }
@@ -85,6 +93,7 @@ public class ConnectionManager extends Thread {
             connection.configureBlocking(false);
             DynamicConnection dynamicConnection = new DynamicConnection(connection);
             dynamicConnection.register(incomingConnectionOrMessage, SelectionKey.OP_READ);
+            incomingConnections.add(dynamicConnection);
         } catch (IOException e) {
             e.printStackTrace();
         }

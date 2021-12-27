@@ -44,15 +44,16 @@ public class StaticConnection extends ConnectionImpl {
         super.register(selector, event);
     }
 
-    public InetSocketAddress getIpAddress() {
-        return this.ipAddress;
+    public void disconnect()
+    {
+        try {
+            socketChannel.finishConnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public SocketChannel getSocketChannel() {
-        return socketChannel;
-    }
-
-    private void reconnect(){
+    public void reconnect(){
         try {
             socketChannel = SocketChannel.open(ipAddress);
         } catch (IOException e) {
