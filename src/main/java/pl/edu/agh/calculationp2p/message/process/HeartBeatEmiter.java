@@ -1,14 +1,16 @@
 package pl.edu.agh.calculationp2p.message.process;
 
-import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.body.HeartBeat;
 import pl.edu.agh.calculationp2p.network.router.Router;
+
+import java.time.ZonedDateTime;
 
 public class HeartBeatEmiter {
 
     private final Router router;
     private final int timePeriod;
+    private long lastBeatTime;
 
     protected HeartBeatEmiter(int timePeriod, Router router){
         this.router = router;
@@ -16,14 +18,15 @@ public class HeartBeatEmiter {
     }
 
     protected void beat(){
-        // TODO: check time
-        router.send((Message) new MessageImpl(router.getId(), -1, new HeartBeat()));
-
+        if(ZonedDateTime.now().toInstant().toEpochMilli() - this.lastBeatTime >= this.timePeriod){
+            router.send(new MessageImpl(router.getId(), -1, new HeartBeat()));
+            this.lastBeatTime = ZonedDateTime.now().toInstant().toEpochMilli();
+        }
     }
 
     protected int nextBeatTime(){
-        //TODO:
-        return this.timePeriod;
+        long now = ZonedDateTime.now().toInstant().toEpochMilli();
+        return (int) (this.timePeriod-(now - this.lastBeatTime));
     }
 
 }
