@@ -38,4 +38,15 @@ public class MessageImpl implements Message{
     public void process(MessageProcessContext context) {
         this.body.process(this.sender, context);
     }
+
+    @Override
+    public int getReceiver()
+    {
+        return 1;
+    }
+    @Override
+    public int getSender()
+    {
+        return 1;
+    }
 }
