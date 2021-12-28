@@ -82,7 +82,11 @@ class ConnectionTest {
             keys.remove();
             assertTrue(key.isReadable());
             Connection connection = (Connection) key.attachment();
-            assertEquals(msg.serialize(), connection.read());
+            try {
+                assertEquals(msg.serialize(), connection.read());
+            } catch (ConnectionLostException e) {
+                e.printStackTrace();
+            }
         }
     }
 

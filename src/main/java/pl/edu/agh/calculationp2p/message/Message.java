@@ -6,4 +6,6 @@ public interface Message {
     Message clone(int receiverId);
     String serialize();
     void process(MessageProcessContext context);
+    int getReceiver();
+    int getSender();
 }
