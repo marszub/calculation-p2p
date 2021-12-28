@@ -9,7 +9,7 @@ public class GiveProcess implements Body{
 
     @Override
     public String serializeType() {
-        return null;
+        return "\"give_process\"";
     }
 
     @Override

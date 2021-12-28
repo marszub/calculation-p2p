@@ -8,7 +8,7 @@ public class HeartBeat implements Body{
 
     @Override
     public String serializeType() {
-        return null;
+        return "\"heart_beat\"";
     }
 
     @Override

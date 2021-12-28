@@ -9,7 +9,7 @@ public class GetProgress implements Body{
 
     @Override
     public String serializeType() {
-        return null;
+        return "\"get_progress\"";
     }
 
     @Override

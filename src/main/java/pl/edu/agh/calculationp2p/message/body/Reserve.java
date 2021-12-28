@@ -3,12 +3,12 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
 public class Reserve implements Body{
-    public Reserve() {
+    public Reserve(int taksId) {
     }
 
     @Override
     public String serializeType() {
-        return null;
+        return "\"reserve\"";
     }
 
     @Override

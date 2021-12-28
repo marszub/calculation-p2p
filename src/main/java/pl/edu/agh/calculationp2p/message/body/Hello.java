@@ -3,13 +3,13 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
 public class Hello implements Body{
-    public Hello() {
+    public Hello(String ip) {
 
     }
 
     @Override
     public String serializeType() {
-        return null;
+        return "\"hello\"";
     }
 
     @Override

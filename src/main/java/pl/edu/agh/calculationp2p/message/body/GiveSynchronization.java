@@ -8,7 +8,7 @@ public class GiveSynchronization implements Body{
 
     @Override
     public String serializeType() {
-        return null;
+        return "\"give_synchronization\"";
     }
 
     @Override

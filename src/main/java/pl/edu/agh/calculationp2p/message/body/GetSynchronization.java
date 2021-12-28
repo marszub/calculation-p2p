@@ -9,7 +9,7 @@ public class GetSynchronization implements Body{
 
     @Override
     public String serializeType() {
-        return null;
+        return "\"get_synchronization\"";
     }
 
     @Override
