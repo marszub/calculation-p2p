@@ -53,6 +53,15 @@ public class StaticConnection extends ConnectionImpl {
         }
     }
 
+    public String read() {
+        try {
+            return super.read();
+        } catch (ConnectionLostException e) {
+            reconnect();
+        }
+        return null;
+    }
+
     public void reconnect(){
         try {
             socketChannel = SocketChannel.open(ipAddress);

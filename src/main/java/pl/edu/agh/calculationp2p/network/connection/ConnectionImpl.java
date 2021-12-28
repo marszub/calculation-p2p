@@ -48,7 +48,6 @@ public abstract class ConnectionImpl implements Connection
     }
 
     @Override
-//    public Message read()
     public String read() throws ConnectionLostException
     {
         ByteBuffer buf = ByteBuffer.allocate(bufferSize);
@@ -58,7 +57,7 @@ public abstract class ConnectionImpl implements Connection
             bytesRead = socketChannel.read(buf);
         }catch(ClosedChannelException e)
         {
-            return null;
+            throw new ConnectionLostException();
         }catch(IOException e)
         {
             e.printStackTrace();
@@ -66,8 +65,7 @@ public abstract class ConnectionImpl implements Connection
         }
         if(bytesRead == -1)
             throw new ConnectionLostException();
-        String msg = new String(buf.array()).trim();
-        return msg;
+        return new String(buf.array()).trim();
 }
 
     private void trySend(Message message) throws IOException

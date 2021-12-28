@@ -1,15 +1,11 @@
 package pl.edu.agh.calculationp2p.network.router;
 
-import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.connection.StaticConnection;
-import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public abstract class RouterImpl implements Router {
@@ -58,20 +54,9 @@ public abstract class RouterImpl implements Router {
         this.myId = id;
     }
 
-    List<Message> getMessageWithoutHavingId()
-    {
-        List<Message> list = new LinkedList<>();
-        MessageConnectionPair result = messageQueue.get();
-        while(result != null)
-        {
-            list.add(result.message());
-            result = messageQueue.get();
-        }
-        return list;
-    }
-
     public int getId()
     {
         return myId;
     }
+
 }

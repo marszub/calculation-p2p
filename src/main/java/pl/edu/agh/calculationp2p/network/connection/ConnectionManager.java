@@ -1,6 +1,7 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
-
+import pl.edu.agh.calculationp2p.message.MessageParser;
+import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueEntry;
 
 import java.io.IOException;
@@ -13,32 +14,20 @@ import java.util.List;
 
 public class ConnectionManager extends Thread {
     private final MessageQueueEntry messageQueueEntry;
-    private final List<DynamicConnection> incomingConnections = new ArrayList<>();
-    private final List<StaticConnection> outgoingConnections = new ArrayList<>();
-    private Selector incomingConnectionOrMessage;
+    private final List<Connection> incomingConnections = new ArrayList<>();
+    private final List<Connection> outgoingConnections = new ArrayList<>();
+    private Selector selector;
+    private final MessageParser messageParser;
 
-    public ConnectionManager(MessageQueueEntry messageQueueEntry, InetSocketAddress localListeningAddress) {
+    public ConnectionManager(MessageQueueEntry messageQueueEntry, MessageParser messageParser, InetSocketAddress localListeningAddress) {
+        this.messageParser = messageParser;
         this.messageQueueEntry = messageQueueEntry;
-        try {
-            this.incomingConnectionOrMessage = Selector.open();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-            ServerSocket serverSocket = serverSocketChannel.socket();
-            serverSocket.bind(localListeningAddress);
-            serverSocketChannel.configureBlocking(false);
-            Selector.open();
-            serverSocketChannel.register(incomingConnectionOrMessage, SelectionKey.OP_ACCEPT, serverSocketChannel);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createServerSocket(localListeningAddress);
     }
 
     public void addStaticConnection(StaticConnection staticConnection) {
         try {
-            staticConnection.register(incomingConnectionOrMessage, SelectionKey.OP_READ);
+            staticConnection.register(selector, SelectionKey.OP_READ);
         } catch (ClosedChannelException e) {
             e.printStackTrace();
         }
@@ -55,33 +44,55 @@ public class ConnectionManager extends Thread {
     public void run() {
         while (true) {
             try {
-                incomingConnectionOrMessage.select();
+                selector.select();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Iterator<SelectionKey> keys = incomingConnectionOrMessage.selectedKeys().iterator();
-            while (keys.hasNext()) {
+            Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+            while (keys.hasNext())
+            {
                 SelectionKey key = keys.next();
                 keys.remove();
-                if (key.isAcceptable()) {
-                    handleNewConnection(key);
-                } else if (key.isReadable()) {
-                    Connection connection = (Connection) key.attachment();
-                    try {
-                        //TODO INSERT TO QUEUE, after message parser
-                        connection.read();
-                    }catch(ConnectionLostException e)
-                    {
-                        if(outgoingConnections.contains(connection)) {
-                            StaticConnection staticConnection = (StaticConnection) connection;
-                            staticConnection.reconnect();
-                        }
-                        else
-                        {
-                            incomingConnections.remove(connection);
-                        }
-                    }
-                }
+                decideKeyPath(key);
+            }
+        }
+    }
+
+    //##################################################################################################################
+    //                                                 PRIVATE FUNCTIONS
+    //##################################################################################################################
+
+    private void createServerSocket(InetSocketAddress localListeningAddress)
+    {
+        try {
+            this.selector = Selector.open();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+            ServerSocket serverSocket = serverSocketChannel.socket();
+            serverSocket.bind(localListeningAddress);
+            serverSocketChannel.configureBlocking(false);
+            Selector.open();
+            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, serverSocketChannel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void decideKeyPath(SelectionKey key)
+    {
+        if (key.isAcceptable()) {
+            handleNewConnection(key);
+        } else if (key.isReadable()) {
+            Connection connection = (Connection) key.attachment();
+            try {
+                String message = connection.read();
+                messageQueueEntry.add(new MessageConnectionPair(messageParser.parse(message), connection));
+            } catch (ConnectionLostException e) {
+                incomingConnections.remove(connection);
             }
         }
     }
@@ -92,7 +103,7 @@ public class ConnectionManager extends Thread {
             SocketChannel connection = server.accept();
             connection.configureBlocking(false);
             DynamicConnection dynamicConnection = new DynamicConnection(connection);
-            dynamicConnection.register(incomingConnectionOrMessage, SelectionKey.OP_READ);
+            dynamicConnection.register(selector, SelectionKey.OP_READ);
             incomingConnections.add(dynamicConnection);
         } catch (IOException e) {
             e.printStackTrace();
