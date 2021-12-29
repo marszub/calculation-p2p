@@ -68,10 +68,5 @@ public class StaticConnection extends ConnectionImpl {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            socketChannel.register(selector, event);
-        } catch (ClosedChannelException e) {
-            e.printStackTrace();
-        }
     }
 }

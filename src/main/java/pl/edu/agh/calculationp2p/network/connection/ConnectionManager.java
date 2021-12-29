@@ -22,12 +22,20 @@ public class ConnectionManager extends Thread {
     public ConnectionManager(MessageQueueEntry messageQueueEntry, MessageParser messageParser, InetSocketAddress localListeningAddress) {
         this.messageParser = messageParser;
         this.messageQueueEntry = messageQueueEntry;
+        createServerSelector();
         createServerSocket(localListeningAddress);
+    }
+
+    public ConnectionManager(MessageQueueEntry messageQueueEntry, MessageParser messageParser) {
+        this.messageParser = messageParser;
+        this.messageQueueEntry = messageQueueEntry;
+        createServerSelector();
     }
 
     public void addStaticConnection(StaticConnection staticConnection) {
         try {
             staticConnection.register(selector, SelectionKey.OP_READ);
+            selector.wakeup();
         } catch (ClosedChannelException e) {
             e.printStackTrace();
         }
@@ -62,13 +70,17 @@ public class ConnectionManager extends Thread {
     //                                                 PRIVATE FUNCTIONS
     //##################################################################################################################
 
-    private void createServerSocket(InetSocketAddress localListeningAddress)
+    private void createServerSelector()
     {
         try {
             this.selector = Selector.open();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createServerSocket(InetSocketAddress localListeningAddress)
+    {
         try {
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
             ServerSocket serverSocket = serverSocketChannel.socket();
