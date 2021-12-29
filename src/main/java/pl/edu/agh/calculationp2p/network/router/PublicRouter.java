@@ -50,8 +50,15 @@ public class PublicRouter extends RouterImpl
     public void send(Message message)
     {
         int receiverId = message.getReceiver();
-        routingTable.send(receiverId, message);
-        routingTable.resendAll();
+        if(receiverId == -1)
+        {
+            processMessageToAll(message);
+        }
+        else
+        {
+            routingTable.send(receiverId, message);
+            routingTable.resendAll();
+        }
     }
 
     @Override
@@ -99,7 +106,10 @@ public class PublicRouter extends RouterImpl
             else
             {
                 if (message.getReceiver() == -1)
-                    processMessageToAll(message, list); //message to all
+                {
+                    list.add(message.clone(myId));
+                    processMessageToAll(message); //message to all
+                }
                 else
                     routingTable.send(message.getReceiver(), message); //message to someone else, not me
             }
@@ -107,9 +117,8 @@ public class PublicRouter extends RouterImpl
         bindConnectionOrAddToQueue(message.getSender(), result.connection());
     }
 
-    private void processMessageToAll(Message message, List<Message> list)
+    private void processMessageToAll(Message message)
     {
-        list.add(message.clone(myId));
         for(int nodeId : interfaces)
         {
             if(nodeId != message.getSender())

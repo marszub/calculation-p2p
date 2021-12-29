@@ -27,8 +27,9 @@ public class PrivateRouter extends RouterImpl
     @Override
     public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
     {
+        Integer node = nodeId;
         if(PrivateNodes.contains(nodeId))
-            PrivateNodes.remove(nodeId);
+            PrivateNodes.remove(node);
         else
             super.deleteInterface(nodeId);
     }
@@ -37,7 +38,7 @@ public class PrivateRouter extends RouterImpl
     public void send(Message message)
     {
         int receiverId = message.getReceiver();
-        if(PrivateNodes.contains(receiverId))
+        if(PrivateNodes.contains(receiverId) || receiverId == -1)
         {
             Set<Integer> publicNodesSet = staticInterfaces.keySet();
             List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
