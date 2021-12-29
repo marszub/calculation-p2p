@@ -283,7 +283,7 @@ public class RouterTest {
 
     @Test
     void ultimateRouterTestWith4Routers2Public2PrivateMessageToAllPrivate() throws InterruptedException {
-        Prepare4RoutersTest variables = prepareEnvironmentFour(14008, 14009);
+        Prepare4RoutersTest variables = prepareEnvironmentFour(14010, 14011);
         Router Router1 = variables.router1();
         Router Router2 = variables.router2();
         Router Router3 = variables.router3();
