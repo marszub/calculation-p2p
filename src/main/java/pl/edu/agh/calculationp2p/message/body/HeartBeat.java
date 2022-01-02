@@ -13,7 +13,7 @@ public class HeartBeat implements Body{
 
     @Override
     public String serializeContent() {
-        return null;
+        return "{}";
     }
 
     @Override
