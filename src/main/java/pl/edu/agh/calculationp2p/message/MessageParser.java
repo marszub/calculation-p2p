@@ -6,6 +6,9 @@ import pl.edu.agh.calculationp2p.message.body.*;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MessageParser {
@@ -79,7 +82,9 @@ public class MessageParser {
         int newId = Integer.parseInt(jsonMapBody.get("your_new_id"));
         String publicNodesArrayStr = jsonMapBody.get("public_nodes");
         String privateNodesArrayStr = jsonMapBody.get("private_nodes");
-        return new GiveInit();
+        List<Integer> privateNodes = null;
+        Map<Integer, InetSocketAddress> publicNodes = null;
+        return new GiveInit(newId, privateNodes, publicNodes );
     }
     private static Confirm funConfirm(Map<String, String> jsonMapBody){
         int taskId = Integer.parseInt(jsonMapBody.get("task_id"));
@@ -103,7 +108,8 @@ public class MessageParser {
         //    "owner": <null | node_id>,
         //    "result": <null | result_obj>
         //}
-        return new Confirm(new TaskRecord());
+        return null;
+        //return new Confirm(new TaskRecord());
     }
     private static GiveSynchronization funGiveSynchronization(Map<String, String> jsonMapBody){
         //    "tasks": [
@@ -119,7 +125,7 @@ public class MessageParser {
     }
     private static GetSynchronization funGetSynchronization(Map<String, String> jsonMapBody){
         String tasksArray = jsonMapBody.get("tasks");
-        return new GetSynchronization();
+        return new GetSynchronization(new ArrayList<>());
     }
     private static GiveProcess funGiveProcess(Map<String, String> jsonMapBody){
         String progress = jsonMapBody.get("progress");
