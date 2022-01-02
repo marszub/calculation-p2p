@@ -1,8 +1,16 @@
 package pl.edu.agh.calculationp2p.message.process;
 
+import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.message.Message;
+import pl.edu.agh.calculationp2p.message.MessageImpl;
+import pl.edu.agh.calculationp2p.message.body.Calculated;
+import pl.edu.agh.calculationp2p.message.body.Reserve;
+import pl.edu.agh.calculationp2p.state.future.Future;
+import pl.edu.agh.calculationp2p.state.future.Observation;
+import pl.edu.agh.calculationp2p.state.idle.Idle;
 import pl.edu.agh.calculationp2p.state.proxy.StatusInformer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StateObserver {
@@ -13,8 +21,28 @@ public class StateObserver {
         this.informer = informer;
     }
 
-    public List<Message> getMessages(){
-        //TODO: check all messages from status informer
-        return null;
+    public List<Message> getMessages(Idle idle, int myId){
+
+        List<Message> result = new ArrayList<>();
+
+        Future<Observation> reservedF = this.informer.observeReserved(idle);
+        Future<Observation> calculatedF = this.informer.observeCalculated(idle);
+
+        Future<Observation> currPointerToReserved = reservedF;
+        while (currPointerToReserved.isReady()){
+            //int taskId = currPointerToReserved.get().getTask();
+            int taskId = 0;
+            result.add(new MessageImpl(myId, -1, new Reserve(taskId)));
+            currPointerToReserved = currPointerToReserved.get().getNextObservation();
+        }
+
+        Future<Observation> currPointerToCalculated = reservedF;
+        while (currPointerToCalculated.isReady()){
+            //int taskId = currPointerToReserved.get().getTask();
+            int taskId = 0;
+            //result.add(new MessageImpl(myId, -1, new Calculated(taskId, new TaskResult())));
+            currPointerToCalculated = currPointerToCalculated.get().getNextObservation();
+        }
+        return result;
     }
 }
