@@ -16,6 +16,12 @@ class GetInitTest {
 
     @Test
     void serializeContent() {
+
+        Body getInit = new GetInit();
+
+        String result = "{}";
+        assertEquals(result, getInit.serializeContent());
+
     }
 
     @Test

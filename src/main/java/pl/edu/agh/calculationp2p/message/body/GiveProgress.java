@@ -2,19 +2,19 @@ package pl.edu.agh.calculationp2p.message.body;
 
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
-public class GiveProcess implements Body{
-    public GiveProcess() {
+public class GiveProgress implements Body{
+    public GiveProgress() {
 
     }
 
     @Override
     public String serializeType() {
-        return "\"give_process\"";
+        return "\"give_progress\"";
     }
 
     @Override
     public String serializeContent() {
-        return null;
+        return "{\"progress\":}";
     }
 
     @Override

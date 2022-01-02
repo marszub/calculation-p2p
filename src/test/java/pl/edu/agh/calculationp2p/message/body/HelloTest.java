@@ -16,6 +16,14 @@ class HelloTest {
 
     @Test
     void serializeContent() {
+
+        Body hello = new Hello("192.168.0.1");
+        String result = "{\"ip\":\"192.168.0.1\"}";
+        assertEquals(result, hello.serializeContent());
+
+        Body helloNull = new Hello(null);
+        String resultNull = "{\"ip\":\"null\"}";
+        assertEquals(resultNull, helloNull.serializeContent());
     }
 
     @Test

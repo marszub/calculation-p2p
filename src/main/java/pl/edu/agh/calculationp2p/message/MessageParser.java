@@ -3,7 +3,7 @@ package pl.edu.agh.calculationp2p.message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import pl.edu.agh.calculationp2p.message.body.*;
-import pl.edu.agh.calculationp2p.state.task.TaskRecord;
+import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -121,15 +121,16 @@ public class MessageParser {
         //        }
         //    ]
         String tasksArray = jsonMapBody.get("tasks");
-        return new GiveSynchronization();
+        List<TaskStateMess> list = new ArrayList<>();
+        return new GiveSynchronization(list);
     }
     private static GetSynchronization funGetSynchronization(Map<String, String> jsonMapBody){
         String tasksArray = jsonMapBody.get("tasks");
         return new GetSynchronization(new ArrayList<>());
     }
-    private static GiveProcess funGiveProcess(Map<String, String> jsonMapBody){
+    private static GiveProgress funGiveProcess(Map<String, String> jsonMapBody){
         String progress = jsonMapBody.get("progress");
-        return new GiveProcess();
+        return new GiveProgress();
     }
     private static Calculated funCalculated(Map<String, String> jsonMapBody){
         int taskId = Integer.parseInt(jsonMapBody.get("task_id"));

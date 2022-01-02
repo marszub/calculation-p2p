@@ -16,6 +16,10 @@ class HeartBeatTest {
 
     @Test
     void serializeContent() {
+
+        Body heart = new HeartBeat();
+        assertEquals("{}", heart.serializeContent());
+
     }
 
     @Test

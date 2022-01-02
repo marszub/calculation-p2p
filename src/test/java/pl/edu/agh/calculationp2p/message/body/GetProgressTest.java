@@ -16,6 +16,12 @@ class GetProgressTest {
 
     @Test
     void serializeContent() {
+
+        Body getProgress = new GetProgress();
+
+        String result = "{}";
+        assertEquals(result, getProgress.serializeContent());
+
     }
 
     @Test

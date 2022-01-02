@@ -21,7 +21,14 @@ class CalculatedTest {
     @Test
     void serializeContent() {
 
+        String expected = "task_result";
 
+        TaskResult taskResult = () -> expected;
+
+        Body calculated = new Calculated(1, taskResult);
+
+        String result = "{\"task_id\":1,\"result\":"+expected+"}";
+        assertEquals(result, calculated.serializeContent());
 
     }
 

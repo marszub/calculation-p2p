@@ -16,9 +16,16 @@ class ReserveTest {
 
     @Test
     void serializeContent() {
+
+        Body reserve = new Reserve(2);
+        String result = "{\"task_id\":2}";
+        assertEquals(result, reserve.serializeContent());
+
     }
 
     @Test
     void process() {
+
+
     }
 }

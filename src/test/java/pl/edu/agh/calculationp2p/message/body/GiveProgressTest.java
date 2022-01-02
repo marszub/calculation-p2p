@@ -4,18 +4,24 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GiveProcessTest {
+class GiveProgressTest {
 
     @Test
     void serializeType() {
 
-        Body giveProcess = new GiveProcess();
+        Body giveProcess = new GiveProgress();
         assertEquals("\"give_process\"", giveProcess.serializeType());
 
     }
 
     @Test
     void serializeContent() {
+        //TODO:
+        Body giveProcess = new GiveProgress();
+
+        String result = "{\"progress\":}";
+        assertEquals(result, giveProcess.serializeContent());
+
     }
 
     @Test
