@@ -17,18 +17,19 @@ public class MessageImpl implements Message{
 
     @Override
     public Message clone(int receiverId) {
+        // deep copy in body ?
         return new MessageImpl(sender, receiverId, body);
     }
 
     @Override
     public String serialize() {
-        String s = "{'header':{'sender':";
+        String s = "{\"header\":{\"sender\":";
         s = s.concat(String.valueOf(sender));
-        s = s.concat(",'receiver':");
+        s = s.concat(",\"receiver\":");
         s = s.concat(String.valueOf(receiver));
-        s = s.concat(",'message_type':");
+        s = s.concat(",\"message_type\":");
         s = s.concat(body.serializeType());
-        s = s.concat("},'body':");
+        s = s.concat("},\"body\":");
         s = s.concat(body.serializeContent());
         s = s.concat("}");
         return s;
