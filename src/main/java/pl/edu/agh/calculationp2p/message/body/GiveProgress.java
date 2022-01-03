@@ -2,6 +2,8 @@ package pl.edu.agh.calculationp2p.message.body;
 
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
+import java.util.Objects;
+
 public class GiveProgress implements Body{
     public GiveProgress() {
 
@@ -21,4 +23,14 @@ public class GiveProgress implements Body{
     public void process(int sender, MessageProcessContext context) {
 
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        return getClass() != o.getClass();
+     }
 }

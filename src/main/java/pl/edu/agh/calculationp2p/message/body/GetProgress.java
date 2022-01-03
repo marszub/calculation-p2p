@@ -4,6 +4,7 @@ import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
+
 public class GetProgress implements Body{
 
     public GetProgress() {
@@ -26,5 +27,15 @@ public class GetProgress implements Body{
         //TODO
         Message messWithProgress = new MessageImpl(myId, sender, new GiveProgress());
         context.getRouter().send(messWithProgress);
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        return getClass() == o.getClass();
     }
 }

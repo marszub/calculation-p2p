@@ -10,6 +10,10 @@ import java.util.List;
 
 public class GetSynchronization implements Body{
 
+    public List<Integer> getTaskIdList() {
+        return taskIdList;
+    }
+
     private final List<Integer> taskIdList;
 
     public GetSynchronization(List<Integer> taskIdList) {
@@ -46,4 +50,20 @@ public class GetSynchronization implements Body{
         context.getRouter().send(messWithStateOfTasks);
 
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        GetSynchronization message = (GetSynchronization) o;
+        return message.getTaskIdList().equals(this.taskIdList);
+    }
+
 }

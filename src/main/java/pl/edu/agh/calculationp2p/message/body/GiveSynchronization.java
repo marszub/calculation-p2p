@@ -4,10 +4,15 @@ import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GiveSynchronization implements Body{
 
-    private List<TaskStateMess> currStateList;
+    private final List<TaskStateMess> currStateList;
+
+    public List<TaskStateMess> getCurrStateList() {
+        return currStateList;
+    }
 
     public GiveSynchronization(List<TaskStateMess> listOfTasks) {
 
@@ -41,5 +46,20 @@ public class GiveSynchronization implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        GiveSynchronization message = (GiveSynchronization) o;
+        return message.getCurrStateList() == this.currStateList;
     }
 }

@@ -3,10 +3,20 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
 import java.net.InetSocketAddress;
+import java.util.Objects;
 
 public class Hello implements Body{
 
     private final String newIp;
+
+    public String getNewIp() {
+        return newIp;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
     //TODO: which port?
     private final int port = 2137;
 
@@ -33,5 +43,19 @@ public class Hello implements Body{
         if(this.newIp != null){
             context.getRouter().createInterface(sender, new InetSocketAddress(this.newIp, 2000));
         }
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        Hello message = (Hello) o;
+        return Objects.equals(message.getNewIp(), this.newIp) && message.getPort() == this.port;
     }
 }

@@ -6,5 +6,6 @@ public interface Body {
     String serializeType();
     String serializeContent();
     void process(int sender, MessageProcessContext context);
+    boolean equals(Object o);
 }
 

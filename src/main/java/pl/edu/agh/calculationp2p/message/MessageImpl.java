@@ -17,7 +17,7 @@ public class MessageImpl implements Message{
 
     @Override
     public Message clone(int receiverId) {
-        // deep copy in body ?
+        // TODO: deep copy in body?
         return new MessageImpl(sender, receiverId, body);
     }
 
@@ -43,11 +43,29 @@ public class MessageImpl implements Message{
     @Override
     public int getReceiver()
     {
-        return 1;
+        return this.receiver;
     }
     @Override
     public int getSender()
     {
-        return 1;
+        return this.sender;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        Message message = (Message) o;
+        return message.getReceiver() == this.receiver && message.getSender() == this.sender && message.getBody() == this.body;
+    }
+    @Override
+    public Body getBody(){
+        return this.body;
     }
 }

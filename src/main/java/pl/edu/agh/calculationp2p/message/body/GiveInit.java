@@ -3,10 +3,7 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GiveInit implements Body{
 
@@ -63,4 +60,32 @@ public class GiveInit implements Body{
         this.publicNodes.forEach((nodeId, ip) -> context.getRouter().createInterface(nodeId, ip));
         context.getRouter().setId(this.newId);
     }
+
+    public List<Integer> getPrivateNodes() {
+        return privateNodes;
+    }
+
+    public Map<Integer, InetSocketAddress> getPublicNodes() {
+        return publicNodes;
+    }
+
+    public int getNewId() {
+        return newId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        GiveInit message = (GiveInit) o;
+        return message.getNewId() == this.newId && message.getPrivateNodes() == this.privateNodes && message.getPublicNodes() == this.publicNodes;
+    }
+
 }
