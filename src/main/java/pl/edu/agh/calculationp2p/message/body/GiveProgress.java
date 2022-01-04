@@ -29,7 +29,7 @@ public class GiveProgress implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-
+        
     }
 
     @Override

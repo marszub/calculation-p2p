@@ -16,15 +16,19 @@ public class MessageProcessor implements Runnable {
     private final Idle idle;
 
     public MessageProcessor(Router router, StateUpdater stateUpdater, StatusInformer statusInformer){
+        int validityTime = 10;
+        int timePeriod = 10;
+
         this.context = new MessageProcessContextImpl();
         context.setRouter(router);
         context.setStateUpdater(stateUpdater);
+        context.setStateInformer(statusInformer);
         context.setFutureProcessor(new FutureProcessor());
-        context.setNodeRegister(new NodeRegister(100));
+        context.setNodeRegister(new NodeRegister(validityTime));
 
         this.idle = new Idle();
 
-        this.heartBeatEmiter = new HeartBeatEmiter(10, router);
+        this.heartBeatEmiter = new HeartBeatEmiter(timePeriod, router);
         this.stateObserver = new StateObserver(statusInformer);
     }
 
@@ -44,6 +48,7 @@ public class MessageProcessor implements Runnable {
 
             List<Integer> notResponding = context.getNodeRegister().getOutdatedNodes();
             notResponding.forEach(id -> context.getRouter().deleteInterface(id));
+
             context.getFutureProcessor().tryProcessAll();
 
             try {

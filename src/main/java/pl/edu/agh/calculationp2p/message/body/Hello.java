@@ -7,18 +7,9 @@ import java.util.Objects;
 
 public class Hello implements Body{
 
-    private final String newIp;
-
-    public String getNewIp() {
-        return newIp;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
     //TODO: which port?
     private final int port = 2137;
+    private final String newIp;
 
     public Hello(String ip) {
         this.newIp = ip;
@@ -41,7 +32,13 @@ public class Hello implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
         if(this.newIp != null){
-            context.getRouter().createInterface(sender, new InetSocketAddress(this.newIp, 2000));
+            InetSocketAddress ipAddress = new InetSocketAddress(this.newIp, port);
+            context.getRouter().createInterface(sender, ipAddress);
+            //TODO:
+            // if(newIp == public){
+            // context.getNodeRegister().addPublicNode(sender, ipAddress);
+            // } else {}
+            context.getNodeRegister().addPrivateNode(sender);
         }
     }
 
@@ -63,5 +60,12 @@ public class Hello implements Body{
         }
         Hello message = (Hello) o;
         return Objects.equals(message.getNewIp(), this.newIp) && message.getPort() == this.port;
+    }
+    public String getNewIp() {
+        return newIp;
+    }
+
+    public int getPort() {
+        return port;
     }
 }

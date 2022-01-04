@@ -2,8 +2,6 @@ package pl.edu.agh.calculationp2p.message.body;
 
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
-import java.util.Objects;
-
 public class Reserve implements Body{
 
     private final int taskId;
@@ -29,6 +27,10 @@ public class Reserve implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
         //TODO: implement
+        // someone want to reserve some task and now
+        // I want to say if he can or not, it means
+        // if I already tried to reserve this task
+        // I have to compare ids of ours
 
     }
 

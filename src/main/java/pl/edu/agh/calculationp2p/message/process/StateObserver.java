@@ -1,6 +1,5 @@
 package pl.edu.agh.calculationp2p.message.process;
 
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.body.Calculated;
@@ -30,17 +29,18 @@ public class StateObserver {
 
         Future<Observation> currPointerToReserved = reservedF;
         while (currPointerToReserved.isReady()){
-            //int taskId = currPointerToReserved.get().getTask();
+            //TODO: int taskId = currPointerToReserved.get().getTask();
             int taskId = 0;
             result.add(new MessageImpl(myId, -1, new Reserve(taskId)));
             currPointerToReserved = currPointerToReserved.get().getNextObservation();
         }
 
-        Future<Observation> currPointerToCalculated = reservedF;
+        Future<Observation> currPointerToCalculated = calculatedF;
         while (currPointerToCalculated.isReady()){
-            //int taskId = currPointerToReserved.get().getTask();
+            //TODO: int taskId = currPointerToReserved.get().getTask();
             int taskId = 0;
-            //result.add(new MessageImpl(myId, -1, new Calculated(taskId, new TaskResult())));
+            //TODO: null -> new TaskResult
+            result.add(new MessageImpl(myId, -1, new Calculated(taskId, null)));
             currPointerToCalculated = currPointerToCalculated.get().getNextObservation();
         }
         return result;

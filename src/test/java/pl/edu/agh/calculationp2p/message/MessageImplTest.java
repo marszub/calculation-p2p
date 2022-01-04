@@ -94,11 +94,4 @@ class MessageImplTest {
 
     }
 
-    @Test
-    void serialize() {
-
-
-
-    }
-
 }

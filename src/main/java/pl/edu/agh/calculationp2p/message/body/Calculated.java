@@ -42,10 +42,12 @@ public class Calculated implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
+        int myId = context.getRouter().getId();
         Future<TaskRecord> calculateFuture = context.getStateUpdater().calculate(taskId, sender, taskResult);
         context.getFutureProcessor().addFutureProcess(calculateFuture, () -> {
             Router router = context.getRouter();
-            router.send(new MessageImpl(router.getId(), sender, new Confirm(taskId, TaskState.Calculated, sender, calculateFuture.get())));
+            Message confirm = new MessageImpl(myId, sender, new Confirm(taskId, TaskState.Calculated, sender, calculateFuture.get()));
+            router.send(confirm);
         });
     }
 

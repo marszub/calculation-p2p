@@ -30,7 +30,6 @@ public class MessageParser {
 
             TypeReference<LinkedHashMap<String,Object>> typeRef = new TypeReference<>() {};
 
-            System.out.println(messageS);
             LinkedHashMap<String,Object> jsonMap = mapper.readValue(messageS, typeRef);
 
             if(jsonMap != null){
@@ -41,8 +40,6 @@ public class MessageParser {
                 sender = Integer.parseInt(head.get("sender").toString());
                 receiver = Integer.parseInt(head.get("receiver").toString());
                 String messType = head.get("message_type").toString();
-
-                System.out.println("sender " + sender + " receiver " + receiver + " messType " + messType);
 
                 switch (messType) {
                     case "get_init" -> bodyResult = new GetInit();

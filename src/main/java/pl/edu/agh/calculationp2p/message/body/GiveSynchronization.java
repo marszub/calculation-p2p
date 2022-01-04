@@ -28,7 +28,6 @@ public class GiveSynchronization implements Body{
 
     @Override
     public String serializeContent() {
-
         String result = "";
         result = result.concat("{\"tasks\":[");
 
@@ -38,15 +37,16 @@ public class GiveSynchronization implements Body{
                 result = result.concat(",");
             }
         }
-
         result = result.concat("]}");
         return result;
-
     }
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-
+        //TODO:
+        // go through this.currStateList and update someone but who
+        context.getStateUpdater();
+        context.getStateInformer();
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FutureProcessor {
 
-    private List<Pair> futureList;
+    private final List<FutureRunnablePair> futureList;
 
     public FutureProcessor(){
         this.futureList = new ArrayList<>();
@@ -15,14 +15,14 @@ public class FutureProcessor {
 
     protected void tryProcessAll(){
 
-        List<Pair> readyFutures = new ArrayList<>();
-        for(Pair par : this.futureList){
+        List<FutureRunnablePair> readyFutures = new ArrayList<>();
+        for(FutureRunnablePair par : this.futureList){
             if(par.getFuture().isReady()){
                 readyFutures.add(par);
             }
         }
 
-        for(Pair p : readyFutures){
+        for(FutureRunnablePair p : readyFutures){
             p.getRunnable().run();
             p.getFuture().get();
             this.futureList.remove(p);
@@ -30,15 +30,15 @@ public class FutureProcessor {
 
     }
     public void addFutureProcess(Future condition, Runnable process){
-        this.futureList.add(new Pair(condition, process));
+        this.futureList.add(new FutureRunnablePair(condition, process));
     }
 
 }
 
-class Pair{
+class FutureRunnablePair {
     Future future;
     Runnable runnable;
-    Pair(Future future, Runnable runnable){
+    FutureRunnablePair(Future future, Runnable runnable){
         this.future = future;
         this.runnable = runnable;
     }
