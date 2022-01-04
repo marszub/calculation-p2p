@@ -44,6 +44,12 @@ public class Hello implements Body{
             context.getRouter().createInterface(sender, new InetSocketAddress(this.newIp, 2000));
         }
     }
+
+    @Override
+    public Body clone() {
+        return new Hello(this.newIp);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

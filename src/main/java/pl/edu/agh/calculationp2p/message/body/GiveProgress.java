@@ -31,6 +31,13 @@ public class GiveProgress implements Body{
     public void process(int sender, MessageProcessContext context) {
 
     }
+
+    @Override
+    public Body clone() {
+        //TODO: deep copy in progress?
+        return new GiveProgress(this.progress);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

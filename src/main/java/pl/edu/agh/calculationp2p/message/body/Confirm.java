@@ -52,6 +52,12 @@ public class Confirm implements Body{
         //TODO
     }
 
+    @Override
+    public Body clone() {
+        //TODO: deep copy in taskRecord
+        return new Confirm(this.taskId, this.state, this.owner, this.taskRecord);
+    }
+
     public int getTaskId() {
         return taskId;
     }

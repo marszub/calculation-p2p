@@ -52,6 +52,11 @@ public class GetSynchronization implements Body{
     }
 
     @Override
+    public Body clone() {
+        return new GetSynchronization(new ArrayList<>(this.taskIdList));
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

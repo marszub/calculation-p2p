@@ -28,6 +28,12 @@ public class GetProgress implements Body{
         Message messWithProgress = new MessageImpl(myId, sender, new GiveProgress(null));
         context.getRouter().send(messWithProgress);
     }
+
+    @Override
+    public Body clone() {
+        return new GetProgress();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

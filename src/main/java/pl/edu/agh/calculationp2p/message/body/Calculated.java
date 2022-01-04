@@ -48,6 +48,13 @@ public class Calculated implements Body{
             router.send(new MessageImpl(router.getId(), sender, new Confirm(taskId, TaskState.Calculated, sender, calculateFuture.get())));
         });
     }
+
+    @Override
+    public Body clone() {
+        //TODO: deep copy in taskResult
+        return new Calculated(this.taskId, this.taskResult);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

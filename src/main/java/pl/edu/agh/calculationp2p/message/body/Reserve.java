@@ -31,6 +31,12 @@ public class Reserve implements Body{
         //TODO: implement
 
     }
+
+    @Override
+    public Body clone() {
+        return new Reserve(this.taskId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

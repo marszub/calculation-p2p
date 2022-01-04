@@ -61,6 +61,11 @@ public class GiveInit implements Body{
         context.getRouter().setId(this.newId);
     }
 
+    @Override
+    public Body clone() {
+        return new GiveInit(this.newId, new ArrayList<>(this.privateNodes), new HashMap<>(this.publicNodes));
+    }
+
     public List<Integer> getPrivateNodes() {
         return privateNodes;
     }

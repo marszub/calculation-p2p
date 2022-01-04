@@ -18,7 +18,7 @@ public class MessageImpl implements Message{
     @Override
     public Message clone(int receiverId) {
         // TODO: deep copy in body?
-        return new MessageImpl(sender, receiverId, body);
+        return new MessageImpl(sender, receiverId, body.clone());
     }
 
     @Override

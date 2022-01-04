@@ -24,6 +24,11 @@ public class HeartBeat implements Body{
     }
 
     @Override
+    public Body clone() {
+        return new HeartBeat();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

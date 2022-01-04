@@ -3,10 +3,7 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class GiveSynchronization implements Body{
 
@@ -48,6 +45,11 @@ public class GiveSynchronization implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
 
+    }
+
+    @Override
+    public Body clone() {
+        return new GiveSynchronization(new ArrayList<>(this.currStateList));
     }
 
     @Override
