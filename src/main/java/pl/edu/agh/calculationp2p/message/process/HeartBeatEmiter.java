@@ -15,18 +15,22 @@ public class HeartBeatEmiter {
     protected HeartBeatEmiter(int timePeriod, Router router){
         this.router = router;
         this.timePeriod = timePeriod;
+        this.lastBeatTime = now();
     }
 
     protected void beat(){
-        if(ZonedDateTime.now().toInstant().toEpochMilli() - this.lastBeatTime >= this.timePeriod){
+        if(now() - this.lastBeatTime >= this.timePeriod){
             router.send(new MessageImpl(router.getId(), -1, new HeartBeat()));
-            this.lastBeatTime = ZonedDateTime.now().toInstant().toEpochMilli();
+            this.lastBeatTime = now();
         }
     }
 
     protected int nextBeatTime(){
-        long now = ZonedDateTime.now().toInstant().toEpochMilli();
+        long now = now();
         return (int) (this.timePeriod-(now - this.lastBeatTime));
     }
 
+    private long now(){
+        return ZonedDateTime.now().toInstant().toEpochMilli();
+    }
 }
