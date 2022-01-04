@@ -3,8 +3,10 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class GiveSynchronization implements Body{
 
@@ -60,6 +62,23 @@ public class GiveSynchronization implements Body{
             return false;
         }
         GiveSynchronization message = (GiveSynchronization) o;
-        return message.getCurrStateList() == this.currStateList;
+        return compareStateList(message.getCurrStateList());
+    }
+
+    private boolean compareStateList(List<TaskStateMess> list){
+        boolean flag = false;
+        for(TaskStateMess own: this.currStateList){
+            flag = false;
+            for(TaskStateMess out: list){
+                if (own.equals(out)) {
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                return false;
+            }
+        }
+        return list.size() == this.currStateList.size();
     }
 }

@@ -1,12 +1,16 @@
 package pl.edu.agh.calculationp2p.message.body;
 
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
+import pl.edu.agh.calculationp2p.state.Progress;
 
 import java.util.Objects;
 
 public class GiveProgress implements Body{
-    public GiveProgress() {
 
+    private final Progress progress;
+
+    public GiveProgress(Progress progress) {
+        this.progress = progress;
     }
 
     @Override
@@ -16,7 +20,11 @@ public class GiveProgress implements Body{
 
     @Override
     public String serializeContent() {
-        return "{\"progress\":}";
+        String result = "";
+        result = result.concat("{\"progress\":");
+        result = this.progress==null?result.concat("\"null\""):result.concat(this.progress.serialize());
+        result = result.concat("}");
+        return result;
     }
 
     @Override
@@ -31,6 +39,6 @@ public class GiveProgress implements Body{
         if (o == null) {
             return false;
         }
-        return getClass() != o.getClass();
+        return getClass() == o.getClass();
      }
 }

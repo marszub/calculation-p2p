@@ -62,7 +62,9 @@ public class MessageImpl implements Message{
             return false;
         }
         Message message = (Message) o;
-        return message.getReceiver() == this.receiver && message.getSender() == this.sender && message.getBody() == this.body;
+        return message.getReceiver() == this.receiver &&
+                message.getSender() == this.sender &&
+                message.getBody().equals(this.body);
     }
     @Override
     public Body getBody(){

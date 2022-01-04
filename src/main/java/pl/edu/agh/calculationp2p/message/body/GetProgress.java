@@ -25,7 +25,7 @@ public class GetProgress implements Body{
     public void process(int sender, MessageProcessContext context) {
         int myId = context.getRouter().getId();
         //TODO
-        Message messWithProgress = new MessageImpl(myId, sender, new GiveProgress());
+        Message messWithProgress = new MessageImpl(myId, sender, new GiveProgress(null));
         context.getRouter().send(messWithProgress);
     }
     @Override

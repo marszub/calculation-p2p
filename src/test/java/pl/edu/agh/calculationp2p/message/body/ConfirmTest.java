@@ -21,11 +21,9 @@ class ConfirmTest {
     @Test
     void serializeContent() {
 
-        TaskRecord taskRecord = new TaskRecord();
+        Body confirm = new Confirm(1, TaskState.Free, 5, null);
 
-        Body confirm = new Confirm(1, TaskState.Free, 5, taskRecord);
-
-        String result = "{\"task_id\":1,\"state\":\"free\",\"owner\":5,\"result\":}";
+        String result = "{\"task_id\":1,\"state\":\"free\",\"owner\":5,\"result\":\"null\"}";
         assertEquals(result, confirm.serializeContent());
 
     }

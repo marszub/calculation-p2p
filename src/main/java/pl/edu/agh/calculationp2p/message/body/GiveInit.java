@@ -85,7 +85,23 @@ public class GiveInit implements Body{
             return false;
         }
         GiveInit message = (GiveInit) o;
-        return message.getNewId() == this.newId && message.getPrivateNodes() == this.privateNodes && message.getPublicNodes() == this.publicNodes;
+        return message.getNewId() == this.newId && comparePrivateNodes(message.getPrivateNodes()) && message.getPublicNodes().equals(this.publicNodes);
+    }
+
+    private boolean comparePrivateNodes(List<Integer> privateNodes){
+        Set<Integer> privateNodesSet = new HashSet<>(privateNodes);
+        Set<Integer> thisPrivateNodesSet = new HashSet<>(this.privateNodes);
+        for(Integer own: thisPrivateNodesSet){
+            for(Integer out: privateNodesSet){
+                if(Objects.equals(out, own)){
+                    privateNodesSet.remove(out);
+                    break;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return privateNodes.size() == this.privateNodes.size();
     }
 
 }

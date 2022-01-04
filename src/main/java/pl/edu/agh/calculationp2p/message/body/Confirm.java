@@ -42,7 +42,7 @@ public class Confirm implements Body{
         result = result.concat(String.valueOf(this.owner));
         result = result.concat(",\"result\":");
         // TODO: taskRecord toString or serialize
-        // result = result.concat(this.taskRecord.toString());
+        result = this.taskRecord==null?result.concat("\"null\""):result.concat(this.taskRecord.toString());
         result = result.concat("}");
         return result;
     }
