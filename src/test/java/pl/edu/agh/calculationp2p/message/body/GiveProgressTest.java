@@ -10,7 +10,7 @@ class GiveProgressTest {
     void serializeType() {
 
         Body giveProcess = new GiveProgress(null);
-        assertEquals("\"give_process\"", giveProcess.serializeType());
+        assertEquals("\"give_progress\"", giveProcess.serializeType());
 
     }
 
@@ -19,7 +19,7 @@ class GiveProgressTest {
         //TODO:
         Body giveProcess = new GiveProgress(null);
 
-        String result = "{\"progress\":}";
+        String result = "{\"progress\":\"null\"}";
         assertEquals(result, giveProcess.serializeContent());
 
     }

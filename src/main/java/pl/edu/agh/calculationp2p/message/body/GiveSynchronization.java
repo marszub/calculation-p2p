@@ -4,6 +4,8 @@ import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
 
 import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 public class GiveSynchronization implements Body{
 

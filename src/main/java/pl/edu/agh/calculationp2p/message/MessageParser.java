@@ -1,15 +1,16 @@
 package pl.edu.agh.calculationp2p.message;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import pl.edu.agh.calculationp2p.message.body.*;
 import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
+import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MessageParser {
 
@@ -22,123 +23,176 @@ public class MessageParser {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-        Map<String,String> jsonMap = null;
         try {
-            jsonMap = objectMapper.readValue(messageS, Map.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+
+            TypeReference<LinkedHashMap<String,Object>> typeRef = new TypeReference<>() {};
+
+            System.out.println(messageS);
+            LinkedHashMap<String,Object> jsonMap = mapper.readValue(messageS, typeRef);
+
             if(jsonMap != null){
-                String head = jsonMap.get("header");
-                String body = jsonMap.get("body");
 
-                Map<String,String> jsonMapHead = objectMapper.readValue(head, Map.class);
-                Map<String,String> jsonMapBody = objectMapper.readValue(body, Map.class);
+                LinkedHashMap<String, Object> head = (LinkedHashMap<String, Object>) jsonMap.get("header");
+                LinkedHashMap<String, Object> body = (LinkedHashMap<String, Object>) jsonMap.get("body");
 
-                sender = Integer.parseInt(jsonMapHead.get("sender"));
-                receiver = Integer.parseInt(jsonMapHead.get("receiver"));
-                String messType = jsonMapHead.get("message_type");
+                sender = Integer.parseInt(head.get("sender").toString());
+                receiver = Integer.parseInt(head.get("receiver").toString());
+                String messType = head.get("message_type").toString();
+
+                System.out.println("sender " + sender + " receiver " + receiver + " messType " + messType);
 
                 switch (messType) {
                     case "get_init" -> bodyResult = new GetInit();
-                    case "give_init" -> bodyResult = funGiveInit(jsonMapBody);
-                    case "hello" -> bodyResult = funHello(jsonMapBody);
+                    case "give_init" -> bodyResult = funGiveInit(body);
+                    case "hello" -> bodyResult = funHello(body);
                     case "get_progress" -> bodyResult = new GetProgress();
-                    case "give_progress" -> bodyResult = funGiveProcess(jsonMapBody);
+                    case "give_progress" -> bodyResult = funGiveProcess(body);
                     case "heart_beat" -> bodyResult = new HeartBeat();
-                    case "reserve" -> bodyResult = funReserve(jsonMapBody);
-                    case "confirm" -> bodyResult = funConfirm(jsonMapBody);
-                    case "calculated" -> bodyResult = funCalculated(jsonMapBody);
-                    case "get_synchronization" -> bodyResult = funGetSynchronization(jsonMapBody);
-                    case "give_synchronization" -> bodyResult = funGiveSynchronization(jsonMapBody);
+                    case "reserve" -> bodyResult = funReserve(body);
+                    case "confirm" -> bodyResult = funConfirm(body);
+                    case "calculated" -> bodyResult = funCalculated(body);
+                    case "get_synchronization" -> bodyResult = funGetSynchronization(body);
+                    case "give_synchronization" -> bodyResult = funGiveSynchronization(body);
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return new MessageImpl(sender, receiver, bodyResult);
     }
-    private static Hello funHello(Map<String, String> jsonMapBody){
-        String ipS = jsonMapBody.get("ip");
+    private static GetSynchronization funGetSynchronization(HashMap<String, Object> jsonMapBody){
+        String tasksArrayString = jsonMapBody.get("tasks").toString();
+        List<Integer> taskArray = parseStringArrPrivate(tasksArrayString);
+        return new GetSynchronization(taskArray);
+    }
+    private static Hello funHello(HashMap<String, Object> jsonMapBody){
+        String ipS = jsonMapBody.get("ip").toString();
         if(ipS.equals("null")){
             ipS = null;
         }
         return new Hello(ipS);
     }
-    private static Reserve funReserve(Map<String, String> jsonMapBody){
-        int taskId = Integer.parseInt(jsonMapBody.get("task_id"));
+    private static GiveProgress funGiveProcess(HashMap<String, Object> jsonMapBody){
+        //TODO: String progress = jsonMapBody.get("progress");
+        return new GiveProgress(null);
+    }
+    private static Reserve funReserve(HashMap<String, Object> jsonMapBody){
+        int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
         return new Reserve(taskId);
     }
+    private static GiveInit funGiveInit(HashMap<String, Object> jsonMapBody){
 
+        int newId = Integer.parseInt(jsonMapBody.get("your_new_id").toString());
+        String publicNodesArrayStr = jsonMapBody.get("public_nodes").toString();
+        String privateNodesArrayStr = jsonMapBody.get("private_nodes").toString();
 
-    private static GiveInit funGiveInit(Map<String, String> jsonMapBody){
-        //    "public_nodes":
-        //    [
-        //        {"id": <node_id>, "ip_address":<ip_address>}
-        //    ],
-        //    "private_nodes":
-        //    [
-        //        {"id": <node_id>}
-        //    ]
-        int newId = Integer.parseInt(jsonMapBody.get("your_new_id"));
-        String publicNodesArrayStr = jsonMapBody.get("public_nodes");
-        String privateNodesArrayStr = jsonMapBody.get("private_nodes");
-        List<Integer> privateNodes = null;
-        Map<Integer, InetSocketAddress> publicNodes = null;
+        List<Integer> privateNodes = parseStringArrPrivate(privateNodesArrayStr);
+        Map<Integer, InetSocketAddress> publicNodes = parseStringArr(publicNodesArrayStr);
+
         return new GiveInit(newId, privateNodes, publicNodes );
     }
-    private static Confirm funConfirm(Map<String, String> jsonMapBody){
-        int taskId = Integer.parseInt(jsonMapBody.get("task_id"));
+    private static Map<Integer, InetSocketAddress> parseStringArr(String inputArrS){
+        Map<Integer, InetSocketAddress> result = new HashMap<>();
 
-        jsonMapBody.get("state");
+        if(inputArrS.equals("[]")){
+            return result;
+        }
 
-        String ownerStr = jsonMapBody.get("owner");
+        String[] splitArr = inputArrS.split("},");
+
+        splitArr[0] = splitArr[0].substring(1);
+        splitArr[splitArr.length-1] = splitArr[splitArr.length-1].substring(0,splitArr[splitArr.length-1].length()-1);
+
+        for (String oneObjectString : splitArr) {
+            String[] oneObject = oneObjectString.split(",");
+            int id = Integer.parseInt(oneObject[0].split(":")[1]);
+            String ip = oneObject[0].split(":")[1];
+            result.put(id, new InetSocketAddress(ip, 2000));
+        }
+
+        return result;
+    }
+    private static List<Integer> parseStringArrPrivate(String inputArrS){
+        List<Integer> result = new ArrayList<>();
+        if(inputArrS.equals("[]")){
+            return result;
+        }
+        String[] splitArr = inputArrS.split("},");
+
+        splitArr[0] = splitArr[0].substring(2);
+        splitArr[splitArr.length-1] = splitArr[splitArr.length-1].substring(0,splitArr[splitArr.length-1].length()-2);
+
+        for (String oneObject : splitArr) {
+            int id = Integer.parseInt(oneObject.split(":")[1]);
+            result.add(id);
+        }
+
+        return result;
+    }
+    private static GiveSynchronization funGiveSynchronization(HashMap<String, Object> jsonMapBody){
+        String tasksArray = jsonMapBody.get("tasks").toString();
+        List<TaskStateMess> list = getTasksArrFromString(tasksArray);
+        return new GiveSynchronization(list);
+    }
+    private static List<TaskStateMess> getTasksArrFromString(String input){
+
+        List<TaskStateMess> result = new ArrayList<>();
+
+        if(Objects.equals(input, "[]")){
+            return result;
+        }
+
+        String[] splitArr = input.split("},");
+
+        splitArr[0] = splitArr[0].substring(1);
+        splitArr[splitArr.length-1] = splitArr[splitArr.length-1].substring(0,splitArr[splitArr.length-1].length()-1);
+
+        for (String oneObjectString : splitArr) {
+            String[] oneObject = oneObjectString.split(",");
+
+            int taskId = Integer.parseInt(oneObject[0].split(":")[1]);
+
+            TaskState state = null;
+            String stateString = oneObject[2].split(":")[1];
+            switch (stateString) {
+                case "calculated" -> state = TaskState.Calculated;
+                case "free" -> state = TaskState.Free;
+                case "reserved" -> state = TaskState.Reserved;
+            }
+            Integer owner = Integer.parseInt(oneObject[2].split(":")[1]);
+            //TODO: TaskResult taskResult = oneObject[2].split(":")[1];
+            result.add(new TaskStateMess(taskId, state, owner));
+        }
+
+        return result;
+    }
+    private static Calculated funCalculated(HashMap<String, Object> jsonMapBody){
+        //TODO:
+        int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
+        //String result = jsonMapBody.get("result");
+        return new Calculated(taskId, null);
+    }
+    private static Confirm funConfirm(HashMap<String, Object> jsonMapBody){
+        int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
+        TaskState state = null;
+        String stateString = jsonMapBody.get("state").toString();
+        switch (stateString) {
+            case "calculated" -> state = TaskState.Calculated;
+            case "free" -> state = TaskState.Free;
+            case "reserved" -> state = TaskState.Reserved;
+        }
+        String ownerStr = jsonMapBody.get("owner").toString();
         Integer owner;
-        if(ownerStr == "null"){
+        if(ownerStr.equals("null")){
             owner = null;
         } else {
             owner = Integer.parseInt(ownerStr);
         }
-
+        //TODO:
         jsonMapBody.get("result");
-
-        //"body":
-        //{
-        //    "task_id": <task_id>,
-        //    "state": <"free" | "reserved" | "calculated">,
-        //    "owner": <null | node_id>,
-        //    "result": <null | result_obj>
-        //}
-        return null;
-        //return new Confirm(new TaskRecord());
+        return new Confirm(taskId, state, owner, null);
     }
-    private static GiveSynchronization funGiveSynchronization(Map<String, String> jsonMapBody){
-        //    "tasks": [
-        //        {
-        //            "task_id": <task_id>,
-        //            "state": <"free" | "reserved" | "calculated">,
-        //            "owner": <null | node_id>,
-        //            "result": <null | result_obj>
-        //        }
-        //    ]
-        String tasksArray = jsonMapBody.get("tasks");
-        List<TaskStateMess> list = new ArrayList<>();
-        return new GiveSynchronization(list);
-    }
-    private static GetSynchronization funGetSynchronization(Map<String, String> jsonMapBody){
-        String tasksArray = jsonMapBody.get("tasks");
-        return new GetSynchronization(new ArrayList<>());
-    }
-    private static GiveProgress funGiveProcess(Map<String, String> jsonMapBody){
-        String progress = jsonMapBody.get("progress");
-        return new GiveProgress();
-    }
-    private static Calculated funCalculated(Map<String, String> jsonMapBody){
-        int taskId = Integer.parseInt(jsonMapBody.get("task_id"));
-        String result = jsonMapBody.get("result");
-        return null;
-        //return new Calculated(taskId, new TaskResult());
-    }
-
-
 }
-
