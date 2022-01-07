@@ -5,10 +5,7 @@ import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.Connection;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueue;
-import pl.edu.agh.calculationp2p.network.utilities.DummyMessage;
-import pl.edu.agh.calculationp2p.network.utilities.DummyMessage2;
-import pl.edu.agh.calculationp2p.network.utilities.DummyMessageParser;
-import pl.edu.agh.calculationp2p.network.utilities.DummyMessageQueue;
+import pl.edu.agh.calculationp2p.network.utilities.*;
 
 import javax.swing.text.StyleContext;
 import java.net.InetSocketAddress;
@@ -25,7 +22,7 @@ public class RouterTest {
         DummyMessageQueue messageQueue = new DummyMessageQueue();
         InetSocketAddress ip = new InetSocketAddress("localhost", 13900);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser, ip);
+        ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser, ip, new DummyInterrupter());
         connectionManager.start();
         RoutingTable table = new RoutingTableImpl();
         PublicRouter router = new PublicRouter(connectionManager, messageQueue, table);
@@ -39,7 +36,7 @@ public class RouterTest {
         DummyMessageQueue messageQueue = new DummyMessageQueue();
         InetSocketAddress ip = new InetSocketAddress("localhost", 13901);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser, ip);
+        ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser, ip, new DummyInterrupter());
         connectionManager.start();
         RoutingTable table = new RoutingTableImpl();
         PublicRouter router = new PublicRouter(connectionManager, messageQueue, table);
@@ -51,7 +48,7 @@ public class RouterTest {
     {
         DummyMessageQueue messageQueue = new DummyMessageQueue();
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser);
+        ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser, new DummyInterrupter());
         connectionManager.start();
         RoutingTable table = new RoutingTableImpl();
         PrivateRouter router = new PrivateRouter(connectionManager, messageQueue, table);
@@ -64,7 +61,7 @@ public class RouterTest {
     {
         DummyMessageQueue messageQueue = new DummyMessageQueue();
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser);
+        ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser, new DummyInterrupter());
         connectionManager.start();
         RoutingTable table = new RoutingTableImpl();
         PrivateRouter router = new PrivateRouter(connectionManager, messageQueue, table);
@@ -82,7 +79,7 @@ public class RouterTest {
     @Test
     void checkIfGetIdWorksProperly()
     {
-        ConnectionManager connectionManager = new ConnectionManager(new MessageQueue(), new DummyMessageParser());
+        ConnectionManager connectionManager = new ConnectionManager(new MessageQueue(), new DummyMessageParser(), new DummyInterrupter());
         Router router1 = new PrivateRouter(connectionManager, new MessageQueue(), new RoutingTableImpl());
         Router router2 = new PublicRouter(connectionManager, new MessageQueue(), new RoutingTableImpl());
         router1.setId(1);
@@ -103,8 +100,8 @@ public class RouterTest {
         InetSocketAddress ip1 = new InetSocketAddress("localhost", 14001);
         InetSocketAddress ip2 = new InetSocketAddress("localhost", 14002);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManager connectionManager1 = new ConnectionManager(messageQueue1, dummyMessageParser, ip1);
-        ConnectionManager connectionManager2 = new ConnectionManager(messageQueue2, dummyMessageParser, ip2);
+        ConnectionManager connectionManager1 = new ConnectionManager(messageQueue1, dummyMessageParser, ip1, new DummyInterrupter());
+        ConnectionManager connectionManager2 = new ConnectionManager(messageQueue2, dummyMessageParser, ip2, new DummyInterrupter());
         connectionManager1.start();
         connectionManager2.start();
 
@@ -137,8 +134,8 @@ public class RouterTest {
 
         InetSocketAddress ip2 = new InetSocketAddress("localhost", 14003);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManager connectionManager1 = new ConnectionManager(messageQueue1, dummyMessageParser);
-        ConnectionManager connectionManager2 = new ConnectionManager(messageQueue2, dummyMessageParser, ip2);
+        ConnectionManager connectionManager1 = new ConnectionManager(messageQueue1, dummyMessageParser, new DummyInterrupter());
+        ConnectionManager connectionManager2 = new ConnectionManager(messageQueue2, dummyMessageParser, ip2, new DummyInterrupter());
         connectionManager1.start();
         connectionManager2.start();
         RoutingTable table1 = new RoutingTableImpl();
@@ -173,8 +170,8 @@ public class RouterTest {
 
         InetSocketAddress ip2 = new InetSocketAddress("localhost", 14004);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManager connectionManager1 = new ConnectionManager(messageQueue1, dummyMessageParser);
-        ConnectionManager connectionManager2 = new ConnectionManager(messageQueue2, dummyMessageParser, ip2);
+        ConnectionManager connectionManager1 = new ConnectionManager(messageQueue1, dummyMessageParser, new DummyInterrupter());
+        ConnectionManager connectionManager2 = new ConnectionManager(messageQueue2, dummyMessageParser, ip2, new DummyInterrupter());
         connectionManager1.start();
         connectionManager2.start();
 
@@ -393,9 +390,9 @@ public class RouterTest {
 
         InetSocketAddress ip2 = new InetSocketAddress("localhost", port);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManager connectionManager1 = new ConnectionManager(messageQueue1, dummyMessageParser);
-        ConnectionManager connectionManager2 = new ConnectionManager(messageQueue2, dummyMessageParser, ip2);
-        ConnectionManager connectionManager3 = new ConnectionManager(messageQueue3, dummyMessageParser);
+        ConnectionManager connectionManager1 = new ConnectionManager(messageQueue1, dummyMessageParser, new DummyInterrupter());
+        ConnectionManager connectionManager2 = new ConnectionManager(messageQueue2, dummyMessageParser, ip2, new DummyInterrupter());
+        ConnectionManager connectionManager3 = new ConnectionManager(messageQueue3, dummyMessageParser, new DummyInterrupter());
         connectionManager1.start();
         connectionManager2.start();
         connectionManager3.start();
@@ -455,7 +452,7 @@ public class RouterTest {
         messageQueue4.addSecondSemaphore(semaphore5);
         messageQueue2.addSecondSemaphore(semaphore5);
         InetSocketAddress ip4 = new InetSocketAddress("localhost", port4);
-        ConnectionManager connectionManager4 = new ConnectionManager(messageQueue4, dummyMessageParser, ip4);
+        ConnectionManager connectionManager4 = new ConnectionManager(messageQueue4, dummyMessageParser, ip4, new DummyInterrupter());
         connectionManager4.start();
         RoutingTable table4 = new RoutingTableImpl();
         PublicRouter Router4 = new PublicRouter(connectionManager4, messageQueue4, table4);

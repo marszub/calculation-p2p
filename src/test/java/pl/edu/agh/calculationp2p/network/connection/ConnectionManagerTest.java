@@ -3,6 +3,7 @@ package pl.edu.agh.calculationp2p.network.connection;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
+import pl.edu.agh.calculationp2p.network.utilities.DummyInterrupter;
 import pl.edu.agh.calculationp2p.network.utilities.DummyMessage;
 import pl.edu.agh.calculationp2p.network.utilities.DummyMessageParser;
 import pl.edu.agh.calculationp2p.network.utilities.DummyMessageQueue;
@@ -23,7 +24,8 @@ class ConnectionManagerTest {
         ConnectionManager connectionManager = new ConnectionManager(
                 queue,
                 messageParser,
-                new InetSocketAddress("localhost", 49152)
+                new InetSocketAddress("localhost", 49152),
+                new DummyInterrupter()
         );
         Semaphore semaphore = new Semaphore(1);
         try {
@@ -52,7 +54,8 @@ class ConnectionManagerTest {
         ConnectionManager connectionManager = new ConnectionManager(
                 queue,
                 messageParser,
-                new InetSocketAddress("localhost", 49153)
+                new InetSocketAddress("localhost", 49153),
+                new DummyInterrupter()
         );
         Semaphore semaphore = new Semaphore(1);
         semaphore.acquire();
@@ -75,8 +78,8 @@ class ConnectionManagerTest {
         DummyMessageQueue queue2 = new DummyMessageQueue();
         DummyMessageParser messageParser = new DummyMessageParser();
         InetSocketAddress ip = new InetSocketAddress("localhost", 49154);
-        ConnectionManager connectionManager1 = new ConnectionManager(queue,messageParser, ip);
-        ConnectionManager connectionManager2 = new ConnectionManager(queue2, messageParser);
+        ConnectionManager connectionManager1 = new ConnectionManager(queue,messageParser, ip, new DummyInterrupter());
+        ConnectionManager connectionManager2 = new ConnectionManager(queue2, messageParser, new DummyInterrupter());
         Semaphore semaphore = new Semaphore(1);
         Semaphore semaphore2 = new Semaphore(1);
         semaphore.acquire();
