@@ -3,6 +3,7 @@ package pl.edu.agh.calculationp2p.network.connection;
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueEntry;
+import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -18,15 +19,19 @@ public class ConnectionManager extends Thread {
     private final List<Connection> outgoingConnections = new ArrayList<>();
     private Selector selector;
     private final MessageParser messageParser;
+    private final IdleInterrupter interrupter;
 
-    public ConnectionManager(MessageQueueEntry messageQueueEntry, MessageParser messageParser, InetSocketAddress localListeningAddress) {
+    public ConnectionManager(MessageQueueEntry messageQueueEntry, MessageParser messageParser,
+                             InetSocketAddress localListeningAddress, IdleInterrupter interrupter) {
+        this.interrupter = interrupter;
         this.messageParser = messageParser;
         this.messageQueueEntry = messageQueueEntry;
         createServerSelector();
         createServerSocket(localListeningAddress);
     }
 
-    public ConnectionManager(MessageQueueEntry messageQueueEntry, MessageParser messageParser) {
+    public ConnectionManager(MessageQueueEntry messageQueueEntry, MessageParser messageParser, IdleInterrupter interrupter) {
+        this.interrupter = interrupter;
         this.messageParser = messageParser;
         this.messageQueueEntry = messageQueueEntry;
         createServerSelector();
@@ -63,6 +68,7 @@ public class ConnectionManager extends Thread {
                 keys.remove();
                 decideKeyPath(key);
             }
+            interrupter.wake();
         }
     }
 
