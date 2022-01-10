@@ -1,25 +1,47 @@
 package pl.edu.agh.calculationp2p.state;
 
-import jdk.jshell.spi.ExecutionControl;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
+import pl.edu.agh.calculationp2p.state.task.TaskState;
 
-//TODO: Implement
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 
 public class Progress {
+    private HashMap<Integer, TaskRecord> tasks;
     public Progress(int taskNum){
-        throw new UnsupportedOperationException("Will be implemented");
+        tasks = new HashMap<>();
     }
 
     public void update(TaskRecord taskRecord){
-        throw new UnsupportedOperationException("Will be implemented");
+        int toUpdate = taskRecord.getTaskID();
+        tasks.remove(toUpdate);
+        tasks.put(toUpdate, taskRecord);
     }
 
     public Progress clone(){
-        throw new UnsupportedOperationException("Will be implemented");
+        // ??
+        return this;
+    }
+
+    public ArrayList<Integer> getFreeTasksList(){
+        ArrayList<Integer> freeTasks = new ArrayList<>();
+        for (TaskRecord task: tasks.values()) {
+            if(task.getState() == TaskState.Free){
+                freeTasks.add(task.getTaskID());
+            }
+        }
+        return freeTasks;
+    }
+
+    public HashMap<Integer, TaskRecord> getTasks() {
+        return tasks;
     }
 
     public TaskRecord get(int taskId){
-        throw new UnsupportedOperationException("Will be implemented");
+        return tasks.get(taskId);
     }
 
     public String serialize(){

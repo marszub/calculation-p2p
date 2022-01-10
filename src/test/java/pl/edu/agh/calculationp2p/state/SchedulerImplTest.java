@@ -19,54 +19,7 @@ class SchedulerImplTest {
     
     @BeforeEach
     void init(){
-        scheduler = new SchedulerImpl(new Servant() {
-            @Override
-            public TaskRecord getTaskProgress(Integer taskId) {
-                return null;
-            }
-
-            @Override
-            public Progress getProgress() {
-                return null;
-            }
-
-            @Override
-            public void observeReserved(Future<Observation> observer, IdleInterrupter interrupter) {
-            }
-
-            @Override
-            public void observeCalculated(Future<Observation> observer, IdleInterrupter interrupter) {
-            }
-
-            @Override
-            public void updateProgress(Progress progress) {
-            }
-
-            @Override
-            public Integer getTask() {
-                return 5;
-            }
-
-            @Override
-            public void observeTask(Integer taskId, Future<Void> flag, Thread thread) {
-
-            }
-
-            @Override
-            public void finishTask(Integer taskId, TaskResult result) {
-
-            }
-
-            @Override
-            public TaskRecord calculate(Integer taskId, Integer nodeId, TaskResult result) {
-                return null;
-            }
-
-            @Override
-            public TaskRecord reserve(Integer taskId, Integer nodeId) {
-                return null;
-            }
-        });
+        //scheduler = new SchedulerImpl(new ServantImpl());
     }
 
     @Test

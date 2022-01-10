@@ -1,6 +1,5 @@
 package pl.edu.agh.calculationp2p.state;
 
-//TODO: Implement
 
 import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.state.future.Future;
@@ -10,67 +9,64 @@ import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
+import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 public class ServantImpl implements Servant {
     private final Progress progress;
     private final TaskPublisher taskPublisher;
     private final ReservedPublisher reservedPublisher;
     private final CalculatedPublisher calculatedPublisher;
+    private final Integer nodeId;
 
-    ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher){
+    @Override
+    public Integer getNodeId() {
+        return nodeId;
+    }
+
+    @Override
+    public Integer getTask() {
+       return null;
+    }
+
+    ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher, Integer nodeId) {
         this.progress = progress;
         this.taskPublisher = taskPublisher;
         this.reservedPublisher = reservedPublisher;
         this.calculatedPublisher = calculatedPublisher;
+        this.nodeId = nodeId;
     }
 
     @Override
-    public TaskRecord getTaskProgress(Integer taskId){
-        throw new UnsupportedOperationException("Will be implemented");
+    public TaskPublisher getTaskPublisher() {
+        return taskPublisher;
     }
 
     @Override
-    public Progress getProgress(){
-        throw new UnsupportedOperationException("Will be implemented");
+    public ReservedPublisher getReservedPublisher() {
+        return reservedPublisher;
     }
 
     @Override
-    public void observeReserved(Future<Observation> observer, IdleInterrupter interrupter){
-        throw new UnsupportedOperationException("Will be implemented");
+    public CalculatedPublisher getCalculatedPublisher() {
+        return calculatedPublisher;
     }
 
     @Override
-    public void observeCalculated(Future<Observation> observer, IdleInterrupter interrupter){
-        throw new UnsupportedOperationException("Will be implemented");
+    public TaskRecord getTaskProgress(Integer taskId) {
+        return progress.get(taskId);
     }
 
     @Override
-    public void updateProgress(Progress progress){
-        throw new UnsupportedOperationException("Will be implemented");
+    public Progress getProgress() {
+        return progress;
     }
 
     @Override
-    public Integer getTask(){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
-
-    @Override
-    public void observeTask(Integer taskId, Future<Void> flag, Thread thread){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
-
-    @Override
-    public void finishTask(Integer taskId, TaskResult result){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
-
-    @Override
-    public TaskRecord calculate(Integer taskId, Integer nodeId, TaskResult result){
-        throw new UnsupportedOperationException("Will be implemented");
-    }
-
-    @Override
-    public TaskRecord reserve(Integer taskId, Integer nodeId){
-        throw new UnsupportedOperationException("Will be implemented");
+    public void lookAllPublishers(TaskRecord prev, TaskRecord curr){
+        taskPublisher.look(prev, curr);
+        calculatedPublisher.look(prev, curr);
+        reservedPublisher.look(prev, curr);
+         // TODO jesli stan reserved -> free nowy request GiveTaskRequest i wywołaj sam siebie lookAll()
+        //
     }
 }

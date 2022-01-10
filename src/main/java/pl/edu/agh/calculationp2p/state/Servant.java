@@ -4,6 +4,9 @@ import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
+import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 public interface Servant {
@@ -11,19 +14,15 @@ public interface Servant {
 
     Progress getProgress();
 
-    void observeReserved(Future<Observation> observer, IdleInterrupter interrupter);
+    TaskPublisher getTaskPublisher();
 
-    void observeCalculated(Future<Observation> observer, IdleInterrupter interrupter);
+    ReservedPublisher getReservedPublisher();
 
-    void updateProgress(Progress progress);
+    CalculatedPublisher getCalculatedPublisher();
+
+    void lookAllPublishers(TaskRecord prev, TaskRecord curr);
+
+    Integer getNodeId();
 
     Integer getTask();
-
-    void observeTask(Integer taskId, Future<Void> flag, Thread thread);
-
-    void finishTask(Integer taskId, TaskResult result);
-
-    TaskRecord calculate(Integer taskId, Integer nodeId, TaskResult result);
-
-    TaskRecord reserve(Integer taskId, Integer nodeId);
 }

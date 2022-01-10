@@ -21,4 +21,7 @@ public class Future<ResponseType> {
         this.response = response;
         ready = true;
     }
+    public void put(){
+        ready = true;
+    }
 }

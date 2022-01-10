@@ -46,7 +46,6 @@ public abstract class ConnectionImpl implements Connection
             e.printStackTrace();
         }
     }
-
     @Override
     public String read() throws ConnectionLostException
     {
