@@ -9,5 +9,5 @@ public interface TaskGiver {
     // modul obliczen - interesuje go tylko to co liczy
     Future<Optional<Integer>> getTask();
     Future<Void> observeTask(Integer taskId, Thread thread);
-    void finishTask(Integer taskId);
+    void finishTask(Integer taskId, TaskResult result);
 }

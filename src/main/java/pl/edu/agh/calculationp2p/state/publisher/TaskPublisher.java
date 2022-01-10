@@ -35,8 +35,14 @@ public class TaskPublisher {
         }
     }
 
-    public void unsubscribe(Thread thread){
-        throw new UnsupportedOperationException("Will be implemented");
+    public void unsubscribe(Integer taskId) {
+        List<Pair<Integer, Future<Void>>> toRemove = new LinkedList<>();
+        for (Pair<Integer, Future<Void>> pair : observers) {
+            if (Objects.equals(pair.getL(), taskId)) {
+                toRemove.add(pair);
+            }
+        }
+        observers.removeAll(toRemove);
     }
 
     public void raiseFlag(Integer taskId) {
