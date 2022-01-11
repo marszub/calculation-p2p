@@ -3,11 +3,9 @@ package pl.edu.agh.calculationp2p.network.utilities;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.Connection;
 
-import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.Selector;
 import java.util.LinkedList;
-import java.util.List;
 
 public class DummyConnection implements Connection {
     private boolean sendResult;
@@ -32,7 +30,7 @@ public class DummyConnection implements Connection {
     }
 
     @Override
-    public void register(Selector selector, int event) throws ClosedChannelException {
+    public void register(Selector selector) throws ClosedChannelException {
         return;
     }
 
@@ -56,8 +54,7 @@ public class DummyConnection implements Connection {
         return list;
     }
 
-//    public Message read()
-    public String read()
+    public String[] read()
     {
         return null;
     }

@@ -24,7 +24,7 @@ public class StaticConnectionTest
         Selector selector2 = createServer(ip2);
         StaticConnection connection = new StaticConnection(ip2);
         try {
-            connection.register(selector1, SelectionKey.OP_READ);
+            connection.register(selector1);
         } catch (ClosedChannelException e) {
             e.printStackTrace();
         }
@@ -34,7 +34,7 @@ public class StaticConnectionTest
         getMessage(selector1);
         dynamicConnection = addNewConnection(selector2);
         dynamicConnection.send(message);
-        assertEquals(message.serialize(), getMessage(selector1));
+        assertEquals(message.serialize(), getMessage(selector1)[0]);
     }
 
     @Test
@@ -49,9 +49,9 @@ public class StaticConnectionTest
         StaticConnection connection = new StaticConnection(ip2);
         connection.send(message);
         DynamicConnection dynamicConnection = addNewConnection(selector2);
-        connection.register(selector1, SelectionKey.OP_READ);
+        connection.register(selector1);
         dynamicConnection.send(message2);
-        assertEquals(message2.serialize(), getMessage(selector1));
+        assertEquals(message2.serialize(), getMessage(selector1)[0]);
     }
 
     private void sendMessageToServer(InetSocketAddress ip, Message message)
@@ -101,7 +101,7 @@ public class StaticConnectionTest
                 SocketChannel socket = server.accept();
                 socket.configureBlocking(false);
                 DynamicConnection connection = new DynamicConnection(socket);
-                connection.register(selector, SelectionKey.OP_READ);
+                connection.register(selector);
                 return connection;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -110,7 +110,7 @@ public class StaticConnectionTest
         return null;
     }
 
-    private String getMessage(Selector selector) {
+    private String[] getMessage(Selector selector) {
         try {
             selector.select();
         } catch (IOException e) {
@@ -128,6 +128,6 @@ public class StaticConnectionTest
                 e.printStackTrace();
             }
         }
-        return "";
+        return new String[0];
     }
 }
