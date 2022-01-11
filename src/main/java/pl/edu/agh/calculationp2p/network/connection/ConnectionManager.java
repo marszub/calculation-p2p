@@ -39,7 +39,7 @@ public class ConnectionManager extends Thread {
 
     public void addStaticConnection(StaticConnection staticConnection) {
         try {
-            staticConnection.register(selector, SelectionKey.OP_READ);
+            staticConnection.register(selector);
             selector.wakeup();
         } catch (ClosedChannelException e) {
             e.printStackTrace();
@@ -92,7 +92,6 @@ public class ConnectionManager extends Thread {
             ServerSocket serverSocket = serverSocketChannel.socket();
             serverSocket.bind(localListeningAddress);
             serverSocketChannel.configureBlocking(false);
-            Selector.open();
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, serverSocketChannel);
         } catch (IOException e) {
             e.printStackTrace();
@@ -107,8 +106,11 @@ public class ConnectionManager extends Thread {
         } else if (key.isReadable()) {
             Connection connection = (Connection) key.attachment();
             try {
-                String message = connection.read();
-                messageQueueEntry.add(new MessageConnectionPair(messageParser.parse(message), connection));
+                String[] messages = connection.read();
+                for(String message : messages)
+                {
+                    messageQueueEntry.add(new MessageConnectionPair(messageParser.parse(message), connection));
+                }
             } catch (ConnectionLostException e) {
                 incomingConnections.remove(connection);
             }
@@ -119,9 +121,8 @@ public class ConnectionManager extends Thread {
         ServerSocketChannel server = (ServerSocketChannel) key.channel();
         try {
             SocketChannel connection = server.accept();
-            connection.configureBlocking(false);
             DynamicConnection dynamicConnection = new DynamicConnection(connection);
-            dynamicConnection.register(selector, SelectionKey.OP_READ);
+            dynamicConnection.register(selector);
             incomingConnections.add(dynamicConnection);
         } catch (IOException e) {
             e.printStackTrace();

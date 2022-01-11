@@ -11,7 +11,9 @@ public class DummyMessageParser implements MessageParser {
     public Message parse(String message) {
          if(messageMap.containsKey(message))
              return messageMap.get(message);
-         return new DummyMessage();
+         DummyMessage msg = new DummyMessage();
+         msg.setText(message);
+         return msg;
     }
 
     public void addParse(String serialize, Message message)

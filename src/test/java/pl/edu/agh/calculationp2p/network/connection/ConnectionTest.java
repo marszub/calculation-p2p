@@ -12,6 +12,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +28,23 @@ class ConnectionTest {
         msg.setText("TEXT");
         sendMessageToServer(ip, msg);
         addNewConnection(selector);
-        assertEquals(msg.serialize(), getMessage(selector));
+        assertEquals(msg.serialize(), getMessage(selector)[0]);
+    }
+
+    @Test
+    void checkIfMultipleMessagesSendsProperly()
+    {
+        InetSocketAddress ip = new InetSocketAddress("localhost", 49150);
+        Selector selector = createServer(ip);
+        DummyMessage msg = new DummyMessage();
+        msg.setText("TEXT");
+        StaticConnection serverConnection = new StaticConnection(ip);
+        serverConnection.send(msg);
+        serverConnection.send(msg);
+        addNewConnection(selector);
+        String[] tab = getMessage(selector);
+        assertEquals(msg.serialize(), tab[0]);
+        assertEquals(msg.serialize(), tab[1]);
     }
 
     private void sendMessageToServer(InetSocketAddress ip, Message message)
@@ -77,14 +94,14 @@ class ConnectionTest {
                 SocketChannel socket = server.accept();
                 socket.configureBlocking(false);
                 DynamicConnection connection = new DynamicConnection(socket);
-                connection.register(selector, SelectionKey.OP_READ);
+                connection.register(selector);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private String getMessage(Selector selector) {
+    private String[] getMessage(Selector selector) {
         try {
             selector.select();
         } catch (IOException e) {
@@ -102,6 +119,6 @@ class ConnectionTest {
                 e.printStackTrace();
             }
         }
-        return "";
+        return new String[0];
     }
 }

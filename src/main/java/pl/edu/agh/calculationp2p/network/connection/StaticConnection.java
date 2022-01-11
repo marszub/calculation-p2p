@@ -5,14 +5,11 @@ import pl.edu.agh.calculationp2p.message.Message;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
 public class StaticConnection extends ConnectionImpl {
 
     private final InetSocketAddress ipAddress;
-    private Selector selector;
-    private int event;
 
     public StaticConnection(InetSocketAddress ipAddress){
         this.ipAddress = ipAddress;
@@ -32,16 +29,13 @@ public class StaticConnection extends ConnectionImpl {
         if(!super.send(message))
         {
             reconnect();
+            try {
+                super.register(selector);
+            } catch (ClosedChannelException ignored) {
+            }
             return false;
         }
         return true;
-    }
-
-    @Override
-    public void register(Selector selector, int event) throws ClosedChannelException {
-        this.selector = selector;
-        this.event = event;
-        super.register(selector, event);
     }
 
     public void disconnect()
@@ -53,11 +47,16 @@ public class StaticConnection extends ConnectionImpl {
         }
     }
 
-    public String read() {
+    public String[] read() {
         try {
             return super.read();
         } catch (ConnectionLostException e) {
+            close();
             reconnect();
+            try {
+                super.register(selector);
+            } catch (ClosedChannelException ignored) {
+            }
         }
         return null;
     }
@@ -65,6 +64,7 @@ public class StaticConnection extends ConnectionImpl {
     public void reconnect(){
         try {
             socketChannel = SocketChannel.open(ipAddress);
+            socketChannel.configureBlocking(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
