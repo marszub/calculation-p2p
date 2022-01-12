@@ -49,7 +49,7 @@ public class NetworkIntegrationTests {
         dummyMessageParser.addParse(message.serialize(), message);
         publicRouter1.send(message);
         semaphore.acquire();
-        semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message, publicRouter2.getMessage().get(0));
         publicRouter1.close();
         publicRouter2.close();
@@ -87,7 +87,7 @@ public class NetworkIntegrationTests {
         message.setReceiver(2);
         dummyMessageParser.addParse(message.serialize(), message);
         Router1.send(message);
-        semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message, Router2.getMessage().get(0));
         Router1.close();
         Router2.close();
@@ -125,7 +125,7 @@ public class NetworkIntegrationTests {
         message.setReceiver(2);
         dummyMessageParser.addParse(message.serialize(), message);
         Router1.send(message);
-        semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore.tryAcquire(300, TimeUnit.MILLISECONDS);
         Router2.getMessage();
 
         Router2.createInterface(1);
@@ -134,7 +134,7 @@ public class NetworkIntegrationTests {
         message2.setReceiver(1);
         dummyMessageParser.addParse(message2.serialize(), message2);
         Router2.send(message2);
-        semaphore2.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore2.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message2, Router1.getMessage().get(0));
         Router1.close();
         Router2.close();
@@ -156,10 +156,10 @@ public class NetworkIntegrationTests {
         dummyMessageParser.addParse(message.serialize(), message);
         Router1.send(message);
         semaphore2.acquire();
-        semaphore2.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore2.tryAcquire(300, TimeUnit.MILLISECONDS);
         Router2.getMessage();
         semaphore3.acquire();
-        semaphore3.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore3.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message, Router3.getMessage().get(0));
         Router1.close();
         Router2.close();
@@ -186,10 +186,10 @@ public class NetworkIntegrationTests {
         dummyMessageParser.addParse(message3.serialize(), message3);
         Router1.send(message);
         semaphore2.acquire();
-        semaphore2.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore2.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message2.serialize(), Router2.getMessage().get(0).serialize());
         semaphore3.acquire();
-        semaphore3.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore3.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message3, Router3.getMessage().get(0));
         Router1.close();
         Router2.close();
@@ -217,9 +217,9 @@ public class NetworkIntegrationTests {
         DummyMessage2 message3 = (DummyMessage2) message.clone(3);
         dummyMessageParser.addParse(message3.serialize(), message3);
         Router2.send(message);
-        semaphore3.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore3.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message3, Router3.getMessage().get(0));
-        semaphore1.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore1.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message1, Router1.getMessage().get(0));
         Router1.close();
         Router2.close();
@@ -257,7 +257,7 @@ public class NetworkIntegrationTests {
         semaphore2.acquire();
         semaphore3.acquire();
         semaphore4.acquire();
-        semaphore5.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore5.tryAcquire(300, TimeUnit.MILLISECONDS);
         List<Message> list2 = Router2.getMessage();
         List<Message> list4 = Router4.getMessage();
         if(list2.size() > 0)
@@ -265,14 +265,14 @@ public class NetworkIntegrationTests {
             if(list4.size() > 0)
             {
                 assertEquals(message4.serialize(), list4.get(0).serialize());
-                semaphore3.tryAcquire(100, TimeUnit.MILLISECONDS);
+                semaphore3.tryAcquire(300, TimeUnit.MILLISECONDS);
                 assertEquals(message3, Router3.getMessage().get(0));
             }
             else
             {
                 assertEquals(message2.serialize(), list2.get(0).serialize());
-                semaphore4.tryAcquire(100, TimeUnit.MILLISECONDS);
-                semaphore3.tryAcquire(100, TimeUnit.MILLISECONDS);
+                semaphore4.tryAcquire(300, TimeUnit.MILLISECONDS);
+                semaphore3.tryAcquire(300, TimeUnit.MILLISECONDS);
                 assertEquals(message3, Router3.getMessage().get(0));
                 assertEquals(message4, Router4.getMessage().get(0));
             }
@@ -280,8 +280,8 @@ public class NetworkIntegrationTests {
         else
         {
             assertEquals(message4.serialize(), list4.get(0).serialize());
-            semaphore2.tryAcquire(100, TimeUnit.MILLISECONDS);
-            semaphore3.tryAcquire(100, TimeUnit.MILLISECONDS);
+            semaphore2.tryAcquire(300, TimeUnit.MILLISECONDS);
+            semaphore3.tryAcquire(300, TimeUnit.MILLISECONDS);
             assertEquals(message3, Router3.getMessage().get(0));
             assertEquals(message2, Router2.getMessage().get(0));
         }
@@ -320,9 +320,9 @@ public class NetworkIntegrationTests {
         semaphore1.acquire();
         semaphore3.acquire();
         semaphore4.acquire();
-        semaphore1.tryAcquire(100, TimeUnit.MILLISECONDS);
-        semaphore3.tryAcquire(100, TimeUnit.MILLISECONDS);
-        semaphore4.tryAcquire(100, TimeUnit.MILLISECONDS);
+        semaphore1.tryAcquire(300, TimeUnit.MILLISECONDS);
+        semaphore3.tryAcquire(300, TimeUnit.MILLISECONDS);
+        semaphore4.tryAcquire(300, TimeUnit.MILLISECONDS);
         assertEquals(message1, Router1.getMessage().get(0));
         assertEquals(message3, Router3.getMessage().get(0));
         assertEquals(message4, Router4.getMessage().get(0));
