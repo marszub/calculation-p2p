@@ -20,6 +20,8 @@ public class ConnectionManager extends Thread {
     private Selector selector;
     private final MessageParser messageParser;
     private final IdleInterrupter interrupter;
+    private boolean endRunning = false;
+    private ServerSocketChannel server = null;
 
     public ConnectionManager(MessageQueueEntry messageQueueEntry, MessageParser messageParser,
                              InetSocketAddress localListeningAddress, IdleInterrupter interrupter) {
@@ -54,21 +56,66 @@ public class ConnectionManager extends Thread {
         staticConnection.disconnect();
     }
 
-    public void run() {
-        while (true) {
+    public void run()
+    {
+        while (true)
+        {
             try {
-                selector.select();
+                if(!endRunning) {
+                    selector.select();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if(endRunning)
+            {
+                clear();
+                return;
+            }
             Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+            boolean messageRead = false;
             while (keys.hasNext())
             {
                 SelectionKey key = keys.next();
                 keys.remove();
-                decideKeyPath(key);
+                if(decideKeyPath(key))
+                {
+                    messageRead = true;
+                }
             }
-            interrupter.wake();
+            if(messageRead)
+            {
+                interrupter.wake();
+            }
+        }
+    }
+
+    private void clear()
+    {
+        try
+        {
+            selector.close();
+            for(Connection connection : incomingConnections)
+                connection.close();
+            for(Connection connection : outgoingConnections)
+                connection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void close()
+    {
+        endRunning = true;
+        selector.wakeup();
+        if(server != null)
+        {
+            try
+            {
+                server.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -88,22 +135,26 @@ public class ConnectionManager extends Thread {
     private void createServerSocket(InetSocketAddress localListeningAddress)
     {
         try {
-            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-            ServerSocket serverSocket = serverSocketChannel.socket();
+            server = ServerSocketChannel.open();
+            ServerSocket serverSocket = server.socket();
             serverSocket.bind(localListeningAddress);
-            serverSocketChannel.configureBlocking(false);
-            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, serverSocketChannel);
+            server.configureBlocking(false);
+            server.register(selector, SelectionKey.OP_ACCEPT, server);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void decideKeyPath(SelectionKey key)
+    private boolean decideKeyPath(SelectionKey key)
     {
-        if (key.isAcceptable()) {
+        if (key.isAcceptable())
+        {
             handleNewConnection(key);
-        } else if (key.isReadable()) {
+            return false;
+        }
+        if (key.isReadable())
+        {
             Connection connection = (Connection) key.attachment();
             try {
                 String[] messages = connection.read();
@@ -111,10 +162,13 @@ public class ConnectionManager extends Thread {
                 {
                     messageQueueEntry.add(new MessageConnectionPair(messageParser.parse(message), connection));
                 }
+                return true;
             } catch (ConnectionLostException e) {
+                connection.close();
                 incomingConnections.remove(connection);
             }
         }
+        return false;
     }
 
     private void handleNewConnection(SelectionKey key) {

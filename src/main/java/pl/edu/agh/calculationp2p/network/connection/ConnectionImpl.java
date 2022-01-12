@@ -47,7 +47,8 @@ public abstract class ConnectionImpl implements Connection
         try
         {
             socketChannel.close();
-            key.cancel();
+            if(key != null)
+                key.cancel();
         }catch(IOException e)
         {
             e.printStackTrace();

@@ -58,7 +58,7 @@ public class StaticConnection extends ConnectionImpl {
             } catch (ClosedChannelException ignored) {
             }
         }
-        return null;
+        return new String[0];
     }
 
     public void reconnect(){
@@ -66,7 +66,6 @@ public class StaticConnection extends ConnectionImpl {
             socketChannel = SocketChannel.open(ipAddress);
             socketChannel.configureBlocking(false);
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

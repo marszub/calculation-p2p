@@ -17,44 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConnectionManagerTest {
     @Test
-    void checkIfConnectionManagerReceivesMessages()
-    {
+    void checkIfConnectionManagerReceivesMessages() throws InterruptedException {
         DummyMessageQueue queue = new DummyMessageQueue();
         DummyMessageParser messageParser = new DummyMessageParser();
         ConnectionManager connectionManager = new ConnectionManager(
                 queue,
                 messageParser,
-                new InetSocketAddress("localhost", 49152),
-                new DummyInterrupter()
-        );
-        Semaphore semaphore = new Semaphore(1);
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        queue.addSemaphore(semaphore);
-        connectionManager.start();
-        DummyMessage message = new DummyMessage();
-        message.setText("TEST1");
-        messageParser.addParse(message.serialize(), message);
-        sendMessageToServer(new InetSocketAddress("localhost", 49152), message);
-        try {
-            semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        assertEquals(message, queue.getList().pop().message());
-    }
-
-    @Test
-    void sendMultipleMessages() throws InterruptedException {
-        DummyMessageQueue queue = new DummyMessageQueue();
-        DummyMessageParser messageParser = new DummyMessageParser();
-        ConnectionManager connectionManager = new ConnectionManager(
-                queue,
-                messageParser,
-                new InetSocketAddress("localhost", 49153),
+                new InetSocketAddress("localhost", 50000),
                 new DummyInterrupter()
         );
         Semaphore semaphore = new Semaphore(1);
@@ -64,12 +33,39 @@ class ConnectionManagerTest {
         DummyMessage message = new DummyMessage();
         message.setText("TEST1");
         messageParser.addParse(message.serialize(), message);
-        sendMessageToServer(new InetSocketAddress("localhost", 49153), message);
+        StaticConnection connection = sendMessageToServer(new InetSocketAddress("localhost", 50000), message);
         semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
         assertEquals(message, queue.getList().pop().message());
-        sendMessageToServer(new InetSocketAddress("localhost", 49153), message);
+        connectionManager.close();
+        connection.close();
+    }
+
+    @Test
+    void sendMultipleMessages() throws InterruptedException {
+        DummyMessageQueue queue = new DummyMessageQueue();
+        DummyMessageParser messageParser = new DummyMessageParser();
+        ConnectionManager connectionManager = new ConnectionManager(
+                queue,
+                messageParser,
+                new InetSocketAddress("localhost", 50000),
+                new DummyInterrupter()
+        );
+        Semaphore semaphore = new Semaphore(1);
+        semaphore.acquire();
+        queue.addSemaphore(semaphore);
+        connectionManager.start();
+        DummyMessage message = new DummyMessage();
+        message.setText("TEST1");
+        messageParser.addParse(message.serialize(), message);
+        StaticConnection conn1 = sendMessageToServer(new InetSocketAddress("localhost", 50000), message);
         semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
         assertEquals(message, queue.getList().pop().message());
+        StaticConnection conn2 = sendMessageToServer(new InetSocketAddress("localhost", 50000), message);
+        semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
+        assertEquals(message, queue.getList().pop().message());
+        connectionManager.close();
+        conn1.close();
+        conn2.close();
     }
 
     @Test
@@ -77,7 +73,7 @@ class ConnectionManagerTest {
         DummyMessageQueue queue = new DummyMessageQueue();
         DummyMessageQueue queue2 = new DummyMessageQueue();
         DummyMessageParser messageParser = new DummyMessageParser();
-        InetSocketAddress ip = new InetSocketAddress("localhost", 49154);
+        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
         ConnectionManager connectionManager1 = new ConnectionManager(queue,messageParser, ip, new DummyInterrupter());
         ConnectionManager connectionManager2 = new ConnectionManager(queue2, messageParser, new DummyInterrupter());
         Semaphore semaphore = new Semaphore(1);
@@ -103,11 +99,14 @@ class ConnectionManagerTest {
         pair.connection().send(message2);
         semaphore2.tryAcquire(100, TimeUnit.MILLISECONDS);
         assertEquals(message2, queue2.getList().pop().message());
+        connectionManager1.close();
+        connectionManager2.close();
     }
 
-    private void sendMessageToServer(InetSocketAddress ip, Message message)
+    private StaticConnection sendMessageToServer(InetSocketAddress ip, Message message)
     {
         StaticConnection serverConnection = new StaticConnection(ip);
         serverConnection.send(message);
+        return serverConnection;
     }
 }
