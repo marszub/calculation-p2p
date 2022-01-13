@@ -17,7 +17,7 @@ public class RouterTest {
     void checkIfRemovingInterfaceWorksProperlyPublic()
     {
         DummyMessageQueue messageQueue = new DummyMessageQueue();
-        InetSocketAddress ip = new InetSocketAddress("localhost", 47000);
+        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
         ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser, ip, new DummyInterrupter());
         connectionManager.start();
@@ -32,7 +32,7 @@ public class RouterTest {
     void checkIfRemovingNonExistingInterfaceWorksProperlyPublic()
     {
         DummyMessageQueue messageQueue = new DummyMessageQueue();
-        InetSocketAddress ip = new InetSocketAddress("localhost", 47001);
+        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
         ConnectionManager connectionManager = new ConnectionManager(messageQueue, dummyMessageParser, ip, new DummyInterrupter());
         connectionManager.start();
