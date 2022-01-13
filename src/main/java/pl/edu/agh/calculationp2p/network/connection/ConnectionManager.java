@@ -78,7 +78,8 @@ public class ConnectionManager extends Thread {
             {
                 SelectionKey key = keys.next();
                 keys.remove();
-                if(decideKeyPath(key))
+                boolean result = decideKeyPath(key);
+                if(result)
                 {
                     messageRead = true;
                 }
