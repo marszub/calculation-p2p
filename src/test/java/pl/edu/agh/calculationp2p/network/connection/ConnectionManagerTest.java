@@ -73,7 +73,7 @@ class ConnectionManagerTest {
         DummyMessageQueue queue = new DummyMessageQueue();
         DummyMessageQueue queue2 = new DummyMessageQueue();
         DummyMessageParser messageParser = new DummyMessageParser();
-        InetSocketAddress ip = new InetSocketAddress("localhost", 50002);
+        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
         ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(queue,messageParser, ip, new DummyInterrupter());
         ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(queue2, messageParser, new DummyInterrupter());
         Semaphore semaphore = new Semaphore(1);

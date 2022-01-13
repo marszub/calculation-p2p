@@ -3,9 +3,6 @@ package pl.edu.agh.calculationp2p.network.router;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.utilities.*;
-
-import java.net.InetSocketAddress;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

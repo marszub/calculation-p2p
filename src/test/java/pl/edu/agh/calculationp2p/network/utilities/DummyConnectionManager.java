@@ -1,7 +1,6 @@
 package pl.edu.agh.calculationp2p.network.utilities;
 
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
-import pl.edu.agh.calculationp2p.network.connection.ConnectionManagerImpl;
 import pl.edu.agh.calculationp2p.network.connection.StaticConnection;
 
 public class DummyConnectionManager implements ConnectionManager {
@@ -24,5 +23,6 @@ public class DummyConnectionManager implements ConnectionManager {
 
     @Override
     public void close() {
+
     }
 }

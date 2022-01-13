@@ -5,9 +5,9 @@ public interface ConnectionManager extends Runnable {
 
     void removeStaticConnection(StaticConnection staticConnection);
 
-    void start();
-
     void run();
+
+    void start();
 
     void close();
 }
