@@ -96,6 +96,8 @@ public class ConnectionManager extends Thread {
         try
         {
             selector.close();
+            if(server!=null)
+                server.close();
             for(Connection connection : incomingConnections)
                 connection.close();
             for(Connection connection : outgoingConnections)
@@ -105,18 +107,13 @@ public class ConnectionManager extends Thread {
         }
     }
 
-    public void close()
-    {
+    public void close() {
         endRunning = true;
         selector.wakeup();
-        if(server != null)
-        {
-            try
-            {
-                server.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            this.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
