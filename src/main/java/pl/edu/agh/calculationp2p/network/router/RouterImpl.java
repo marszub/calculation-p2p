@@ -19,6 +19,7 @@ public abstract class RouterImpl implements Router {
     {
         this.routingTable = routingTable;
         this.connectionManager = connectionManager;
+        connectionManager.start();
         this.messageQueue = messageQueue;
     }
 
