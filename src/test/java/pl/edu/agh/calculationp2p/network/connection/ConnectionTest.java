@@ -20,7 +20,7 @@ class ConnectionTest {
 
     @Test
     void checkIfMessageSendsProperly() throws IOException {
-        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
+        InetSocketAddress ip = new InetSocketAddress("localhost", 48000);
         SelectorServerPair result = createServer(ip);
         Selector selector = result.selector();
         DummyMessage msg = new DummyMessage();
@@ -35,7 +35,7 @@ class ConnectionTest {
 
     @Test
     void checkIfMultipleMessagesSendsProperly() throws IOException {
-        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
+        InetSocketAddress ip = new InetSocketAddress("localhost", 48001);
         SelectorServerPair result = createServer(ip);
         Selector selector = result.selector();
         DummyMessage msg = new DummyMessage();

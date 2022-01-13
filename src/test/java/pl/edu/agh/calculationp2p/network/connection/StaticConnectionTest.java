@@ -16,8 +16,8 @@ public class StaticConnectionTest
     @Test
     void testIfConnectionWillKeepItselfAliveAfterDisconnectRead() throws IOException {
         DummyMessage message = new DummyMessage("TESTMESSAGE");
-        InetSocketAddress ip1 = new InetSocketAddress("localhost", 50000);
-        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50001);
+        InetSocketAddress ip1 = new InetSocketAddress("localhost", 49000);
+        InetSocketAddress ip2 = new InetSocketAddress("localhost", 49001);
         SelectorServerPair result1 = createServer(ip1);
         SelectorServerPair result2 = createServer(ip2);
         Selector selector1 = result1.selector();
@@ -44,8 +44,8 @@ public class StaticConnectionTest
     {
         DummyMessage message = new DummyMessage("TESTMESSAGE");
         DummyMessage message2 = new DummyMessage("TESTMESSAGE2");
-        InetSocketAddress ip1 = new InetSocketAddress("localhost", 50000);
-        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50001);
+        InetSocketAddress ip1 = new InetSocketAddress("localhost", 49002);
+        InetSocketAddress ip2 = new InetSocketAddress("localhost", 49003);
         SelectorServerPair result1 = createServer(ip1);
         SelectorServerPair result2 = createServer(ip2);
         Selector selector1 = result1.selector();
