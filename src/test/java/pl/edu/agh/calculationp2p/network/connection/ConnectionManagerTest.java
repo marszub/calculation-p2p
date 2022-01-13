@@ -20,7 +20,7 @@ class ConnectionManagerTest {
     void checkIfConnectionManagerReceivesMessages() throws InterruptedException {
         DummyMessageQueue queue = new DummyMessageQueue();
         DummyMessageParser messageParser = new DummyMessageParser();
-        ConnectionManager connectionManager = new ConnectionManager(
+        ConnectionManagerImpl connectionManager = new ConnectionManagerImpl(
                 queue,
                 messageParser,
                 new InetSocketAddress("localhost", 50000),
@@ -44,7 +44,7 @@ class ConnectionManagerTest {
     void sendMultipleMessages() throws InterruptedException {
         DummyMessageQueue queue = new DummyMessageQueue();
         DummyMessageParser messageParser = new DummyMessageParser();
-        ConnectionManager connectionManager = new ConnectionManager(
+        ConnectionManagerImpl connectionManager = new ConnectionManagerImpl(
                 queue,
                 messageParser,
                 new InetSocketAddress("localhost", 50000),
@@ -74,8 +74,8 @@ class ConnectionManagerTest {
         DummyMessageQueue queue2 = new DummyMessageQueue();
         DummyMessageParser messageParser = new DummyMessageParser();
         InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
-        ConnectionManager connectionManager1 = new ConnectionManager(queue,messageParser, ip, new DummyInterrupter());
-        ConnectionManager connectionManager2 = new ConnectionManager(queue2, messageParser, new DummyInterrupter());
+        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(queue,messageParser, ip, new DummyInterrupter());
+        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(queue2, messageParser, new DummyInterrupter());
         Semaphore semaphore = new Semaphore(1);
         Semaphore semaphore2 = new Semaphore(1);
         semaphore.acquire();
