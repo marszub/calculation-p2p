@@ -26,8 +26,8 @@ public class NetworkIntegrationTests {
         DummyInterrupter interrupter2 = new DummyInterrupter();
         interrupter2.addSemaphore(semaphore);
 
-        InetSocketAddress ip1 = new InetSocketAddress("localhost", 51000);
-        InetSocketAddress ip2 = new InetSocketAddress("localhost", 51001);
+        InetSocketAddress ip1 = new InetSocketAddress("localhost", 50000);
+        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50001);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
         ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1, dummyMessageParser, ip1, interrupter1);
         ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2, dummyMessageParser, ip2, interrupter2);
@@ -65,7 +65,7 @@ public class NetworkIntegrationTests {
 
         interrupter2.addSemaphore(semaphore);
 
-        InetSocketAddress ip2 = new InetSocketAddress("localhost", 51002);
+        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50000);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
         ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1, dummyMessageParser, interrupter1);
         ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2, dummyMessageParser, ip2,interrupter2);
@@ -101,7 +101,7 @@ public class NetworkIntegrationTests {
         semaphore2.acquire();
         messageQueue1.addSemaphore(semaphore2);
 
-        InetSocketAddress ip2 = new InetSocketAddress("localhost", 51003);
+        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50000);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
         ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1, dummyMessageParser, new DummyInterrupter());
         ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2, dummyMessageParser, ip2, new DummyInterrupter());
@@ -136,7 +136,7 @@ public class NetworkIntegrationTests {
 
     @Test
     void checkIfMessagesSentFromPrivateRouterToPrivateRouterViaPublicRouter() throws InterruptedException {
-        Prepare3RoutersTest variables = prepareEnvironment(51004);
+        Prepare3RoutersTest variables = prepareEnvironment(50000);
         Semaphore semaphore2 = variables.semaphore2();
         Semaphore semaphore3 = variables.semaphore3();
         Router Router1 = variables.router1();
@@ -162,7 +162,7 @@ public class NetworkIntegrationTests {
 
     @Test
     void checkIfMessagesSentFromPrivateToAllArrivesToAll() throws InterruptedException {
-        Prepare3RoutersTest variables = prepareEnvironment(51005);
+        Prepare3RoutersTest variables = prepareEnvironment(50000);
         Semaphore semaphore2 = variables.semaphore2();
         Semaphore semaphore3 = variables.semaphore3();
         Router Router1 = variables.router1();
@@ -192,7 +192,7 @@ public class NetworkIntegrationTests {
 
     @Test
     void checkIfMessagesSentFromPublicToAllArrivesToAll() throws InterruptedException {
-        Prepare3RoutersTest variables = prepareEnvironment(51010);
+        Prepare3RoutersTest variables = prepareEnvironment(50000);
         Semaphore semaphore1 = variables.semaphore1();
         Semaphore semaphore3 = variables.semaphore3();
         Router Router1 = variables.router1();
@@ -222,7 +222,7 @@ public class NetworkIntegrationTests {
 
     @Test
     void ultimateRouterTestWith4Routers2Public2PrivateMessageToAllPrivate() throws InterruptedException {
-        Prepare4RoutersTest variables = prepareEnvironmentFour(51006, 51007);
+        Prepare4RoutersTest variables = prepareEnvironmentFour(50000, 50001);
         Router Router1 = variables.router1();
         Router Router2 = variables.router2();
         Router Router3 = variables.router3();
@@ -287,7 +287,7 @@ public class NetworkIntegrationTests {
 
     @Test
     void ultimateRouterTestWith4Routers2Public2PrivateMessageToAllPublic() throws InterruptedException {
-        Prepare4RoutersTest variables = prepareEnvironmentFour(51008, 51009);
+        Prepare4RoutersTest variables = prepareEnvironmentFour(50000, 50001);
         Router Router1 = variables.router1();
         Router Router2 = variables.router2();
         Router Router3 = variables.router3();
