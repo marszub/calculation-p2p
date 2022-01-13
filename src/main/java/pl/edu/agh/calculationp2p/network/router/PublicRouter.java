@@ -94,8 +94,6 @@ public class PublicRouter extends RouterImpl
         if(myId == -1)
         {
             list.add(message);
-            connectionQueue.put(message.getSender(),
-                                new ConnectionTimestampPair(result.connection(), System.currentTimeMillis()));
         }
         else
         {

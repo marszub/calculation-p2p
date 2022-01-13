@@ -1,7 +1,6 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.utilities.DummyMessage;
 
 import java.io.IOException;
@@ -15,19 +14,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StaticConnectionTest
 {
     @Test
-    void testIfConnectionWillKeepItselfAliveAfterDisconnectRead()
-    {
+    void testIfConnectionWillKeepItselfAliveAfterDisconnectRead() throws IOException {
         DummyMessage message = new DummyMessage("TESTMESSAGE");
         InetSocketAddress ip1 = new InetSocketAddress("localhost", 49000);
         InetSocketAddress ip2 = new InetSocketAddress("localhost", 49001);
-        Selector selector1 = createServer(ip1);
-        Selector selector2 = createServer(ip2);
+        SelectorServerPair result1 = createServer(ip1);
+        SelectorServerPair result2 = createServer(ip2);
+        Selector selector1 = result1.selector();
+        Selector selector2 = result2.selector();
         StaticConnection connection = new StaticConnection(ip2);
-        try {
-            connection.register(selector1);
-        } catch (ClosedChannelException e) {
-            e.printStackTrace();
-        }
+        connection.register(selector1);
         connection.send(message);
         DynamicConnection dynamicConnection = addNewConnection(selector2);
         dynamicConnection.close();
@@ -35,32 +31,40 @@ public class StaticConnectionTest
         dynamicConnection = addNewConnection(selector2);
         dynamicConnection.send(message);
         assertEquals(message.serialize(), getMessage(selector1)[0]);
+        selector1.close();
+        selector2.close();
+        connection.close();
+        dynamicConnection.close();
+        result1.server().close();
+        result2.server().close();
     }
 
     @Test
-    void checkIfStaticConnectionReadsProperly() throws ClosedChannelException
+    void checkIfStaticConnectionReadsProperly() throws IOException
     {
         DummyMessage message = new DummyMessage("TESTMESSAGE");
         DummyMessage message2 = new DummyMessage("TESTMESSAGE2");
-        InetSocketAddress ip1 = new InetSocketAddress("localhost", 50004);
-        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50005);
-        Selector selector1 = createServer(ip1);
-        Selector selector2 = createServer(ip2);
+        InetSocketAddress ip1 = new InetSocketAddress("localhost", 49002);
+        InetSocketAddress ip2 = new InetSocketAddress("localhost", 49003);
+        SelectorServerPair result1 = createServer(ip1);
+        SelectorServerPair result2 = createServer(ip2);
+        Selector selector1 = result1.selector();
+        Selector selector2 = result2.selector();
         StaticConnection connection = new StaticConnection(ip2);
         connection.send(message);
         DynamicConnection dynamicConnection = addNewConnection(selector2);
         connection.register(selector1);
         dynamicConnection.send(message2);
         assertEquals(message2.serialize(), getMessage(selector1)[0]);
+        selector1.close();
+        selector2.close();
+        connection.close();
+        dynamicConnection.close();
+        result1.server().close();
+        result2.server().close();
     }
 
-    private void sendMessageToServer(InetSocketAddress ip, Message message)
-    {
-        StaticConnection serverConnection = new StaticConnection(ip);
-        serverConnection.send(message);
-    }
-
-    private Selector createServer(InetSocketAddress ip)
+    private SelectorServerPair createServer(InetSocketAddress ip)
     {
         Selector selector = null;
         ServerSocketChannel serverSocketChannel = null;
@@ -76,11 +80,10 @@ public class StaticConnectionTest
             serverSocket.bind(ip);
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, serverSocketChannel);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return selector;
+        return new SelectorServerPair(selector, serverSocketChannel);
     }
 
 

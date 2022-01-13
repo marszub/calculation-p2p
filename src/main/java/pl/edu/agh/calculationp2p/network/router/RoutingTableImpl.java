@@ -17,60 +17,43 @@ public class RoutingTableImpl implements RoutingTable{
     {
         if(interfaces.containsKey(id))
             throw new InterfaceExistsException(id);
-        else
-        {
-            interfaces.put(id, null);
-            messageInterfaceQueue.put(id, new LinkedList<>());
-        }
+        interfaces.put(id, null);
+        messageInterfaceQueue.put(id, new LinkedList<>());
     }
 
     public void removeInterface(int id) throws InterfaceDoesNotExistException
     {
-        if(interfaces.containsKey(id))
-        {
-            interfaces.remove(id);
-            messageInterfaceQueue.remove(id);
-        }
-        else
+        if(!interfaces.containsKey(id))
             throw new InterfaceDoesNotExistException(id);
+        interfaces.remove(id);
+        messageInterfaceQueue.remove(id);
     }
 
     public void bind(int id, Connection connection) throws InterfaceDoesNotExistException
     {
-        if(interfaces.containsKey(id))
-            interfaces.put(id, connection);
-        else
+        if(!interfaces.containsKey(id))
             throw new InterfaceDoesNotExistException(id);
+        interfaces.put(id, connection);
     }
 
     public void send(int id, Message message) throws InterfaceDoesNotExistException
     {
-        if(interfaces.containsKey(id))
-        {
-            if (interfaces.get(id) != null)
-                sendTroughConnection(id, interfaces.get(id), message);
-            else
-            {
-                addToMessageQueue(id, message);
-            }
-        }
+        if(!interfaces.containsKey(id))
+            throw new InterfaceDoesNotExistException(id);
+        if (interfaces.get(id) != null)
+            sendTroughConnection(id, interfaces.get(id), message);
         else
         {
-            throw new InterfaceDoesNotExistException(id);
+            addToMessageQueue(id, message);
         }
     }
 
     public boolean trySend(int id, Message message) throws InterfaceDoesNotExistException
     {
-        if(interfaces.containsKey(id))
-        {
-            if (interfaces.get(id) != null)
-                return interfaces.get(id).send(message);
-        }
-        else
-        {
+        if(!interfaces.containsKey(id))
             throw new InterfaceDoesNotExistException(id);
-        }
+        if (interfaces.get(id) != null)
+            return interfaces.get(id).send(message);
         return false;
     }
 

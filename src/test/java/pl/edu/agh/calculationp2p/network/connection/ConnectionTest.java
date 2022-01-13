@@ -12,7 +12,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,31 +19,37 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ConnectionTest {
 
     @Test
-    void checkIfMessageSendsProperly()
-    {
-        InetSocketAddress ip = new InetSocketAddress("localhost", 49151);
-        Selector selector = createServer(ip);
+    void checkIfMessageSendsProperly() throws IOException {
+        InetSocketAddress ip = new InetSocketAddress("localhost", 48000);
+        SelectorServerPair result = createServer(ip);
+        Selector selector = result.selector();
         DummyMessage msg = new DummyMessage();
         msg.setText("TEXT");
         sendMessageToServer(ip, msg);
-        addNewConnection(selector);
+        DynamicConnection conn = addNewConnection(selector);
         assertEquals(msg.serialize(), getMessage(selector)[0]);
+        conn.close();
+        selector.close();
+        result.server().close();
     }
 
     @Test
-    void checkIfMultipleMessagesSendsProperly()
-    {
-        InetSocketAddress ip = new InetSocketAddress("localhost", 49150);
-        Selector selector = createServer(ip);
+    void checkIfMultipleMessagesSendsProperly() throws IOException {
+        InetSocketAddress ip = new InetSocketAddress("localhost", 48001);
+        SelectorServerPair result = createServer(ip);
+        Selector selector = result.selector();
         DummyMessage msg = new DummyMessage();
         msg.setText("TEXT");
         StaticConnection serverConnection = new StaticConnection(ip);
+        DynamicConnection conn = addNewConnection(selector);
         serverConnection.send(msg);
         serverConnection.send(msg);
-        addNewConnection(selector);
         String[] tab = getMessage(selector);
         assertEquals(msg.serialize(), tab[0]);
         assertEquals(msg.serialize(), tab[1]);
+        conn.close();
+        selector.close();
+        result.server().close();
     }
 
     private void sendMessageToServer(InetSocketAddress ip, Message message)
@@ -53,7 +58,7 @@ class ConnectionTest {
         serverConnection.send(message);
     }
 
-    private Selector createServer(InetSocketAddress ip)
+    private SelectorServerPair createServer(InetSocketAddress ip)
     {
         Selector selector = null;
         ServerSocketChannel serverSocketChannel = null;
@@ -73,11 +78,9 @@ class ConnectionTest {
         {
             e.printStackTrace();
         }
-        return selector;
+        return new SelectorServerPair(selector, serverSocketChannel);
     }
-
-
-    private void addNewConnection(Selector selector)
+    private DynamicConnection addNewConnection(Selector selector)
     {
         try {
             selector.select();
@@ -95,10 +98,12 @@ class ConnectionTest {
                 socket.configureBlocking(false);
                 DynamicConnection connection = new DynamicConnection(socket);
                 connection.register(selector);
+                return connection;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     private String[] getMessage(Selector selector) {
