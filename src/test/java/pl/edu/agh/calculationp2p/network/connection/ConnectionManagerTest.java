@@ -47,7 +47,7 @@ class ConnectionManagerTest {
         ConnectionManager connectionManager = new ConnectionManager(
                 queue,
                 messageParser,
-                new InetSocketAddress("localhost", 50001),
+                new InetSocketAddress("localhost", 50000),
                 new DummyInterrupter()
         );
         Semaphore semaphore = new Semaphore(1);
@@ -57,10 +57,10 @@ class ConnectionManagerTest {
         DummyMessage message = new DummyMessage();
         message.setText("TEST1");
         messageParser.addParse(message.serialize(), message);
-        StaticConnection conn1 = sendMessageToServer(new InetSocketAddress("localhost", 50001), message);
+        StaticConnection conn1 = sendMessageToServer(new InetSocketAddress("localhost", 50000), message);
         semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
         assertEquals(message, queue.getList().pop().message());
-        StaticConnection conn2 = sendMessageToServer(new InetSocketAddress("localhost", 50001), message);
+        StaticConnection conn2 = sendMessageToServer(new InetSocketAddress("localhost", 50000), message);
         semaphore.tryAcquire(100, TimeUnit.MILLISECONDS);
         assertEquals(message, queue.getList().pop().message());
         connectionManager.close();
@@ -73,7 +73,7 @@ class ConnectionManagerTest {
         DummyMessageQueue queue = new DummyMessageQueue();
         DummyMessageQueue queue2 = new DummyMessageQueue();
         DummyMessageParser messageParser = new DummyMessageParser();
-        InetSocketAddress ip = new InetSocketAddress("localhost", 50002);
+        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
         ConnectionManager connectionManager1 = new ConnectionManager(queue,messageParser, ip, new DummyInterrupter());
         ConnectionManager connectionManager2 = new ConnectionManager(queue2, messageParser, new DummyInterrupter());
         Semaphore semaphore = new Semaphore(1);
