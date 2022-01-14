@@ -1,6 +1,7 @@
 package pl.edu.agh.calculationp2p.network.utilities;
 
 import pl.edu.agh.calculationp2p.message.Message;
+import pl.edu.agh.calculationp2p.message.body.Body;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 
 public class DummyMessage2 implements Message {
@@ -48,5 +49,9 @@ public class DummyMessage2 implements Message {
     public void setReceiver(int id)
     {
         receiver = id;
+    }
+
+    public Body getBody() {
+        return null;
     }
 }
