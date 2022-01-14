@@ -8,10 +8,10 @@ import java.time.ZonedDateTime;
 
 public class HeartBeatEmiter {
 
+
     private final Router router;
     private final int timePeriod;
     private long lastBeatTime;
-
     protected HeartBeatEmiter(int timePeriod, Router router){
         this.router = router;
         this.timePeriod = timePeriod;
