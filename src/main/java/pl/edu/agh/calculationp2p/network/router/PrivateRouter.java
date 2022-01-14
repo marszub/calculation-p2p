@@ -27,17 +27,18 @@ public class PrivateRouter extends RouterImpl
     @Override
     public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
     {
+        Integer node = nodeId;
         if(PrivateNodes.contains(nodeId))
-            PrivateNodes.remove(nodeId);
+            PrivateNodes.remove(node);
         else
             super.deleteInterface(nodeId);
     }
 
     @Override
-    public void send(Message message) throws ConnectionLostException
+    public void send(Message message)
     {
-        int receiverId = 1; //TODO message.getReceiver().
-        if(PrivateNodes.contains(receiverId))
+        int receiverId = message.getReceiver();
+        if(PrivateNodes.contains(receiverId) || receiverId == -1)
         {
             Set<Integer> publicNodesSet = staticInterfaces.keySet();
             List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
@@ -53,7 +54,6 @@ public class PrivateRouter extends RouterImpl
                     return;
                 }
             }
-            throw new ConnectionLostException();
         }
         else
         {
@@ -62,24 +62,16 @@ public class PrivateRouter extends RouterImpl
         }
     }
 
-    @Override
     public List<Message> getMessage()
-    {
-        if(super.myId == -1)
-        {
-            return super.getMessageWithoutHavingId();
-        }
-        return getMessageHavingId();
-    }
-
-    private List<Message> getMessageHavingId()
     {
         List<Message> list = new LinkedList<>();
         MessageConnectionPair result = messageQueue.get();
         while(result != null)
         {
-            //if(result.getReceiver())
-            list.add(result.message());
+            if(result.message().getReceiver() == myId || myId == -1)
+            {
+                list.add(result.message());
+            }
             result = messageQueue.get();
         }
         return list;

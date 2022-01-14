@@ -4,7 +4,6 @@ import pl.edu.agh.calculationp2p.message.Message;
 
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.Optional;
 
 public interface Router {
     void createInterface(int nodeId, InetSocketAddress ipAddress);
@@ -20,4 +19,6 @@ public interface Router {
     void setId(int id);
 
     int getId();
+
+    void close();
 }

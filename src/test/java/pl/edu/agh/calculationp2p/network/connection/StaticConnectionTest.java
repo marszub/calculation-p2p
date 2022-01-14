@@ -1,61 +1,67 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.utilities.DummyMessage;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-class ConnectionTest {
-
+public class StaticConnectionTest
+{
     @Test
-    void checkIfMessageSendsProperly() throws IOException {
-        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
-        SelectorServerPair result = createServer(ip);
-        Selector selector = result.selector();
-        DummyMessage msg = new DummyMessage();
-        msg.setText("TEXT");
-        sendMessageToServer(ip, msg);
-        DynamicConnection conn = addNewConnection(selector);
-        assertEquals(msg.serialize(), getMessage(selector)[0]);
-        conn.close();
-        selector.close();
-        result.server().close();
+    void testIfConnectionWillKeepItselfAliveAfterDisconnectRead() throws IOException {
+        DummyMessage message = new DummyMessage("TESTMESSAGE");
+        InetSocketAddress ip1 = new InetSocketAddress("localhost", 50000);
+        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50001);
+        SelectorServerPair result1 = createServer(ip1);
+        SelectorServerPair result2 = createServer(ip2);
+        Selector selector1 = result1.selector();
+        Selector selector2 = result2.selector();
+        StaticConnection connection = new StaticConnection(ip2);
+        connection.register(selector1);
+        connection.send(message);
+        DynamicConnection dynamicConnection = addNewConnection(selector2);
+        dynamicConnection.close();
+        getMessage(selector1);
+        dynamicConnection = addNewConnection(selector2);
+        dynamicConnection.send(message);
+        assertEquals(message.serialize(), getMessage(selector1)[0]);
+        selector1.close();
+        selector2.close();
+        connection.close();
+        dynamicConnection.close();
+        result1.server().close();
+        result2.server().close();
     }
 
     @Test
-    void checkIfMultipleMessagesSendsProperly() throws IOException {
-        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
-        SelectorServerPair result = createServer(ip);
-        Selector selector = result.selector();
-        DummyMessage msg = new DummyMessage();
-        msg.setText("TEXT");
-        StaticConnection serverConnection = new StaticConnection(ip);
-        DynamicConnection conn = addNewConnection(selector);
-        serverConnection.send(msg);
-        serverConnection.send(msg);
-        String[] tab = getMessage(selector);
-        assertEquals(msg.serialize(), tab[0]);
-        assertEquals(msg.serialize(), tab[1]);
-        conn.close();
-        selector.close();
-        result.server().close();
-    }
-
-    private void sendMessageToServer(InetSocketAddress ip, Message message)
+    void checkIfStaticConnectionReadsProperly() throws IOException
     {
-        StaticConnection serverConnection = new StaticConnection(ip);
-        serverConnection.send(message);
+        DummyMessage message = new DummyMessage("TESTMESSAGE");
+        DummyMessage message2 = new DummyMessage("TESTMESSAGE2");
+        InetSocketAddress ip1 = new InetSocketAddress("localhost", 50000);
+        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50001);
+        SelectorServerPair result1 = createServer(ip1);
+        SelectorServerPair result2 = createServer(ip2);
+        Selector selector1 = result1.selector();
+        Selector selector2 = result2.selector();
+        StaticConnection connection = new StaticConnection(ip2);
+        connection.send(message);
+        DynamicConnection dynamicConnection = addNewConnection(selector2);
+        connection.register(selector1);
+        dynamicConnection.send(message2);
+        assertEquals(message2.serialize(), getMessage(selector1)[0]);
+        selector1.close();
+        selector2.close();
+        connection.close();
+        dynamicConnection.close();
+        result1.server().close();
+        result2.server().close();
     }
 
     private SelectorServerPair createServer(InetSocketAddress ip)
@@ -74,12 +80,13 @@ class ConnectionTest {
             serverSocket.bind(ip);
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, serverSocketChannel);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return new SelectorServerPair(selector, serverSocketChannel);
     }
+
+
     private DynamicConnection addNewConnection(Selector selector)
     {
         try {
