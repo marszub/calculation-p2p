@@ -11,12 +11,25 @@ import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class ServantImpl implements Servant {
     private final Progress progress;
     private final TaskPublisher taskPublisher;
     private final ReservedPublisher reservedPublisher;
     private final CalculatedPublisher calculatedPublisher;
     private final Integer nodeId;
+
+    ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher, Integer nodeId) {
+        this.progress = progress;
+        this.taskPublisher = taskPublisher;
+        this.reservedPublisher = reservedPublisher;
+        this.calculatedPublisher = calculatedPublisher;
+        this.nodeId = nodeId;
+    }
 
     @Override
     public Integer getNodeId() {
@@ -25,15 +38,17 @@ public class ServantImpl implements Servant {
 
     @Override
     public Integer getTask() {
-       return null;
+        return null;
     }
 
-    ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher, Integer nodeId) {
-        this.progress = progress;
-        this.taskPublisher = taskPublisher;
-        this.reservedPublisher = reservedPublisher;
-        this.calculatedPublisher = calculatedPublisher;
-        this.nodeId = nodeId;
+    @Override
+    public ArrayList<Integer> getFreeTasksList() {
+        return progress.getTasks()
+                .entrySet()
+                .stream()
+                .filter(e -> e.getValue().getState() == TaskState.Free)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -62,11 +77,12 @@ public class ServantImpl implements Servant {
     }
 
     @Override
-    public void lookAllPublishers(TaskRecord prev, TaskRecord curr){
+    public void lookAllPublishers(TaskRecord prev, TaskRecord curr) {
+        if (prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Free) {
+            // TODO jesli stan reserved -> free nowy request GiveTaskRequest i wywołaj sam siebie lookAll()
+        }
         taskPublisher.look(prev, curr);
         calculatedPublisher.look(prev, curr);
         reservedPublisher.look(prev, curr);
-         // TODO jesli stan reserved -> free nowy request GiveTaskRequest i wywołaj sam siebie lookAll()
-        //
     }
 }

@@ -21,13 +21,12 @@ public class GetTaskRequest implements MethodRequest {
 
     @Override
     public void call(Servant servant) {
-        ArrayList<Integer> freeTasks = servant.getProgress().getFreeTasksList();
+        ArrayList<Integer> freeTasks = servant.getFreeTasksList();
         if (!freeTasks.isEmpty()) {
             int random = (int) (Math.random() * freeTasks.size());
             future.put(Optional.of(random));
         } else {
             future.put(Optional.empty());
         }
-
     }
 }

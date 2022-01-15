@@ -9,6 +9,8 @@ import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
+import java.util.ArrayList;
+
 public interface Servant {
     TaskRecord getTaskProgress(Integer taskId);
 
@@ -25,4 +27,6 @@ public interface Servant {
     Integer getNodeId();
 
     Integer getTask();
+
+    ArrayList<Integer> getFreeTasksList();
 }

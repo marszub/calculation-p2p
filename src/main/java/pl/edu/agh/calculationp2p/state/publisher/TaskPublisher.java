@@ -24,7 +24,6 @@ public class TaskPublisher {
     public void subscribe(Integer taskId, Future<Void> flag, Integer nodeID, Progress progress) {
         // subskrybujemy jako wątek obliczeń, obserwuje to co liczę, reagujemy na każdą zmianę
         // future -> pusty, tylko do sygnalizowania
-        // musimy mieć własne nodeID, musimy miec progress
         HashMap<Integer, TaskRecord> tasks = progress.getTasks();
 
         // jesli mamy innego właścicela niż my -> od razu powiadom i nie subskrybuj
@@ -54,9 +53,8 @@ public class TaskPublisher {
     }
 
     public void look(TaskRecord previous, TaskRecord current) {
-        // TODO istotna jest każda obserwacja
+        // istotna jest każda obserwacja
         // sprawdzamy stany 2 tasków, reaguj gdy:
-
         // free -> coś -> nie reaguj
         // zmiana właściciela(if reserved)
         // reserved -> reserved == check priority
@@ -66,7 +64,8 @@ public class TaskPublisher {
                 raiseFlag(current.getTaskID());
             } else if (previous.getState() == TaskState.Reserved && current.getState() == TaskState.Reserved) {
                 if (previous.getOwner() != current.getOwner() && current.hasHigherPriority(previous)){
-
+                    // zmienił się właściciel i Reserved
+                    raiseFlag(current.getTaskID());
                 }
             }
         }
