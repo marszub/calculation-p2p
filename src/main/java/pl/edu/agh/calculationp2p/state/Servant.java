@@ -26,7 +26,5 @@ public interface Servant {
 
     Integer getNodeId();
 
-    Integer getTask();
-
     ArrayList<Integer> getFreeTasksList();
 }

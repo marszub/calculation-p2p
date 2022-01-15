@@ -16,6 +16,13 @@ public class TaskRecord {
         this.result = result;
     }
 
+    public TaskRecord(){
+        this.taskID = -1;
+        this.state = null;
+        this.owner = -1;
+        this.result = null;
+    }
+
     public TaskRecord(TaskRecord taskRecord) {
         this.taskID = taskRecord.getTaskID();
         this.state = taskRecord.getState();
@@ -48,6 +55,7 @@ public class TaskRecord {
         if(this.state.getValue() < taskState.getValue()){
             return true;
         }
+
        if(this.owner < toCompare.getOwner()){
            return true;
        }

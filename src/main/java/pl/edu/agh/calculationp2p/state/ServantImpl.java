@@ -37,11 +37,6 @@ public class ServantImpl implements Servant {
     }
 
     @Override
-    public Integer getTask() {
-        return null;
-    }
-
-    @Override
     public ArrayList<Integer> getFreeTasksList() {
         return progress.getTasks()
                 .entrySet()

@@ -28,9 +28,9 @@ class GetTaskRequestTest {
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
 
-        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, -1, new TaskResultImpl());
-        TaskRecord taskRecord2 = new TaskRecord(2, TaskState.Free, -1, new TaskResultImpl());
-        TaskRecord taskRecord3 = new TaskRecord(3, TaskState.Free, -1, new TaskResultImpl());
+        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new TaskResultImpl());
+        TaskRecord taskRecord2 = new TaskRecord(2, TaskState.Free, 10, new TaskResultImpl());
+        TaskRecord taskRecord3 = new TaskRecord(3, TaskState.Free, 10, new TaskResultImpl());
 
         progress.update(taskRecord1);
         progress.update(taskRecord2);
