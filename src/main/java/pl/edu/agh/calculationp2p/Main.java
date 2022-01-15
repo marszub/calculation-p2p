@@ -13,6 +13,4 @@ public class  Main {
 
 // TODO ##### tests ######
 
-// TODO calculate request tests
-// TODO StateUpdater
-// TODO StatusInformer
+
