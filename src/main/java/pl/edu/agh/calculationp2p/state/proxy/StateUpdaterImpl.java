@@ -3,8 +3,7 @@ package pl.edu.agh.calculationp2p.state.proxy;
 import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
-import pl.edu.agh.calculationp2p.state.future.Observation;
-import pl.edu.agh.calculationp2p.state.request.CalculateRequest;
+import pl.edu.agh.calculationp2p.state.request.FinishTaskRequest;
 import pl.edu.agh.calculationp2p.state.request.ReserveRequest;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
@@ -30,7 +29,7 @@ public class StateUpdaterImpl implements StateUpdater{
     @Override
     public Future<TaskRecord> calculate(int task, int nodeId, TaskResult result) {
         Future<TaskRecord> future = new Future<>();
-        CalculateRequest request = new CalculateRequest(future, task, nodeId, result);
+        FinishTaskRequest request = new FinishTaskRequest(future, task, nodeId, result);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {

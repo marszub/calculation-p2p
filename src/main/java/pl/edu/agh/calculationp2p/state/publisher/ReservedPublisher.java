@@ -30,7 +30,7 @@ public class ReservedPublisher {
 
     public void unsubscribe(IdleInterrupter interrupter) {
         List<Pair<Future<Observation>, IdleInterrupter>> filtered =
-                observers.stream().filter(b -> b.getR() != interrupter).collect(Collectors.toList());
+                observers.stream().filter(b -> b.getR() == interrupter).collect(Collectors.toList());
         observers.removeAll(filtered);
     }
 
@@ -40,7 +40,8 @@ public class ReservedPublisher {
         // check if are some changes in observed items
         // anything -> reserved
 
-        if (current.getState() == TaskState.Reserved && !previous.equals(current)) {
+        if (current.getState() == TaskState.Reserved && !previous.equals(current)
+                && previous.getTaskID() == current.getTaskID()) {
             for (Pair<Future<Observation>, IdleInterrupter> pair : observers) {
                 Future<Observation> oldF = pair.getL();
                 Future<Observation> newF = new Future<>();

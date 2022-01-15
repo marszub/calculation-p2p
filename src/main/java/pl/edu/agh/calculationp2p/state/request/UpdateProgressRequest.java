@@ -20,7 +20,7 @@ public class UpdateProgressRequest implements MethodRequest{
         Progress currentProgress = servant.getProgress();
         for(TaskRecord newRecord: newProgress.getTasks().values()){
             TaskRecord oldRecord = currentProgress.get(newRecord.getTaskID());
-            if (!newRecord.hasHigherPriority(oldRecord)){
+            if (newRecord.hasHigherPriority(oldRecord)){
                 currentProgress.update(newRecord);
             }
             servant.lookAllPublishers(oldRecord, servant.getProgress().get(newRecord.getTaskID()));

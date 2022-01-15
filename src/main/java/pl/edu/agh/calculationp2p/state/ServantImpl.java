@@ -23,7 +23,7 @@ public class ServantImpl implements Servant {
     private final CalculatedPublisher calculatedPublisher;
     private final Integer nodeId;
 
-    ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher, Integer nodeId) {
+    public ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher, Integer nodeId) {
         this.progress = progress;
         this.taskPublisher = taskPublisher;
         this.reservedPublisher = reservedPublisher;

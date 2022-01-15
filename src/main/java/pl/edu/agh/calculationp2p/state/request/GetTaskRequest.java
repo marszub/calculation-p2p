@@ -25,6 +25,7 @@ public class GetTaskRequest implements MethodRequest {
         if (!freeTasks.isEmpty()) {
             int random = (int) (Math.random() * freeTasks.size());
             future.put(Optional.of(random));
+
         } else {
             future.put(Optional.empty());
         }

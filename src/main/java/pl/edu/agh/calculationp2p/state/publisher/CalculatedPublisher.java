@@ -15,9 +15,8 @@ import java.util.stream.Collectors;
 public class CalculatedPublisher {
     // look podglada to co sie dzieje - sprawdzamy czy mozna
 
-
     // list of pairs to get everything in one list
-    List<Pair<Future<Observation>, IdleInterrupter>> observers;
+    ArrayList<Pair<Future<Observation>, IdleInterrupter>> observers;
 
 
     public CalculatedPublisher() {
@@ -36,7 +35,7 @@ public class CalculatedPublisher {
 
     public void unsubscribe(IdleInterrupter interrupter) {
         List<Pair<Future<Observation>, IdleInterrupter>> filtered =
-                observers.stream().filter(b -> b.getR() != interrupter).collect(Collectors.toList());
+                observers.stream().filter(b -> b.getR() == interrupter).collect(Collectors.toList());
         observers.removeAll(filtered);
     }
 
@@ -44,13 +43,14 @@ public class CalculatedPublisher {
     public void look(TaskRecord previous, TaskRecord current) {
         // check if are some changes in observed items
         // anything -> calculated
-        if (current.getState() == TaskState.Calculated && !previous.equals(current)) {
+        if (current.getState() == TaskState.Calculated && !previous.equals(current)
+                && previous.getTaskID() == current.getTaskID()) {
             for (Pair<Future<Observation>, IdleInterrupter> pair : observers) {
-                Future<Observation> oldF = pair.getL();
-                Future<Observation> newF = new Future<>();
-                Observation observation = new Observation(current, newF);
-                oldF.put(observation);
-                pair.setL(newF);
+                Future<Observation> oldFuture = pair.getL();
+                Future<Observation> newFuture = new Future<>();
+                Observation observation = new Observation(current, newFuture);
+                oldFuture.put(observation);
+                pair.setL(newFuture);
                 pair.getR().wake();
             }
         }

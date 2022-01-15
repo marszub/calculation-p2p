@@ -3,7 +3,7 @@ package pl.edu.agh.calculationp2p.state.proxy;
 import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
-import pl.edu.agh.calculationp2p.state.request.FinishTaskRequest;
+import pl.edu.agh.calculationp2p.state.request.CalculateRequest;
 import pl.edu.agh.calculationp2p.state.request.GetTaskRequest;
 
 import java.util.Optional;
@@ -29,12 +29,13 @@ public class TaskGiverImpl implements TaskGiver {
 
     @Override
     public Future<Void> observeTask(Integer taskId, Thread thread) {
+        //TODO implement
         return null;
     }
 
     @Override
     public void finishTask(Integer taskId, TaskResult result) {
-        FinishTaskRequest request = new FinishTaskRequest(taskId, result);
+        CalculateRequest request = new CalculateRequest(taskId, result);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {

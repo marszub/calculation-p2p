@@ -6,29 +6,13 @@ public class  Main {
     }
 }
 
-
-
-// TODO stateupdater -> nowy request : zwalnia wszystkie zajęte taski przez danego node'a, informuje kolejkę wątków obliczeń (future.put)
-
+// check GetTaskRequest -> still need ThreadID? TaskPublisher needs work
+// CalculateRequest i FinishTaskRequest czy one nie robia tego samego?
+// TODO TaskPublisher
 
 
 // TODO ##### tests ######
 
-// TODO GetTaskProgress
-// TODO GetTask
-// TODO GetProgress
-// TODO ObserveTask
-// TODO ObserveReserved
-// TODO FinishTask
-// TODO Calculate
-// TODO ObserveCalculated
-// TODO Calculated
-// TODO UpdateProgress
-// TODO Reserve
-// TODO CalculatedPublisher
-// TODO ReservedPublisher
-// TODO TaskPublisher
-// TODO extract methods from Servant
-// TODO TaskGiver
+// TODO calculate request tests
 // TODO StateUpdater
 // TODO StatusInformer

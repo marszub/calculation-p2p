@@ -1,29 +1,34 @@
 package pl.edu.agh.calculationp2p.state.request;
 
+
 import pl.edu.agh.calculationp2p.calculation.TaskResult;
-import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Servant;
+import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
-public class FinishTaskRequest implements MethodRequest{
-    Integer taskId;
+public class FinishTaskRequest implements MethodRequest {
+    Future<TaskRecord> future;
+    int taskID;
+    int nodeID;
     TaskResult result;
 
-
-    public FinishTaskRequest(Integer taskId, TaskResult result) {
-        this.result =result;
-        this.taskId = taskId;
+    public FinishTaskRequest(Future<TaskRecord> future, int taskID, int nodeID, TaskResult result) {
+        this.future = future;
+        this.taskID = taskID;
+        this.nodeID = nodeID;
+        this.result = result;
     }
 
     @Override
-    public void call(Servant servant){
-        Progress progress = servant.getProgress();
-        TaskRecord oldTask = progress.get(taskId);
-        TaskRecord newTask = new TaskRecord(taskId, TaskState.Calculated, servant.getNodeId(), result);
-        if(newTask.hasHigherPriority(oldTask)) {
-            progress.update(newTask);
+    public void call(Servant servant) {
+        TaskRecord oldTask = servant.getProgress().get(taskID);
+        TaskRecord newTask = new TaskRecord(taskID, TaskState.Calculated, nodeID, result);
+        if (oldTask.getState() != TaskState.Calculated) {
+            servant.getProgress().update(newTask);
         }
-        servant.lookAllPublishers(oldTask, progress.get(taskId));
+        servant.lookAllPublishers(oldTask, servant.getProgress().get(taskID));
+        future.put(servant.getProgress().get(taskID));
     }
 }
+

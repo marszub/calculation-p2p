@@ -3,7 +3,7 @@ package pl.edu.agh.calculationp2p.state.task;
 
 import pl.edu.agh.calculationp2p.calculation.TaskResult;
 
-public class TaskRecord implements TaskResult {
+public class TaskRecord {
     private final int taskID;
     private final TaskState state;
     private final int owner;
@@ -23,7 +23,6 @@ public class TaskRecord implements TaskResult {
         this.result = taskRecord.getResult();
     }
 
-    @Override
     public String serialize() {
         return result.serialize();
     }
@@ -46,7 +45,13 @@ public class TaskRecord implements TaskResult {
 
     public boolean hasHigherPriority(TaskRecord toCompare) {
         TaskState taskState = toCompare.getState();
-        return this.state.getValue() < taskState.getValue();
+        if(this.state.getValue() < taskState.getValue()){
+            return true;
+        }
+       if(this.owner < toCompare.getOwner()){
+           return true;
+       }
+       return false;
     }
 
     @Override
