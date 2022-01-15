@@ -19,4 +19,6 @@ public interface Router {
     void setId(int id);
 
     int getId();
+
+    void close();
 }

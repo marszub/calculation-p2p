@@ -2,60 +2,59 @@ package pl.edu.agh.calculationp2p.message.process;
 
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.router.Router;
-import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.idle.Idle;
 import pl.edu.agh.calculationp2p.state.proxy.StateUpdater;
 import pl.edu.agh.calculationp2p.state.proxy.StatusInformer;
 
 import java.util.List;
-import java.util.Optional;
 
 public class MessageProcessor implements Runnable {
 
-    private Router router;
-    private MessageProcessContext messageProcessContext;
-    private HeartBeatEmiter heartBeatEmiter;
-    private FutureProcessor futureProcessor;
-    private NodeRegister nodeRegister;
-    private StateObserver stateObserver;
-    private Idle idle;
+    private final MessageProcessContext context;
+    private final HeartBeatEmiter heartBeatEmiter;
+    private final StateObserver stateObserver;
+    private final Idle idle;
 
-    public void MessageProcessor(Router router, StateUpdater stateUpdater, StatusInformer statusInformer){
-        this.router = router;
+    public MessageProcessor(Router router, StateUpdater stateUpdater, StatusInformer statusInformer){
+        int validityTime = 10;
+        int timePeriod = 10;
+
+        this.context = new MessageProcessContextImpl();
+        context.setRouter(router);
+        context.setStateUpdater(stateUpdater);
+        context.setStateInformer(statusInformer);
+        context.setFutureProcessor(new FutureProcessor());
+        context.setNodeRegister(new NodeRegister(validityTime));
+
         this.idle = new Idle();
 
-        this.heartBeatEmiter = new HeartBeatEmiter(10, router);
-        this.futureProcessor = new FutureProcessor();
-        this.nodeRegister = new NodeRegister(100);
+        this.heartBeatEmiter = new HeartBeatEmiter(timePeriod, router);
         this.stateObserver = new StateObserver(statusInformer);
     }
 
     @Override
     public void run() {
 
+        int routerId = this.context.getRouter().getId();
+
         while(true){
 
             this.heartBeatEmiter.beat();
-            //TODO: list
-            List<Message> newMessages = this.router.getMessage();
-            newMessages.forEach(message->{
-                message.process(messageProcessContext);
-            });
+            List<Message> newMessages = context.getRouter().getMessage();
+            newMessages.forEach(message-> message.process(context));
 
-            List<Message> toSend =  this.stateObserver.getMessages();
-            for(Message message : toSend){
-                this.router.send(message);
-            }
+            List<Message> toSend =  this.stateObserver.getMessages(this.idle, routerId);
+            toSend.forEach(message -> context.getRouter().send(message));
 
-            List<Integer> notResponding = this.nodeRegister.getOutdatedNodes();
-            notResponding.forEach(id -> this.router.deleteInterface(id));
-            futureProcessor.tryProcessAll();
-            // TODO: zrob cos z tymi do ktorych nie ma dostepu
+            List<Integer> notResponding = context.getNodeRegister().getOutdatedNodes();
+            notResponding.forEach(id -> context.getRouter().deleteInterface(id));
+
+            context.getFutureProcessor().tryProcessAll();
 
             try {
                 this.idle.sleep(this.heartBeatEmiter.nextBeatTime());
             } catch (InterruptedException e) {
-                // TODO finish
+                return;
             }
 
         }

@@ -4,14 +4,19 @@ import pl.edu.agh.calculationp2p.message.Message;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 
 
 public abstract class ConnectionImpl implements Connection
 {
     SocketChannel socketChannel;
-    final int bufferSize = 2048;
+    Selector selector;
+    SelectionKey key;
+    static final String separator = Character.toString((char) 1);
+    static final int bytesBufferSize = 2048;
 
     @Override
     public boolean send(Message message)
@@ -30,9 +35,10 @@ public abstract class ConnectionImpl implements Connection
     }
 
     @Override
-    public void register(Selector selector, int event) throws ClosedChannelException
+    public void register(Selector selector) throws ClosedChannelException
     {
-        socketChannel.register(selector, event, this);
+        this.selector = selector;
+        key = socketChannel.register(selector, SelectionKey.OP_READ, this);
     }
 
     @Override
@@ -41,36 +47,49 @@ public abstract class ConnectionImpl implements Connection
         try
         {
             socketChannel.close();
+            if(key != null)
+                key.cancel();
         }catch(IOException e)
         {
             e.printStackTrace();
         }
     }
     @Override
-    public String read() throws ConnectionLostException
+    public String[] read() throws ConnectionLostException
     {
-        ByteBuffer buf = ByteBuffer.allocate(bufferSize);
-        int bytesRead = 0;
-        try
+        StringBuilder messages = new StringBuilder();
+        ByteBuffer buf = ByteBuffer.allocate(bytesBufferSize);
+        int bytesRead = 1;
+        while(bytesRead > 0)
         {
-            bytesRead = socketChannel.read(buf);
-        }catch(ClosedChannelException e)
-        {
-            throw new ConnectionLostException();
-        }catch(IOException e)
-        {
-            e.printStackTrace();
-            return null;
+            try
+            {
+                bytesRead = socketChannel.read(buf);
+            } catch (ClosedChannelException e)
+            {
+                throw new ConnectionLostException();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+                return null;
+            }
+            if(bytesRead == -1)
+                throw new ConnectionLostException();
+            buf = buf.clear();
+            if(bytesRead > 0)
+            {
+                String word = new String(buf.array());
+                messages.append(word.substring(0, bytesRead));
+            }
         }
-        if(bytesRead == -1)
-            throw new ConnectionLostException();
-        return new String(buf.array()).trim();
+        return messages.toString().split(separator);
 }
 
     private void trySend(Message message) throws IOException
     {
         String data = message.serialize();
-        ByteBuffer buff = ByteBuffer.allocate(bufferSize);
+        data = data + separator;
+        ByteBuffer buff = ByteBuffer.allocate(data.length());
         buff.clear();
         buff.put(data.getBytes());
         buff.flip();

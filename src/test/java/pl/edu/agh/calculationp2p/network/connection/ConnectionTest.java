@@ -17,10 +17,49 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConnectionTest {
+
     @Test
-    void checkIfMessageSendsProperly()
+    void checkIfMessageSendsProperly() throws IOException {
+        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
+        SelectorServerPair result = createServer(ip);
+        Selector selector = result.selector();
+        DummyMessage msg = new DummyMessage();
+        msg.setText("TEXT");
+        sendMessageToServer(ip, msg);
+        DynamicConnection conn = addNewConnection(selector);
+        assertEquals(msg.serialize(), getMessage(selector)[0]);
+        conn.close();
+        selector.close();
+        result.server().close();
+    }
+
+    @Test
+    void checkIfMultipleMessagesSendsProperly() throws IOException {
+        InetSocketAddress ip = new InetSocketAddress("localhost", 50000);
+        SelectorServerPair result = createServer(ip);
+        Selector selector = result.selector();
+        DummyMessage msg = new DummyMessage();
+        msg.setText("TEXT");
+        StaticConnection serverConnection = new StaticConnection(ip);
+        DynamicConnection conn = addNewConnection(selector);
+        serverConnection.send(msg);
+        serverConnection.send(msg);
+        String[] tab = getMessage(selector);
+        assertEquals(msg.serialize(), tab[0]);
+        assertEquals(msg.serialize(), tab[1]);
+        conn.close();
+        selector.close();
+        result.server().close();
+    }
+
+    private void sendMessageToServer(InetSocketAddress ip, Message message)
     {
-        InetSocketAddress ip = new InetSocketAddress("localhost", 49151);
+        StaticConnection serverConnection = new StaticConnection(ip);
+        serverConnection.send(message);
+    }
+
+    private SelectorServerPair createServer(InetSocketAddress ip)
+    {
         Selector selector = null;
         ServerSocketChannel serverSocketChannel = null;
         try {
@@ -39,18 +78,11 @@ class ConnectionTest {
         {
             e.printStackTrace();
         }
-        Message msg = new DummyMessage();
-
-        new Thread(){
-            public void run(){
-                sendMessageToServer(ip, msg);
-            }
-        }.start();
-
-        SocketChannel socket = null;
-        ServerSocketChannel server = null;
+        return new SelectorServerPair(selector, serverSocketChannel);
+    }
+    private DynamicConnection addNewConnection(Selector selector)
+    {
         try {
-            assert selector != null;
             selector.select();
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,39 +92,38 @@ class ConnectionTest {
             SelectionKey key = keys.next();
             keys.remove();
             assertTrue(key.isAcceptable());
-            server = (ServerSocketChannel) key.channel();
+            ServerSocketChannel server = (ServerSocketChannel) key.channel();
             try {
-                assertEquals(server, serverSocketChannel);
-                socket = server.accept();
+                SocketChannel socket = server.accept();
                 socket.configureBlocking(false);
                 DynamicConnection connection = new DynamicConnection(socket);
-                connection.register(selector, SelectionKey.OP_READ);
+                connection.register(selector);
+                return connection;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return null;
+    }
+
+    private String[] getMessage(Selector selector) {
         try {
             selector.select();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        keys = selector.selectedKeys().iterator();
+        Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
         while (keys.hasNext()) {
             SelectionKey key = keys.next();
             keys.remove();
             assertTrue(key.isReadable());
             Connection connection = (Connection) key.attachment();
             try {
-                assertEquals(msg.serialize(), connection.read());
+                return connection.read();
             } catch (ConnectionLostException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void sendMessageToServer(InetSocketAddress ip, Message message)
-    {
-        StaticConnection serverConnection = new StaticConnection(ip);
-        serverConnection.send(message);
+        return new String[0];
     }
 }
