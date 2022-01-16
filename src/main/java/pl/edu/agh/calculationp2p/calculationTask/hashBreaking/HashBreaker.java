@@ -24,7 +24,7 @@ public class HashBreaker implements CalculationTask {
     }
 
     @Override
-    public int numberOfTaskFragments() {
+    public int getNumberOfTaskFragments() {
         return numberOfTaskFragments;
     }
 

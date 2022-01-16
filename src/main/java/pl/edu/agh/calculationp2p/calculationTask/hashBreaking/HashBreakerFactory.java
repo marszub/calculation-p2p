@@ -1,9 +1,12 @@
-package pl.edu.agh.calculataionp2p.calculationTask.hashBreaking;
+package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
 
-import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreaker;
-import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerInit;
 import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTask;
 import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTaskFactory;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 
 public class HashBreakerFactory implements CalculationTaskFactory
 {
@@ -13,6 +16,8 @@ public class HashBreakerFactory implements CalculationTaskFactory
     int maxStringLength = 7; //98 tasks
     char[] characters = "01234567890abcdefghijklmnopqrstuvwxyz".toCharArray();
     //TMP Place to insert config
+
+    public HashBreakerFactory() {}
 
     @Override
     public CalculationTask createTask()

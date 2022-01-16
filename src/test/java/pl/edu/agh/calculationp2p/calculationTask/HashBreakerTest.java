@@ -21,7 +21,7 @@ public class HashBreakerTest {
                 "01234567890".toCharArray()
         );
         CalculationTask task = new HashBreaker(initVar);
-        assertEquals(1, task.numberOfTaskFragments());
+        assertEquals(1, task.getNumberOfTaskFragments());
     }
 
     @Test
@@ -35,7 +35,7 @@ public class HashBreakerTest {
                 "0123456789".toCharArray()
         );
         CalculationTask task = new HashBreaker(initVar);
-        assertEquals(111111112, task.numberOfTaskFragments());
+        assertEquals(111111112, task.getNumberOfTaskFragments());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class HashBreakerTest {
                 "0123456789".toCharArray()
         );
         CalculationTask task = new HashBreaker(initVar);
-        assertEquals(1111111, task.numberOfTaskFragments());
+        assertEquals(1111111, task.getNumberOfTaskFragments());
     }
 
     @Test
