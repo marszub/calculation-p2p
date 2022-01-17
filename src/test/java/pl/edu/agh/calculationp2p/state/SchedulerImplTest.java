@@ -3,11 +3,16 @@ package pl.edu.agh.calculationp2p.state;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.calculation.TaskResult;
+import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
+import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 import pl.edu.agh.calculationp2p.state.request.MethodRequest;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
+import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,54 +24,17 @@ class SchedulerImplTest {
     
     @BeforeEach
     void init(){
-        scheduler = new SchedulerImpl(new Servant() {
-            @Override
-            public TaskRecord getTaskProgress(Integer taskId) {
-                return null;
-            }
+        Integer nodeID = 10;
+        Progress progress = new Progress();
+        TaskPublisher taskPublisher = new TaskPublisher();
+        CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
+        ReservedPublisher reservedPublisher = new ReservedPublisher();
 
-            @Override
-            public Progress getProgress() {
-                return null;
-            }
+        TaskRecord taskRecord1 = new TaskRecord(5, TaskState.Free, 10, new TaskResultImpl());
+        progress.update(taskRecord1);
 
-            @Override
-            public void observeReserved(Future<Observation> observer, IdleInterrupter interrupter) {
-            }
-
-            @Override
-            public void observeCalculated(Future<Observation> observer, IdleInterrupter interrupter) {
-            }
-
-            @Override
-            public void updateProgress(Progress progress) {
-            }
-
-            @Override
-            public Integer getTask() {
-                return 5;
-            }
-
-            @Override
-            public void observeTask(Integer taskId, Future<Void> flag, Thread thread) {
-
-            }
-
-            @Override
-            public void finishTask(Integer taskId, TaskResult result) {
-
-            }
-
-            @Override
-            public TaskRecord calculate(Integer taskId, Integer nodeId, TaskResult result) {
-                return null;
-            }
-
-            @Override
-            public TaskRecord reserve(Integer taskId, Integer nodeId) {
-                return null;
-            }
-        });
+        Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, nodeID);
+        scheduler = new SchedulerImpl(servant);
     }
 
     @Test
@@ -75,7 +43,7 @@ class SchedulerImplTest {
         scheduler.enqueue(new MethodRequest() {
             @Override
             public void call(Servant servant) {
-                response.set(servant.getTask());
+                response.set(servant.getFreeTasksList().get(0));
             }
         });
 
