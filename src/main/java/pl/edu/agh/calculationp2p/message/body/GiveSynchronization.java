@@ -1,24 +1,21 @@
 package pl.edu.agh.calculationp2p.message.body;
 
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
-import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
 public class GiveSynchronization implements Body{
 
-    private final List<TaskStateMess> currStateList;
+    private final List<TaskRecord> currStateList;
 
-    public List<TaskStateMess> getCurrStateList() {
-        return currStateList;
+    public GiveSynchronization(List<TaskRecord> listOfTasks) {
+        this.currStateList = listOfTasks;
     }
 
-    public GiveSynchronization(List<TaskStateMess> listOfTasks) {
-
-        this.currStateList = listOfTasks;
-
+    public List<TaskRecord> getCurrStateList() {
+        return currStateList;
     }
 
     @Override
@@ -44,9 +41,9 @@ public class GiveSynchronization implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
         //TODO:
-        // go through this.currStateList and update someone but who
-        context.getStateUpdater();
-        context.getStateInformer();
+        currStateList.forEach(record -> {
+            //context.getStateUpdater().updateTask(record);
+        });
     }
 
     @Override
@@ -69,11 +66,11 @@ public class GiveSynchronization implements Body{
         return compareStateList(message.getCurrStateList());
     }
 
-    private boolean compareStateList(List<TaskStateMess> list){
+    private boolean compareStateList(List<TaskRecord> list){
         boolean flag = false;
-        for(TaskStateMess own: this.currStateList){
+        for(TaskRecord own: this.currStateList){
             flag = false;
-            for(TaskStateMess out: list){
+            for(TaskRecord out: list){
                 if (own.equals(out)) {
                     flag = true;
                     break;

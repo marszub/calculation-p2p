@@ -56,8 +56,14 @@ public class GiveInit implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        this.privateNodes.forEach(node -> context.getRouter().createInterface(node));
-        this.publicNodes.forEach((nodeId, ip) -> context.getRouter().createInterface(nodeId, ip));
+        this.privateNodes.forEach(node -> {
+            context.getRouter().createInterface(node);
+            context.getNodeRegister().addPrivateNode(node);
+        });
+        this.publicNodes.forEach((nodeId, ip) -> {
+            context.getRouter().createInterface(nodeId, ip);
+            context.getNodeRegister().addPublicNode(nodeId, ip);
+        });
         context.getRouter().setId(this.newId);
     }
 
@@ -90,7 +96,9 @@ public class GiveInit implements Body{
             return false;
         }
         GiveInit message = (GiveInit) o;
-        return message.getNewId() == this.newId && comparePrivateNodes(message.getPrivateNodes()) && message.getPublicNodes().equals(this.publicNodes);
+        return message.getNewId() == this.newId &&
+                comparePrivateNodes(message.getPrivateNodes()) &&
+                message.getPublicNodes().equals(this.publicNodes);
     }
 
     private boolean comparePrivateNodes(List<Integer> privateNodes){

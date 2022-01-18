@@ -42,18 +42,18 @@ public class Calculated implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
+        //TODO: (calculated, reserve) - > update()
         int myId = context.getRouter().getId();
         Future<TaskRecord> calculateFuture = context.getStateUpdater().calculate(taskId, sender, taskResult);
         context.getFutureProcessor().addFutureProcess(calculateFuture, () -> {
             Router router = context.getRouter();
-            Message confirm = new MessageImpl(myId, sender, new Confirm(taskId, TaskState.Calculated, sender, calculateFuture.get()));
+            Message confirm = new MessageImpl(myId, sender, new Confirm(calculateFuture.get()));
             router.send(confirm);
         });
     }
 
     @Override
     public Body clone() {
-        //TODO: deep copy in taskResult
         return new Calculated(this.taskId, this.taskResult);
     }
 

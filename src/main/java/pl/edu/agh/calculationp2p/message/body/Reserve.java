@@ -1,6 +1,11 @@
 package pl.edu.agh.calculationp2p.message.body;
 
+import pl.edu.agh.calculationp2p.message.Message;
+import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
+import pl.edu.agh.calculationp2p.network.router.Router;
+import pl.edu.agh.calculationp2p.state.future.Future;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 public class Reserve implements Body{
 
@@ -26,12 +31,14 @@ public class Reserve implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        //TODO: implement
-        // someone want to reserve some task and now
-        // I want to say if he can or not, it means
-        // if I already tried to reserve this task
-        // I have to compare ids of ours
-
+        //TODO: (calculated, reserve) - > update()
+        int myId = context.getRouter().getId();
+        Future<TaskRecord> calculateFuture = context.getStateUpdater().reserve(taskId, sender);
+        context.getFutureProcessor().addFutureProcess(calculateFuture, () -> {
+            Router router = context.getRouter();
+            Message confirm = new MessageImpl(myId, sender, new Confirm(calculateFuture.get()));
+            router.send(confirm);
+        });
     }
 
     @Override

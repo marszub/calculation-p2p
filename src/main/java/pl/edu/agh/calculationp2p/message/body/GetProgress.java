@@ -3,6 +3,8 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
+import pl.edu.agh.calculationp2p.state.Progress;
+import pl.edu.agh.calculationp2p.state.future.Future;
 
 
 public class GetProgress implements Body{
@@ -24,9 +26,11 @@ public class GetProgress implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
         int myId = context.getRouter().getId();
-        //TODO
-        Message messWithProgress = new MessageImpl(myId, sender, new GiveProgress(null));
-        context.getRouter().send(messWithProgress);
+        Future<Progress> future = context.getStateInformer().getProgress();
+        context.getFutureProcessor().addFutureProcess(future, ()->{
+            Message messWithProgress = new MessageImpl(myId, sender, new GiveProgress(future.get()));
+            context.getRouter().send(messWithProgress);
+        });
     }
 
     @Override

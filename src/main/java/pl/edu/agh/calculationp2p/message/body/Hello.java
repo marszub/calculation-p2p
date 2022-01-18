@@ -31,15 +31,14 @@ public class Hello implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        if(this.newIp != null){
-            InetSocketAddress ipAddress = new InetSocketAddress(this.newIp, port);
-            context.getRouter().createInterface(sender, ipAddress);
-            //TODO:
-            // if(newIp == public){
-            // context.getNodeRegister().addPublicNode(sender, ipAddress);
-            // } else {}
-            context.getNodeRegister().addPrivateNode(sender);
-        }
+        //TODO: router isPublic()
+//        if(context.getRouter().isPublic() || newIp == null){
+//            context.getRouter().createInterface(sender);
+//            context.getNodeRegister().addPrivateNode(sender);
+//        } else if(!context.getRouter().isPublic()){
+//            context.getRouter().createInterface(sender, new InetSocketAddress(newIp, port));
+//        }
+//
     }
 
     @Override
