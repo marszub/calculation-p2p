@@ -1,8 +1,8 @@
 package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
 
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTask;
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTaskIterator;
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.ResultBuilder;
+import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
+import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskIterator;
+import pl.edu.agh.calculationp2p.calculationTask.ResultBuilder;
 
 public class HashBreaker implements CalculationTask {
     int maxStringLength;

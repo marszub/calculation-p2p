@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreaker;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerDataPackage;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerInit;
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTask;
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTaskIterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -109,7 +109,10 @@ public class PublicRouter extends RouterImpl
                     processMessageToAll(message); //message to all
                 }
                 else
-                    routingTable.send(message.getReceiver(), message); //message to someone else, not me
+                    if(interfaces.contains(message.getReceiver()))
+                    {
+                        routingTable.send(message.getReceiver(), message); //message to someone else, not me
+                    }
             }
         }
         bindConnectionOrAddToQueue(message.getSender(), result.connection());
