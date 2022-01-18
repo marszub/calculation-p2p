@@ -3,7 +3,6 @@ package pl.edu.agh.calculationp2p.calculationTask;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerDataPackage;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskIterator;
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTaskIterator;
 import pl.edu.agh.calculationp2p.calculationTask.utilities.DummyHashStringCreator;
 
 import static org.junit.jupiter.api.Assertions.*;
