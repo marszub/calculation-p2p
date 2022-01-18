@@ -18,7 +18,7 @@ public class TaskRecord {
 
     public TaskRecord(){
         this.taskID = -1;
-        this.state = null;
+        this.state = TaskState.Calculated;
         this.owner = -1;
         this.result = null;
     }
@@ -55,7 +55,6 @@ public class TaskRecord {
         if(this.state.getValue() < taskState.getValue()){
             return true;
         }
-
        if(this.owner < toCompare.getOwner()){
            return true;
        }

@@ -3,6 +3,7 @@ package pl.edu.agh.calculationp2p.message;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.message.body.*;
 import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.net.InetSocketAddress;
@@ -31,7 +32,8 @@ class MessageImplTest {
         int receiver = 2;
         int newReceiver = 5;
         int taskId = 10;
-        Message calculated = new MessageImpl(sender, receiver, new Calculated(taskId, null));
+        TaskRecord taskRecord = new TaskRecord();
+        Message calculated = new MessageImpl(sender, receiver, new Calculated(taskRecord));
         Message calculatedClone = calculated.clone(newReceiver);
         // because of changed receiver
         assertNotEquals(calculated, calculatedClone);

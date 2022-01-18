@@ -3,6 +3,7 @@ package pl.edu.agh.calculationp2p.message;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.message.body.*;
 import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.net.InetSocketAddress;
@@ -30,7 +31,8 @@ class MessageParserTest {
         int sender = 1;
         int receiver = 2;
         int taskId = 10;
-        Message calculated = new MessageImpl(sender, receiver, new Calculated(taskId, null));
+        TaskRecord taskRecord = new TaskRecord();
+        Message calculated = new MessageImpl(sender, receiver, new Calculated(taskRecord));
         assertEquals(calculated, messageParser.parse(calculated.serialize()));
 
         Integer owner = 20;
