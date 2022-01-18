@@ -7,38 +7,41 @@ import pl.edu.agh.calculationp2p.message.body.Reserve;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.idle.Idle;
-import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 import pl.edu.agh.calculationp2p.state.proxy.StatusInformer;
-import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StateObserver {
 
-    private Future<Observation> reservedF;
-    private Future<Observation> calculatedF;
+    private final StatusInformer informer;
 
-    public StateObserver(StatusInformer informer, IdleInterrupter idle){
-        reservedF = informer.observeReserved(idle);
-        calculatedF = informer.observeCalculated(idle);
+    public StateObserver(StatusInformer informer){
+        this.informer = informer;
     }
 
-    public List<Message> getMessages(int myId){
+    public List<Message> getMessages(Idle idle, int myId){
 
         List<Message> result = new ArrayList<>();
 
-        while (reservedF.isReady()){
-            int taskId = reservedF.get().getTask().getTaskID();
+        Future<Observation> reservedF = this.informer.observeReserved(idle);
+        Future<Observation> calculatedF = this.informer.observeCalculated(idle);
+
+        Future<Observation> currPointerToReserved = reservedF;
+        while (currPointerToReserved.isReady()){
+            //TODO: int taskId = currPointerToReserved.get().getTask();
+            int taskId = 0;
             result.add(new MessageImpl(myId, -1, new Reserve(taskId)));
-            reservedF = reservedF.get().getNextObservation();
+            currPointerToReserved = currPointerToReserved.get().getNextObservation();
         }
 
-        while (calculatedF.isReady()){
-            TaskRecord taskRecord = calculatedF.get().getTask();
-            //TODO: calculated -> update
-            result.add(new MessageImpl(myId, -1, new Calculated(taskRecord.getTaskID(), taskRecord.getResult())));
-            calculatedF = calculatedF.get().getNextObservation();
+        Future<Observation> currPointerToCalculated = calculatedF;
+        while (currPointerToCalculated.isReady()){
+            //TODO: int taskId = currPointerToReserved.get().getTask();
+            int taskId = 0;
+            //TODO: null -> new TaskResult
+            result.add(new MessageImpl(myId, -1, new Calculated(taskId, null)));
+            currPointerToCalculated = currPointerToCalculated.get().getNextObservation();
         }
         return result;
     }

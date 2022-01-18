@@ -29,7 +29,7 @@ public class MessageProcessor implements Runnable {
         this.idle = new Idle();
 
         this.heartBeatEmiter = new HeartBeatEmiter(timePeriod, router);
-        this.stateObserver = new StateObserver(statusInformer, idle);
+        this.stateObserver = new StateObserver(statusInformer);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class MessageProcessor implements Runnable {
             List<Message> newMessages = context.getRouter().getMessage();
             newMessages.forEach(message-> message.process(context));
 
-            List<Message> toSend =  this.stateObserver.getMessages(routerId);
+            List<Message> toSend =  this.stateObserver.getMessages(this.idle, routerId);
             toSend.forEach(message -> context.getRouter().send(message));
 
             List<Integer> notResponding = context.getNodeRegister().getOutdatedNodes();
