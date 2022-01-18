@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import pl.edu.agh.calculationp2p.message.body.*;
-import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.io.IOException;
@@ -131,27 +131,20 @@ public class MessageParserImpl implements MessageParser{
     }
     private static GiveSynchronization funGiveSynchronization(HashMap<String, Object> jsonMapBody){
         String tasksArray = jsonMapBody.get("tasks").toString();
-        List<TaskStateMess> list = getTasksArrFromString(tasksArray);
+        List<TaskRecord> list = getTasksArrFromString(tasksArray);
         return new GiveSynchronization(list);
     }
-    private static List<TaskStateMess> getTasksArrFromString(String input){
-
-        List<TaskStateMess> result = new ArrayList<>();
-
+    private static List<TaskRecord> getTasksArrFromString(String input){
+        List<TaskRecord> result = new ArrayList<>();
         if(Objects.equals(input, "[]")){
             return result;
         }
-
         String[] splitArr = input.split("},");
-
         splitArr[0] = splitArr[0].substring(1);
         splitArr[splitArr.length-1] = splitArr[splitArr.length-1].substring(0,splitArr[splitArr.length-1].length()-1);
-
         for (String oneObjectString : splitArr) {
             String[] oneObject = oneObjectString.split(",");
-
             int taskId = Integer.parseInt(oneObject[0].split(":")[1]);
-
             TaskState state = null;
             String stateString = oneObject[2].split(":")[1];
             switch (stateString) {
@@ -161,7 +154,7 @@ public class MessageParserImpl implements MessageParser{
             }
             Integer owner = Integer.parseInt(oneObject[2].split(":")[1]);
             //TODO: TaskResult taskResult = oneObject[2].split(":")[1];
-            result.add(new TaskStateMess(taskId, state, owner));
+            result.add(new TaskRecord(taskId, state, owner, null));
         }
 
         return result;
@@ -190,6 +183,6 @@ public class MessageParserImpl implements MessageParser{
         }
         //TODO:
         jsonMapBody.get("result");
-        return new Confirm(taskId, state, owner, null);
+        return new Confirm(new TaskRecord(taskId, state, owner, null));
     }
 }
