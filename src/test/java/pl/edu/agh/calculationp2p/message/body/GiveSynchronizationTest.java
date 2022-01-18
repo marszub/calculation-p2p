@@ -1,7 +1,8 @@
 package pl.edu.agh.calculationp2p.message.body;
 
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
+import pl.edu.agh.calculationp2p.calculation.TaskResult;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ class GiveSynchronizationTest {
     @Test
     void serializeType() {
 
-        List<TaskStateMess> list = new ArrayList<>();
+        List<TaskRecord> list = new ArrayList<>();
         Body giveSync = new GiveSynchronization(list);
         assertEquals("\"give_synchronization\"", giveSync.serializeType());
 
@@ -22,10 +23,10 @@ class GiveSynchronizationTest {
 
     @Test
     void serializeContent() {
-        //TODO: free vs Free
-        List<TaskStateMess> listEmpty = new ArrayList<>();
-        List<TaskStateMess> listOne = new ArrayList<>(List.of(new TaskStateMess(1, TaskState.Free, 2)));
-        List<TaskStateMess> listFew = new ArrayList<>(List.of(new TaskStateMess(1, TaskState.Free, 2), new TaskStateMess(2, TaskState.Free, 3)));
+
+        List<TaskRecord> listEmpty = new ArrayList<>();
+        List<TaskRecord> listOne = new ArrayList<>(List.of(new TaskRecord(1, TaskState.Free, 5, null)));
+        List<TaskRecord> listFew = new ArrayList<>(List.of(new TaskRecord(1, TaskState.Free, 5, null), new TaskRecord(2, TaskState.Free, 5, null)));
 
         Body giveSyncEmpty = new GiveSynchronization(listEmpty);
         Body giveSyncOne = new GiveSynchronization(listOne);
@@ -35,22 +36,22 @@ class GiveSynchronizationTest {
         String resultOne = "{\"tasks\":[" +
                 "{" +
                 "\"task_id\":1," +
-                "\"state\":Free," +
-                "\"owner\":2," +
+                "\"state\":\"free\"," +
+                "\"owner\":5," +
                 "\"result\":\"null\"" +
                 "}" +
                 "]}";
         String resultFew = "{\"tasks\":[" +
                 "{" +
                 "\"task_id\":1," +
-                "\"state\":Free," +
-                "\"owner\":2," +
+                "\"state\":\"free\"," +
+                "\"owner\":5," +
                 "\"result\":\"null\"" +
                 "}," +
                 "{" +
                 "\"task_id\":2," +
-                "\"state\":Free," +
-                "\"owner\":3," +
+                "\"state\":\"free\"," +
+                "\"owner\":5," +
                 "\"result\":\"null\"" +
                 "}" +
                 "]}";
