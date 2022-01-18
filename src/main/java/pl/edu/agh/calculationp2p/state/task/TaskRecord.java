@@ -55,7 +55,6 @@ public class TaskRecord {
         if(this.state.getValue() < taskState.getValue()){
             return true;
         }
-
        if(this.owner < toCompare.getOwner()){
            return true;
        }
