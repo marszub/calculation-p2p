@@ -12,20 +12,20 @@ public class HeartBeatEmiter {
     private final Router router;
     private final int timePeriod;
     private long lastBeatTime;
-    protected HeartBeatEmiter(int timePeriod, Router router){
+    public HeartBeatEmiter(int timePeriod, Router router){
         this.router = router;
         this.timePeriod = timePeriod;
         this.lastBeatTime = now();
     }
 
-    protected void beat(){
+    public void beat(){
         if(now() - this.lastBeatTime >= this.timePeriod){
             router.send(new MessageImpl(router.getId(), -1, new HeartBeat()));
             this.lastBeatTime = now();
         }
     }
 
-    protected int nextBeatTime(){
+    public int nextBeatTime(){
         long now = now();
         return (int) (this.timePeriod-(now - this.lastBeatTime));
     }
