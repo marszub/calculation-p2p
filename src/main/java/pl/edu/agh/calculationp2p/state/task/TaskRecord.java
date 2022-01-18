@@ -18,7 +18,7 @@ public class TaskRecord {
 
     public TaskRecord(){
         this.taskID = -1;
-        this.state = null;
+        this.state = TaskState.Calculated;
         this.owner = -1;
         this.result = null;
     }

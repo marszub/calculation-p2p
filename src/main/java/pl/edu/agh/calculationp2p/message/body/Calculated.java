@@ -11,18 +11,16 @@ import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 public class Calculated implements Body{
     public int getTaskId() {
-        return taskId;
+        return taskRecord.getTaskID();
     }
 
     public TaskResult getTaskResult() {
-        return taskResult;
+        return taskRecord.getResult();
     }
 
-    private final int taskId;
-    private final TaskResult taskResult;
-    public Calculated(int taskId, TaskResult taskResult){
-        this.taskId = taskId;
-        this.taskResult = taskResult;
+    private final TaskRecord taskRecord;
+    public Calculated(TaskRecord taskRecord){
+        this.taskRecord = taskRecord;
     }
     @Override
     public String serializeType() {
@@ -33,9 +31,13 @@ public class Calculated implements Body{
     public String serializeContent() {
         String result = "";
         result = result.concat("{\"task_id\":");
-        result = result.concat(String.valueOf(this.taskId));
+        result = result.concat(String.valueOf(taskRecord.getTaskID()));
+        result = result.concat(",\"state\":\"");
+        result = result.concat(String.valueOf(taskRecord.getState()));
+        result = result.concat("\",\"owner\":");
+        result = result.concat(String.valueOf(taskRecord.getOwner()));
         result = result.concat(",\"result\":");
-        result = taskResult==null?result.concat("null"):result.concat(taskResult.serialize());
+        result = taskRecord.getResult()==null?result.concat("\"null\""):result.concat(taskRecord.getResult().serialize());
         result = result.concat("}");
         return result;
     }
@@ -43,18 +45,21 @@ public class Calculated implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
         int myId = context.getRouter().getId();
-        Future<TaskRecord> calculateFuture = context.getStateUpdater().calculate(taskId, sender, taskResult);
+        Future<TaskRecord> calculateFuture = context.getStateUpdater().updateTask(taskRecord);
         context.getFutureProcessor().addFutureProcess(calculateFuture, () -> {
             Router router = context.getRouter();
-            Message confirm = new MessageImpl(myId, sender, new Confirm(taskId, TaskState.Calculated, sender, calculateFuture.get()));
+            Message confirm = new MessageImpl(myId, sender, new Confirm(taskRecord.getTaskID(), TaskState.Calculated, sender, calculateFuture.get()));
             router.send(confirm);
         });
     }
 
     @Override
     public Body clone() {
-        //TODO: deep copy in taskResult
-        return new Calculated(this.taskId, this.taskResult);
+        return new Calculated(taskRecord);
+    }
+
+    public TaskRecord getTaskRecord(){
+        return taskRecord;
     }
 
     @Override
@@ -70,7 +75,7 @@ public class Calculated implements Body{
         }
         Calculated message = (Calculated) o;
         //TODO: equals() in taskResult
-        return message.getTaskId() == this.taskId;
+        return message.getTaskRecord().equals(this.taskRecord);
         //&& message.getTaskResult() == this.taskResult;
     }
 

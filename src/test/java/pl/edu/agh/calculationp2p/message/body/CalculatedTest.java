@@ -2,6 +2,8 @@ package pl.edu.agh.calculationp2p.message.body;
 
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.calculation.TaskResult;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
+import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,9 +12,9 @@ class CalculatedTest {
     @Test
     void serializeType() {
 
-        TaskResult taskResult = () -> "task_result";
+        TaskRecord taskRecord = new TaskRecord();
 
-        Body calculated = new Calculated(1, taskResult);
+        Body calculated = new Calculated(taskRecord);
 
         assertEquals("\"calculated\"", calculated.serializeType());
 
@@ -23,11 +25,11 @@ class CalculatedTest {
 
         String expected = "task_result";
 
-        TaskResult taskResult = () -> expected;
+        TaskRecord taskRecord = new TaskRecord(1, TaskState.Calculated, 2, null);
 
-        Body calculated = new Calculated(1, taskResult);
+        Body calculated = new Calculated(taskRecord);
 
-        String result = "{\"task_id\":1,\"result\":"+expected+"}";
+        String result = "{\"task_id\":1,\"state\":\"calculated\",\"owner\":2,\"result\":\"null\"}";
         assertEquals(result, calculated.serializeContent());
 
     }
