@@ -4,6 +4,7 @@ import pl.edu.agh.calculationp2p.state.future.Future;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FutureProcessor {
 
@@ -13,24 +14,23 @@ public class FutureProcessor {
         this.futureList = new ArrayList<>();
     }
 
-    protected void tryProcessAll(){
+    public void tryProcessAll(){
 
-        List<FutureRunnablePair> readyFutures = new ArrayList<>();
-        for(FutureRunnablePair par : this.futureList){
-            if(par.getFuture().isReady()){
-                readyFutures.add(par);
-            }
-        }
+        List<FutureRunnablePair> readyFutures = futureList
+                .stream()
+                .filter(par -> par.getFuture().isReady())
+                .collect(Collectors.toList());
 
-        for(FutureRunnablePair p : readyFutures){
+        readyFutures.forEach(p -> {
             p.getRunnable().run();
             p.getFuture().get();
             this.futureList.remove(p);
-        }
+        });
 
     }
+
     public void addFutureProcess(Future condition, Runnable process){
-        this.futureList.add(new FutureRunnablePair(condition, process));
+        futureList.add(new FutureRunnablePair(condition, process));
     }
 
 }

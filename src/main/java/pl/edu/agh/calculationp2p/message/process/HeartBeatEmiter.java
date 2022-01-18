@@ -18,11 +18,13 @@ public class HeartBeatEmiter {
         this.lastBeatTime = now();
     }
 
-    public void beat(){
+    public boolean beat(){
         if(now() - this.lastBeatTime >= this.timePeriod){
             router.send(new MessageImpl(router.getId(), -1, new HeartBeat()));
             this.lastBeatTime = now();
+            return true;
         }
+        return false;
     }
 
     public int nextBeatTime(){

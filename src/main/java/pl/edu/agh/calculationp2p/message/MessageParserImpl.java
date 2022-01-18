@@ -73,7 +73,11 @@ public class MessageParserImpl implements MessageParser{
         return new Hello(ipS);
     }
     private static GiveProgress funGiveProcess(HashMap<String, Object> jsonMapBody){
-        //TODO: String progress = jsonMapBody.get("progress");
+        //TODO:
+        String progress = jsonMapBody.get("progress").toString();
+
+
+
         return new GiveProgress(null);
     }
     private static Reserve funReserve(HashMap<String, Object> jsonMapBody){
@@ -162,7 +166,8 @@ public class MessageParserImpl implements MessageParser{
     private static Calculated funCalculated(HashMap<String, Object> jsonMapBody){
         //TODO:
         int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
-        //String result = jsonMapBody.get("result");
+        //String result = jsonMapBody.get("result").toString();
+
         return new Calculated(taskId, null);
     }
     private static Confirm funConfirm(HashMap<String, Object> jsonMapBody){
@@ -182,7 +187,7 @@ public class MessageParserImpl implements MessageParser{
             owner = Integer.parseInt(ownerStr);
         }
         //TODO:
-        jsonMapBody.get("result");
+        String result = jsonMapBody.get("result").toString();
         return new Confirm(new TaskRecord(taskId, state, owner, null));
     }
 }
