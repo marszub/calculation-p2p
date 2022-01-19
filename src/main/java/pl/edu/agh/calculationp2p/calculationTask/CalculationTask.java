@@ -1,4 +1,4 @@
-package pl.edu.agh.calculationp2p.calculationTask.interfaces;
+package pl.edu.agh.calculationp2p.calculationTask;
 
 public interface CalculationTask
 {

@@ -18,7 +18,7 @@ public class TaskRecord {
 
     public TaskRecord(){
         this.taskID = -1;
-        this.state = null;
+        this.state = TaskState.Calculated;
         this.owner = -1;
         this.result = null;
     }
@@ -34,7 +34,7 @@ public class TaskRecord {
         String resultStr = "{\"task_id\":";
         resultStr = resultStr.concat(String.valueOf(this.taskID));
         resultStr = resultStr.concat(",\"state\":");
-        resultStr = resultStr.concat("\""+this.state.getName()+"\"");
+        resultStr = resultStr.concat("\""+this.state+"\"");
         resultStr = resultStr.concat(",\"owner\":");
         resultStr = resultStr.concat(String.valueOf(this.owner));
         resultStr = resultStr.concat(",\"result\":");
@@ -68,7 +68,6 @@ public class TaskRecord {
         if(this.state.getValue() < taskState.getValue()){
             return true;
         }
-
         if(this.owner < toCompare.getOwner()){
             return true;
         }

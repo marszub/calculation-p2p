@@ -1,7 +1,7 @@
 package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
 
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTaskIterator;
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.TaskData;
+import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskIterator;
+import pl.edu.agh.calculationp2p.calculationTask.TaskData;
 
 public class HashTaskIterator implements CalculationTaskIterator {
     HashStringCreator hashStringCreator;

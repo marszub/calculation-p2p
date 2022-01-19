@@ -29,15 +29,15 @@ public class StateObserver {
         List<Message> result = new ArrayList<>();
 
         while (reservedF.isReady()){
-            int taskId = reservedF.get().getTask().getTaskID();
-            result.add(new MessageImpl(myId, -1, new Reserve(taskId)));
+            TaskRecord task = reservedF.get().getTask();
+            result.add(new MessageImpl(myId, -1, new Reserve(task)));
             reservedF = reservedF.get().getNextObservation();
         }
 
         while (calculatedF.isReady()){
             TaskRecord taskRecord = calculatedF.get().getTask();
             //TODO: calculated -> update
-            result.add(new MessageImpl(myId, -1, new Calculated(taskRecord.getTaskID(), taskRecord.getResult())));
+            result.add(new MessageImpl(myId, -1, new Calculated(taskRecord)));
             calculatedF = calculatedF.get().getNextObservation();
         }
         return result;

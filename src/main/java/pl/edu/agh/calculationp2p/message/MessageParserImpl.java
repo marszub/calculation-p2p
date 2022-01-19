@@ -76,13 +76,21 @@ public class MessageParserImpl implements MessageParser{
         //TODO:
         String progress = jsonMapBody.get("progress").toString();
 
-
-
         return new GiveProgress(null);
     }
     private static Reserve funReserve(HashMap<String, Object> jsonMapBody){
         int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
-        return new Reserve(taskId);
+        int owner = Integer.parseInt(jsonMapBody.get("owner").toString());
+        String stateStr = jsonMapBody.get("state").toString();
+        TaskState taskState = null;
+        if(stateStr.equals("free")){
+            taskState = TaskState.Free;
+        } else if(stateStr.equals("reserve")){
+            taskState = TaskState.Reserved;
+        } else if(stateStr.equals("calculated")){
+            taskState = TaskState.Calculated;
+        }
+        return new Reserve(new TaskRecord(taskId, taskState, owner, null));
     }
     private static GiveInit funGiveInit(HashMap<String, Object> jsonMapBody){
 
@@ -166,9 +174,23 @@ public class MessageParserImpl implements MessageParser{
     private static Calculated funCalculated(HashMap<String, Object> jsonMapBody){
         //TODO:
         int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
-        //String result = jsonMapBody.get("result").toString();
 
-        return new Calculated(taskId, null);
+        int owner = Integer.parseInt(jsonMapBody.get("owner").toString());
+        String stateStr = jsonMapBody.get("state").toString();
+        TaskState taskState = null;
+        if(stateStr.equals("free")){
+            taskState = TaskState.Free;
+        } else if(stateStr.equals("reserve")){
+            taskState = TaskState.Reserved;
+        } else if(stateStr.equals("calculated")){
+            taskState = TaskState.Calculated;
+        }
+        //TODO
+        //String result = jsonMapBody.get("result");
+
+        TaskRecord result = new TaskRecord(taskId, taskState, owner, null);
+        return new Calculated(result);
+
     }
     private static Confirm funConfirm(HashMap<String, Object> jsonMapBody){
         int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());

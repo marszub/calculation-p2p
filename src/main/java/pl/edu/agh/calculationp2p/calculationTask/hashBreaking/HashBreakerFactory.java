@@ -1,12 +1,7 @@
 package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
 
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTask;
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.CalculationTaskFactory;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
+import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
+import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskFactory;
 
 public class HashBreakerFactory implements CalculationTaskFactory
 {

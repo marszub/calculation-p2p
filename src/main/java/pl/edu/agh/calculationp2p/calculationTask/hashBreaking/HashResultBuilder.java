@@ -1,29 +1,29 @@
 package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
 
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.ResultBuilder;
-import pl.edu.agh.calculationp2p.calculationTask.interfaces.TaskData;
+import pl.edu.agh.calculationp2p.calculation.TaskResult;
+import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
+import pl.edu.agh.calculationp2p.calculationTask.ResultBuilder;
+import pl.edu.agh.calculationp2p.calculationTask.TaskData;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
-import java.util.List;
 
 public class HashResultBuilder implements ResultBuilder {
     String hash;
-    List<String> result;
+    TaskResultImpl result;
     HashStringCreator hashStringCreator;
 
     public HashResultBuilder(String hash, HashStringCreator hashStringCreator)
     {
         this.hash = hash;
-        result = new LinkedList<>();
+        result = new TaskResultImpl();
         this.hashStringCreator = hashStringCreator;
     }
 
     @Override
     public void reset()
     {
-        result = new LinkedList<>();
+        result = new TaskResultImpl();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class HashResultBuilder implements ResultBuilder {
     }
 
     @Override
-    public List<String> getResult() {
+    public TaskResult getResult() {
         return result;
     }
 

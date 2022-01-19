@@ -16,7 +16,9 @@ public enum TaskState {
     public int getValue() {
         return value;
     }
-    public String getName() {
+
+    @Override
+    public String toString(){
         return name;
     }
 }

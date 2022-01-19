@@ -31,7 +31,8 @@ class MessageImplTest {
         int receiver = 2;
         int newReceiver = 5;
         int taskId = 10;
-        Message calculated = new MessageImpl(sender, receiver, new Calculated(taskId, null));
+        TaskRecord taskRecord = new TaskRecord();
+        Message calculated = new MessageImpl(sender, receiver, new Calculated(taskRecord));
         Message calculatedClone = calculated.clone(newReceiver);
         // because of changed receiver
         assertNotEquals(calculated, calculatedClone);
@@ -87,7 +88,7 @@ class MessageImplTest {
         assertNotSame(hello, helloClone);
         assertEquals(newReceiver, helloClone.getReceiver());
 
-        Message reserve = new MessageImpl(sender, receiver, new Reserve(taskId));
+        Message reserve = new MessageImpl(sender, receiver, new Reserve(new TaskRecord(2, TaskState.Free, 3, null)));
         Message reserveClone = reserve.clone(newReceiver);
         assertNotSame(reserve, reserveClone);
         assertEquals(newReceiver, reserveClone.getReceiver());

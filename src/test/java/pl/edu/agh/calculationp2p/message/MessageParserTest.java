@@ -30,7 +30,8 @@ class MessageParserTest {
         int sender = 1;
         int receiver = 2;
         int taskId = 10;
-        Message calculated = new MessageImpl(sender, receiver, new Calculated(taskId, null));
+        TaskRecord taskRecord = new TaskRecord();
+        Message calculated = new MessageImpl(sender, receiver, new Calculated(taskRecord));
         assertEquals(calculated, messageParser.parse(calculated.serialize()));
 
         Integer owner = 20;
@@ -63,7 +64,7 @@ class MessageParserTest {
         Message hello = new MessageImpl(sender, receiver, new Hello(ip));
         assertEquals(hello, messageParser.parse(hello.serialize()));
 
-        Message reserve = new MessageImpl(sender, receiver, new Reserve(taskId));
+        Message reserve = new MessageImpl(sender, receiver, new Reserve(new TaskRecord(new TaskRecord(2, TaskState.Free, 3, null))));
         assertEquals(reserve, messageParser.parse(reserve.serialize()));
 
     }
