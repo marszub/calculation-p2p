@@ -1,8 +1,6 @@
 package pl.edu.agh.calculationp2p.calculationTask;
 
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
-
-import java.util.List;
+import pl.edu.agh.calculationp2p.calculation.utils.TaskResult;
 
 public interface ResultBuilder {
     void reset();

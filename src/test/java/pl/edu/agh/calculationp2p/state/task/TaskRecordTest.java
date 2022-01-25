@@ -2,9 +2,7 @@ package pl.edu.agh.calculationp2p.state.task;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
-
-import static org.junit.jupiter.api.Assertions.*;
+import pl.edu.agh.calculationp2p.calculation.utils.TaskResultImpl;
 
 class TaskRecordTest {
 

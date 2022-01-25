@@ -1,6 +1,6 @@
 package pl.edu.agh.calculationp2p.state.proxy;
 
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
+import pl.edu.agh.calculationp2p.calculation.utils.TaskResult;
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.request.*;

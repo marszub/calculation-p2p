@@ -2,8 +2,7 @@ package pl.edu.agh.calculationp2p.state.request;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
+import pl.edu.agh.calculationp2p.calculation.utils.TaskResultImpl;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Servant;
 import pl.edu.agh.calculationp2p.state.ServantImpl;
@@ -15,8 +14,6 @@ import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class GetTaskRequestTest {
 

@@ -1,9 +1,11 @@
-package pl.edu.agh.calculationp2p.calculation;
+package pl.edu.agh.calculationp2p.calculation.utils;
+
+import pl.edu.agh.calculationp2p.calculation.utils.TaskResult;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class TaskResultImpl implements TaskResult{
+public class TaskResultImpl implements TaskResult {
     List<String> matchedStrings = new LinkedList<>();
 
     public TaskResultImpl() {

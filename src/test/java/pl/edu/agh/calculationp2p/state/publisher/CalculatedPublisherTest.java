@@ -1,8 +1,7 @@
 package pl.edu.agh.calculationp2p.state.publisher;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
+import pl.edu.agh.calculationp2p.calculation.utils.TaskResultImpl;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.idle.Idle;

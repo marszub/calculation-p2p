@@ -1,7 +1,7 @@
 package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
 
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
+import pl.edu.agh.calculationp2p.calculation.utils.TaskResult;
+import pl.edu.agh.calculationp2p.calculation.utils.TaskResultImpl;
 import pl.edu.agh.calculationp2p.calculationTask.ResultBuilder;
 import pl.edu.agh.calculationp2p.calculationTask.TaskData;
 
