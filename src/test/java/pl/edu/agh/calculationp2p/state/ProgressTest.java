@@ -41,7 +41,7 @@ class ProgressTest {
         progress.update(taskRecord2);
         progress.update(taskRecord3);
         List<Integer> list = progress.getFreeTasksList();
-        Assertions.assertEquals(2, list.size());
+        Assertions.assertEquals(3, list.size());
     }
 
 
