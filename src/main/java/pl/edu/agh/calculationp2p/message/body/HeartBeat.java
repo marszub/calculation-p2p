@@ -1,12 +1,12 @@
 package pl.edu.agh.calculationp2p.message.body;
 
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
+import pl.edu.agh.calculationp2p.message.process.NodeRegister;
 
 import java.util.Objects;
 
+
 public class HeartBeat implements Body{
-    public HeartBeat() {
-    }
 
     @Override
     public String serializeType() {
@@ -20,7 +20,9 @@ public class HeartBeat implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        context.getNodeRegister().updateNode(sender);
+        NodeRegister nodeRegister = context.getNodeRegister();
+        if(nodeRegister.getPrivateNodes().contains(sender) || nodeRegister.getPublicNodes().containsKey(sender))
+            context.getNodeRegister().updateNode(sender);
     }
 
     @Override
@@ -37,5 +39,10 @@ public class HeartBeat implements Body{
             return false;
         }
         return getClass() == o.getClass();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this);
     }
 }

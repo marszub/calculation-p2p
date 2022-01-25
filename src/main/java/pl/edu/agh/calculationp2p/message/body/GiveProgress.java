@@ -29,12 +29,11 @@ public class GiveProgress implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        
+        context.getStateUpdater().initProgress(this.progress);
     }
 
     @Override
     public Body clone() {
-        //TODO: deep copy in progress?
         return new GiveProgress(this.progress);
     }
 
@@ -48,4 +47,8 @@ public class GiveProgress implements Body{
         }
         return getClass() == o.getClass();
      }
+    @Override
+    public int hashCode() {
+        return Objects.hash(progress);
+    }
 }
