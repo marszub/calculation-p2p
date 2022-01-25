@@ -23,7 +23,7 @@ import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 public class  Main {
     public static void main(String[] args){
         // servant
-        Progress progress = new Progress(); // TODO: Task, czy coś do środka
+        Progress progress = new Progress( 100); // TODO: config
         TaskPublisher taskPublisher = new TaskPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
