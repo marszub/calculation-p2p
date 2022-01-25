@@ -1,12 +1,14 @@
-package pl.edu.agh.calculationp2p.calculation;
+package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
+
+import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class TaskResultImpl implements TaskResult{
+public class HashTaskResult implements TaskResult {
     List<String> matchedStrings = new LinkedList<>();
 
-    public TaskResultImpl() {
+    public HashTaskResult() {
     }
 
     public void add(String string)

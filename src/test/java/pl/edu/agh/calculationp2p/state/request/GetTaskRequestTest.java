@@ -2,8 +2,7 @@ package pl.edu.agh.calculationp2p.state.request;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
+import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Servant;
 import pl.edu.agh.calculationp2p.state.ServantImpl;
@@ -16,8 +15,6 @@ import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class GetTaskRequestTest {
 
     @Test
@@ -28,9 +25,9 @@ class GetTaskRequestTest {
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
 
-        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new TaskResultImpl());
-        TaskRecord taskRecord2 = new TaskRecord(2, TaskState.Free, 10, new TaskResultImpl());
-        TaskRecord taskRecord3 = new TaskRecord(3, TaskState.Free, 10, new TaskResultImpl());
+        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new HashTaskResult());
+        TaskRecord taskRecord2 = new TaskRecord(2, TaskState.Free, 10, new HashTaskResult());
+        TaskRecord taskRecord3 = new TaskRecord(3, TaskState.Free, 10, new HashTaskResult());
 
         progress.update(taskRecord1);
         progress.update(taskRecord2);

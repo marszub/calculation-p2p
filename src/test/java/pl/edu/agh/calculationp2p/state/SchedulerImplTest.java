@@ -2,11 +2,7 @@ package pl.edu.agh.calculationp2p.state;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
-import pl.edu.agh.calculationp2p.state.future.Future;
-import pl.edu.agh.calculationp2p.state.future.Observation;
-import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
+import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
 import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
@@ -30,7 +26,7 @@ class SchedulerImplTest {
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
 
-        TaskRecord taskRecord1 = new TaskRecord(5, TaskState.Free, 10, new TaskResultImpl());
+        TaskRecord taskRecord1 = new TaskRecord(5, TaskState.Free, 10, new HashTaskResult());
         progress.update(taskRecord1);
 
         Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, nodeID);
