@@ -1,6 +1,5 @@
 package pl.edu.agh.calculationp2p.state;
 
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 

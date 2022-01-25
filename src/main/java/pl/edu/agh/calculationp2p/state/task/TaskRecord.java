@@ -1,7 +1,7 @@
 package pl.edu.agh.calculationp2p.state.task;
 
 
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
+import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 
 public class TaskRecord {
     private final int taskID;
