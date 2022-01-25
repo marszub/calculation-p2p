@@ -8,15 +8,9 @@ import java.util.Objects;
 
 public class Confirm implements Body{
 
-    private final int taskId;
-    private final TaskState state;
-    private final Integer owner;
     private final TaskRecord taskRecord;
 
-    public Confirm(int taskId, TaskState state, Integer owner, TaskRecord taskRecord) {
-        this.taskId = taskId;
-        this.state = state;
-        this.owner = owner;
+    public Confirm(TaskRecord taskRecord) {
         this.taskRecord = taskRecord;
     }
 
@@ -27,47 +21,25 @@ public class Confirm implements Body{
 
     @Override
     public String serializeContent() {
-        String result = "";
-        result = result.concat("{\"task_id\":");
-        result = result.concat(String.valueOf(this.taskId));
-        result = result.concat(",\"state\":");
-        if(this.state == TaskState.Calculated){
-            result = result.concat("\"calculated\"");
-        } else if(this.state == TaskState.Free){
-            result = result.concat("\"free\"");
-        } else if(this.state == TaskState.Reserved){
-            result = result.concat("\"reserved\"");
-        }
-        result = result.concat(",\"owner\":");
-        result = result.concat(String.valueOf(this.owner));
-        result = result.concat(",\"result\":");
-        // TODO: taskRecord toString or serialize
-        result = this.taskRecord==null?result.concat("\"null\""):result.concat(this.taskRecord.toString());
-        result = result.concat("}");
-        return result;
+        return taskRecord.serialize();
     }
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        //TODO
+        context.getStateUpdater().updateTask(taskRecord);
     }
 
     @Override
     public Body clone() {
-        //TODO: deep copy in taskRecord
-        return new Confirm(this.taskId, this.state, this.owner, this.taskRecord);
+        return new Confirm(taskRecord);
     }
 
     public int getTaskId() {
-        return taskId;
+        return taskRecord.getTaskID();
     }
 
     public TaskState getState() {
-        return state;
-    }
-
-    public Integer getOwner() {
-        return owner;
+        return taskRecord.getState();
     }
 
     public TaskRecord getTaskRecord() {
@@ -86,7 +58,11 @@ public class Confirm implements Body{
             return false;
         }
         Confirm message = (Confirm) o;
-        //TODO: equals() in taskRecord
-        return message.getTaskId() == this.taskId && message.getTaskRecord() == this.taskRecord && Objects.equals(message.getOwner(), this.owner) && message.getState() == this.state;
+        return message.getTaskRecord().equals(this.taskRecord);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskRecord.getTaskID(), taskRecord.getState(), taskRecord.getOwner());
     }
 }

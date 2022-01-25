@@ -3,21 +3,24 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
-import pl.edu.agh.calculationp2p.message.utils.TaskStateMess;
+import pl.edu.agh.calculationp2p.state.future.Future;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GetSynchronization implements Body{
-
-    public List<Integer> getTaskIdList() {
-        return taskIdList;
-    }
 
     private final List<Integer> taskIdList;
 
     public GetSynchronization(List<Integer> taskIdList) {
         this.taskIdList = taskIdList;
+    }
+
+    public List<Integer> getTaskIdList() {
+        return taskIdList;
     }
 
     @Override
@@ -43,12 +46,21 @@ public class GetSynchronization implements Body{
     public void process(int sender, MessageProcessContext context) {
 
         int myId = context.getRouter().getId();
-        //TODO
-        //Map<Integer, TaskState> progress = context.setStateUpdater();
-        List<TaskStateMess> list = new ArrayList<>();
-        Message messWithStateOfTasks = new MessageImpl(myId, sender, new GiveSynchronization(list));
-        context.getRouter().send(messWithStateOfTasks);
 
+        List<Future<TaskRecord>> syncList = taskIdList
+                                                .stream()
+                                                .map(taskId -> context.getStateInformer().getTaskProgress(taskId))
+                                                .collect(Collectors.toList());
+        //TODO:
+        context.getFutureProcessor().addFutureProcess(syncList.get(syncList.size()-1), ()->{
+            Message messWithStateOfTasks = new MessageImpl(myId, sender, new GiveSynchronization(
+                    syncList
+                            .stream()
+                            .map(Future::get)
+                            .collect(Collectors.toList())
+            ));
+            context.getRouter().send(messWithStateOfTasks);
+        });
     }
 
     @Override
@@ -69,6 +81,11 @@ public class GetSynchronization implements Body{
         }
         GetSynchronization message = (GetSynchronization) o;
         return message.getTaskIdList().equals(this.taskIdList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskIdList);
     }
 
 }

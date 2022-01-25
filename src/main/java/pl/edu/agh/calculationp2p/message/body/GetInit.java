@@ -8,8 +8,6 @@ import java.net.InetSocketAddress;
 import java.util.*;
 
 public class GetInit implements Body{
-    public GetInit() {
-    }
 
     @Override
     public String serializeType() {
@@ -28,7 +26,9 @@ public class GetInit implements Body{
         List<Integer> privatesNodes = context.getNodeRegister().getPrivateNodes();
         Map<Integer, InetSocketAddress> publicNodes = context.getNodeRegister().getPublicNodes();
 
+        //TODO: make class to unique id (static counter) get all nodesId and check if(max(all_nodes))
         //get new ID
+
         int newId = 0;
         Set<Integer> idsAlreadyInUse = new HashSet<>(privatesNodes);
         idsAlreadyInUse.addAll(publicNodes.keySet());
@@ -55,4 +55,10 @@ public class GetInit implements Body{
         }
         return getClass() == o.getClass();
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this);
+    }
 }
+
