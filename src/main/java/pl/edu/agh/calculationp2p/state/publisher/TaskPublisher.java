@@ -52,6 +52,8 @@ public class TaskPublisher {
         }
     }
 
+
+    // TODO: istotny jest nasz nodeId. Informujemy tylko, gdy owner zmienił się z naszego na nie nasz. Analogicznie w subscribe().
     public void look(TaskRecord previous, TaskRecord current) {
         // istotna jest każda obserwacja
         // sprawdzamy stany 2 tasków, reaguj gdy:
