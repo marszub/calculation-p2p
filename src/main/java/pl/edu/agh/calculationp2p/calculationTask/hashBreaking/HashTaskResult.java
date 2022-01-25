@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class HashTaskResult implements TaskResult {
-    List<String> matchedStrings = new LinkedList<>();
+    private final List<String> matchedStrings = new LinkedList<>();
 
     public HashTaskResult() {
     }
@@ -18,6 +18,6 @@ public class HashTaskResult implements TaskResult {
 
     @Override
     public String serialize() {
-        return null;
+        return matchedStrings.toString(); // TODO: special characters in password
     }
 }
