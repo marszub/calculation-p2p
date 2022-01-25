@@ -6,7 +6,6 @@ import pl.edu.agh.calculationp2p.message.body.Calculated;
 import pl.edu.agh.calculationp2p.message.body.Reserve;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
-import pl.edu.agh.calculationp2p.state.idle.Idle;
 import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 import pl.edu.agh.calculationp2p.state.proxy.StatusInformer;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;

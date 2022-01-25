@@ -4,6 +4,8 @@ import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
+import java.util.Objects;
+
 public class Confirm implements Body{
 
     private final TaskRecord taskRecord;
@@ -24,12 +26,7 @@ public class Confirm implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        //TODO: (calculated, reserve) - > update()
-        if(taskRecord.getState() == TaskState.Calculated){
-            context.getStateUpdater().calculate(taskRecord.getTaskID(), sender, taskRecord.getResult());
-        } else {
-            context.getStateUpdater().reserve(taskRecord.getTaskID(), sender);
-        }
+        context.getStateUpdater().updateTask(taskRecord);
     }
 
     @Override
@@ -62,5 +59,10 @@ public class Confirm implements Body{
         }
         Confirm message = (Confirm) o;
         return message.getTaskRecord().equals(this.taskRecord);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskRecord.getTaskID(), taskRecord.getState(), taskRecord.getOwner());
     }
 }

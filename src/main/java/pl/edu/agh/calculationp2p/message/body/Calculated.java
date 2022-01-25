@@ -7,21 +7,17 @@ import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.network.router.Router;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
-import pl.edu.agh.calculationp2p.state.task.TaskState;
+
+import java.util.Objects;
 
 public class Calculated implements Body{
-    public int getTaskId() {
-        return taskRecord.getTaskID();
-    }
-
-    public TaskResult getTaskResult() {
-        return taskRecord.getResult();
-    }
 
     private final TaskRecord taskRecord;
+
     public Calculated(TaskRecord taskRecord){
         this.taskRecord = taskRecord;
     }
+
     @Override
     public String serializeType() {
         return "\"calculated\"";
@@ -29,22 +25,11 @@ public class Calculated implements Body{
 
     @Override
     public String serializeContent() {
-        String result = "";
-        result = result.concat("{\"task_id\":");
-        result = result.concat(String.valueOf(taskRecord.getTaskID()));
-        result = result.concat(",\"state\":\"");
-        result = result.concat(String.valueOf(taskRecord.getState()));
-        result = result.concat("\",\"owner\":");
-        result = result.concat(String.valueOf(taskRecord.getOwner()));
-        result = result.concat(",\"result\":");
-        result = taskRecord.getResult()==null?result.concat("\"null\""):result.concat(taskRecord.getResult().serialize());
-        result = result.concat("}");
-        return result;
+        return taskRecord.serialize();
     }
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        //TODO: (calculated, reserve) - > update()
         int myId = context.getRouter().getId();
         Future<TaskRecord> calculateFuture = context.getStateUpdater().updateTask(taskRecord);
         context.getFutureProcessor().addFutureProcess(calculateFuture, () -> {
@@ -61,6 +46,14 @@ public class Calculated implements Body{
 
     public TaskRecord getTaskRecord(){
         return taskRecord;
+    }
+
+    public int getTaskId() {
+        return taskRecord.getTaskID();
+    }
+
+    public TaskResult getTaskResult() {
+        return taskRecord.getResult();
     }
 
     @Override
@@ -80,6 +73,9 @@ public class Calculated implements Body{
         //&& message.getTaskResult() == this.taskResult;
     }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskRecord.getTaskID(), taskRecord.getState(), taskRecord.getOwner());
+    }
 
 }

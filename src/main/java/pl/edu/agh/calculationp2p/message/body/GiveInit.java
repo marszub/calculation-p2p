@@ -101,6 +101,11 @@ public class GiveInit implements Body{
                 message.getPublicNodes().equals(this.publicNodes);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(privateNodes, publicNodes);
+    }
+
     private boolean comparePrivateNodes(List<Integer> privateNodes){
         Set<Integer> privateNodesSet = new HashSet<>(privateNodes);
         Set<Integer> thisPrivateNodesSet = new HashSet<>(this.privateNodes);

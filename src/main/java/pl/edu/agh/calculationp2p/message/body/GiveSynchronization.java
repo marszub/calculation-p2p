@@ -40,9 +40,8 @@ public class GiveSynchronization implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        //TODO:
         currStateList.forEach(record -> {
-            //context.getStateUpdater().updateTask(record);
+            context.getStateUpdater().updateTask(record);
         });
     }
 
@@ -66,6 +65,11 @@ public class GiveSynchronization implements Body{
         return compareStateList(message.getCurrStateList());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(currStateList);
+    }
+
     private boolean compareStateList(List<TaskRecord> list){
         boolean flag = false;
         for(TaskRecord own: this.currStateList){
@@ -76,9 +80,8 @@ public class GiveSynchronization implements Body{
                     break;
                 }
             }
-            if(!flag){
+            if(!flag)
                 return false;
-            }
         }
         return list.size() == this.currStateList.size();
     }

@@ -8,18 +8,19 @@ import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GetSynchronization implements Body{
-
-    public List<Integer> getTaskIdList() {
-        return taskIdList;
-    }
 
     private final List<Integer> taskIdList;
 
     public GetSynchronization(List<Integer> taskIdList) {
         this.taskIdList = taskIdList;
+    }
+
+    public List<Integer> getTaskIdList() {
+        return taskIdList;
     }
 
     @Override
@@ -46,10 +47,10 @@ public class GetSynchronization implements Body{
 
         int myId = context.getRouter().getId();
 
-        List<Future<TaskRecord>> syncList = new ArrayList<>(taskIdList.size());
-        taskIdList.forEach(taskId -> {
-            syncList.add(context.getStateInformer().getTaskProgress(taskId));
-        });
+        List<Future<TaskRecord>> syncList = taskIdList
+                                                .stream()
+                                                .map(taskId -> context.getStateInformer().getTaskProgress(taskId))
+                                                .collect(Collectors.toList());
         //TODO:
         context.getFutureProcessor().addFutureProcess(syncList.get(syncList.size()-1), ()->{
             Message messWithStateOfTasks = new MessageImpl(myId, sender, new GiveSynchronization(
@@ -80,6 +81,11 @@ public class GetSynchronization implements Body{
         }
         GetSynchronization message = (GetSynchronization) o;
         return message.getTaskIdList().equals(this.taskIdList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskIdList);
     }
 
 }

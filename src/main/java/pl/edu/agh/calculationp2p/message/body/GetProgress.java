@@ -6,12 +6,10 @@ import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.future.Future;
 
+import java.util.Objects;
+
 
 public class GetProgress implements Body{
-
-    public GetProgress() {
-
-    }
 
     @Override
     public String serializeType() {
@@ -47,5 +45,10 @@ public class GetProgress implements Body{
             return false;
         }
         return getClass() == o.getClass();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this);
     }
 }

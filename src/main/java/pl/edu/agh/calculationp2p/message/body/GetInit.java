@@ -8,8 +8,6 @@ import java.net.InetSocketAddress;
 import java.util.*;
 
 public class GetInit implements Body{
-    public GetInit() {
-    }
 
     @Override
     public String serializeType() {
@@ -56,6 +54,11 @@ public class GetInit implements Body{
             return false;
         }
         return getClass() == o.getClass();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this);
     }
 }
 

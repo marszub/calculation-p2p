@@ -3,6 +3,8 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.state.Progress;
 
+import java.util.Objects;
+
 public class GiveProgress implements Body{
 
     private final Progress progress;
@@ -27,8 +29,7 @@ public class GiveProgress implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        //TODO:
-        //context.getStateUpdater().initProgress(this.progress);
+        context.getStateUpdater().initProgress(this.progress);
     }
 
     @Override
@@ -46,4 +47,8 @@ public class GiveProgress implements Body{
         }
         return getClass() == o.getClass();
      }
+    @Override
+    public int hashCode() {
+        return Objects.hash(progress);
+    }
 }

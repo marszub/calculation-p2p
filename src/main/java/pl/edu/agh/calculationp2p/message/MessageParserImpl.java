@@ -172,9 +172,7 @@ public class MessageParserImpl implements MessageParser{
         return result;
     }
     private static Calculated funCalculated(HashMap<String, Object> jsonMapBody){
-        //TODO:
         int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
-
         int owner = Integer.parseInt(jsonMapBody.get("owner").toString());
         String stateStr = jsonMapBody.get("state").toString();
         TaskState taskState = null;
