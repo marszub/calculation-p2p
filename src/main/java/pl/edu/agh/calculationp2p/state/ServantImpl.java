@@ -16,13 +16,18 @@ public class ServantImpl implements Servant {
     private final TaskPublisher taskPublisher;
     private final ReservedPublisher reservedPublisher;
     private final CalculatedPublisher calculatedPublisher;
-    private final Integer nodeId;
+    private Integer nodeId;
 
     public ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher, Integer nodeId) {
         this.progress = progress;
         this.taskPublisher = taskPublisher;
         this.reservedPublisher = reservedPublisher;
         this.calculatedPublisher = calculatedPublisher;
+        this.nodeId = nodeId; // TODO: set default nodeId
+    }
+
+    @Override
+    public void setNodeId(Integer nodeId){
         this.nodeId = nodeId;
     }
 
