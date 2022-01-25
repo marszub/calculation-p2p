@@ -6,13 +6,13 @@ import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 
 public class ObserveTaskRequest implements MethodRequest {
-    Future<Void> flag;
-    Integer taskID;
+    private Future<Void> flag;
+    private Integer taskID;
 
 
     public ObserveTaskRequest(Integer taskId, Future<Void> flag) {
         this.flag = flag;
-        this.taskID = taskID;
+        this.taskID = taskId;
     }
 
     @Override

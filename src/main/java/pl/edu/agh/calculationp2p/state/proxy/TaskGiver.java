@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface TaskGiver {
     // modul obliczen - interesuje go tylko to co liczy
     Future<Optional<Integer>> getTask();
-    Future<Void> observeTask(Integer taskId, Thread thread);
+    Future<Void> observeTask(Integer taskId);
     void finishTask(Integer taskId, TaskResult result);
 }
