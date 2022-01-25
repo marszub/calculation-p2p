@@ -7,6 +7,7 @@ import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -31,12 +32,11 @@ public class ServantImpl implements Servant {
     }
 
     @Override
-    public ArrayList<Integer> getFreeTasksList() {
+    public List<Integer> getFreeTasksList() {
         return progress.getTasks()
-                .entrySet()
                 .stream()
-                .filter(e -> e.getValue().getState() == TaskState.Free)
-                .map(Map.Entry::getKey)
+                .filter(e -> e.getState() == TaskState.Free)
+                .map(TaskRecord::getTaskID)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
