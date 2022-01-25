@@ -19,7 +19,7 @@ class UpdateProgressRequestTest {
     @Test
     void call() {
         Integer nodeID = 10;
-        Progress progress = new Progress();
+        Progress progress = new Progress(4);
         TaskPublisher taskPublisher = new TaskPublisher();
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
@@ -34,7 +34,7 @@ class UpdateProgressRequestTest {
 
         Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, 2);
 
-        Progress progressUpdated = new Progress();
+        Progress progressUpdated = new Progress(4);
         TaskRecord taskRecord4 = new TaskRecord(3, TaskState.Calculated, 1, new TaskResultImpl());
         progressUpdated.update(taskRecord4);
 

@@ -24,10 +24,10 @@ public class TaskPublisher {
     public void subscribe(Integer taskId, Future<Void> flag, Integer nodeID, Progress progress) {
         // subskrybujemy jako wątek obliczeń, obserwuje to co liczę, reagujemy na każdą zmianę
         // future -> pusty, tylko do sygnalizowania
-        HashMap<Integer, TaskRecord> tasks = progress.getTasks();
+        // List<TaskRecord> tasks = progress.getTasks(); // unused
 
         // jesli mamy innego właścicela niż my -> od razu powiadom i nie subskrybuj
-        if (tasks.get(taskId).getOwner() != nodeID) {
+        if (progress.get(taskId).getOwner() != nodeID) {
             flag.put();
         } else {
             observers.add(new Pair(taskId, flag));
@@ -52,6 +52,8 @@ public class TaskPublisher {
         }
     }
 
+
+    // TODO: istotny jest nasz nodeId. Informujemy tylko, gdy owner zmienił się z naszego na nie nasz. Analogicznie w subscribe().
     public void look(TaskRecord previous, TaskRecord current) {
         // istotna jest każda obserwacja
         // sprawdzamy stany 2 tasków, reaguj gdy:

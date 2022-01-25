@@ -10,6 +10,7 @@ import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface Servant {
     TaskRecord getTaskProgress(Integer taskId);
@@ -24,7 +25,9 @@ public interface Servant {
 
     void lookAllPublishers(TaskRecord prev, TaskRecord curr);
 
+    void setNodeId(Integer nodeId);
+
     Integer getNodeId();
 
-    ArrayList<Integer> getFreeTasksList();
+    List<Integer> getFreeTasksList();
 }

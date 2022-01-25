@@ -8,6 +8,7 @@ import pl.edu.agh.calculationp2p.state.task.TaskState;
 import java.lang.management.ThreadInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public class GetTaskRequest implements MethodRequest {
@@ -21,7 +22,7 @@ public class GetTaskRequest implements MethodRequest {
 
     @Override
     public void call(Servant servant) {
-        ArrayList<Integer> freeTasks = servant.getFreeTasksList();
+        List<Integer> freeTasks = servant.getFreeTasksList();
         if (!freeTasks.isEmpty()) {
             int random = (int) (Math.random() * freeTasks.size());
             future.put(Optional.of(random));

@@ -23,7 +23,7 @@ class GetTaskRequestTest {
     @Test
     void call() {
         Integer nodeID = 10;
-        Progress progress = new Progress();
+        Progress progress = new Progress(4);
         TaskPublisher taskPublisher = new TaskPublisher();
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
