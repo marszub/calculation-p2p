@@ -51,8 +51,6 @@ public class NodeRegister {
         this.allNodes.replace(id, now());
     }
 
-
-
     public Map<Integer, InetSocketAddress> getPublicNodes(){
         return this.publicNodes;
     }

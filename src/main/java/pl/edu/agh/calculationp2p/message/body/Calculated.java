@@ -7,21 +7,17 @@ import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
 import pl.edu.agh.calculationp2p.network.router.Router;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
-import pl.edu.agh.calculationp2p.state.task.TaskState;
+
+import java.util.Objects;
 
 public class Calculated implements Body{
-    public int getTaskId() {
-        return taskRecord.getTaskID();
-    }
-
-    public TaskResult getTaskResult() {
-        return taskRecord.getResult();
-    }
 
     private final TaskRecord taskRecord;
+
     public Calculated(TaskRecord taskRecord){
         this.taskRecord = taskRecord;
     }
+
     @Override
     public String serializeType() {
         return "\"calculated\"";
@@ -29,17 +25,7 @@ public class Calculated implements Body{
 
     @Override
     public String serializeContent() {
-        String result = "";
-        result = result.concat("{\"task_id\":");
-        result = result.concat(String.valueOf(taskRecord.getTaskID()));
-        result = result.concat(",\"state\":\"");
-        result = result.concat(String.valueOf(taskRecord.getState()));
-        result = result.concat("\",\"owner\":");
-        result = result.concat(String.valueOf(taskRecord.getOwner()));
-        result = result.concat(",\"result\":");
-        result = taskRecord.getResult()==null?result.concat("\"null\""):result.concat(taskRecord.getResult().serialize());
-        result = result.concat("}");
-        return result;
+        return taskRecord.serialize();
     }
 
     @Override
@@ -48,7 +34,7 @@ public class Calculated implements Body{
         Future<TaskRecord> calculateFuture = context.getStateUpdater().updateTask(taskRecord);
         context.getFutureProcessor().addFutureProcess(calculateFuture, () -> {
             Router router = context.getRouter();
-            Message confirm = new MessageImpl(myId, sender, new Confirm(taskRecord.getTaskID(), TaskState.Calculated, sender, calculateFuture.get()));
+            Message confirm = new MessageImpl(myId, sender, new Confirm(calculateFuture.get()));
             router.send(confirm);
         });
     }
@@ -60,6 +46,14 @@ public class Calculated implements Body{
 
     public TaskRecord getTaskRecord(){
         return taskRecord;
+    }
+
+    public int getTaskId() {
+        return taskRecord.getTaskID();
+    }
+
+    public TaskResult getTaskResult() {
+        return taskRecord.getResult();
     }
 
     @Override
@@ -79,6 +73,9 @@ public class Calculated implements Body{
         //&& message.getTaskResult() == this.taskResult;
     }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskRecord.getTaskID(), taskRecord.getState(), taskRecord.getOwner());
+    }
 
 }

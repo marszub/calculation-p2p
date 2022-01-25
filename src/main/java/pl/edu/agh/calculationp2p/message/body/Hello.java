@@ -31,14 +31,14 @@ public class Hello implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        if(this.newIp != null){
-            InetSocketAddress ipAddress = new InetSocketAddress(this.newIp, port);
-            context.getRouter().createInterface(sender, ipAddress);
-            //TODO:
-            // if(newIp == public){
-            // context.getNodeRegister().addPublicNode(sender, ipAddress);
-            // } else {}
+        //TODO: router isPublic()
+        //boolean isPublic = context.getRouter().isPublic();
+        boolean isPublic = false;
+        if(isPublic || newIp == null){
+            context.getRouter().createInterface(sender);
             context.getNodeRegister().addPrivateNode(sender);
+        } else if(!isPublic){
+            context.getRouter().createInterface(sender, new InetSocketAddress(newIp, port));
         }
     }
 
@@ -67,5 +67,10 @@ public class Hello implements Body{
 
     public int getPort() {
         return port;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(port, newIp);
     }
 }

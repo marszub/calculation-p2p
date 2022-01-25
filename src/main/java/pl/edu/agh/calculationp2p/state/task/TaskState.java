@@ -4,6 +4,7 @@ public enum TaskState {
     Free(2, "free"),
     Reserved(1, "reserved"),
     Calculated(0, "calculated");
+
     private final int value;
     private final String name;
 
@@ -15,6 +16,7 @@ public enum TaskState {
     public int getValue() {
         return value;
     }
+
     @Override
     public String toString(){
         return name;

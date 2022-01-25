@@ -43,7 +43,9 @@ public class MessageProcessor implements Runnable {
             List<Message> newMessages = context.getRouter().getMessage();
             newMessages.forEach(message-> message.process(context));
 
-            List<Message> toSend =  this.stateObserver.getMessages(context.getRouter().getId());
+
+            List<Message> toSend =  this.stateObserver.getMessages(routerId);
+
             toSend.forEach(message -> context.getRouter().send(message));
 
             List<Integer> notResponding = context.getNodeRegister().getOutdatedNodes();

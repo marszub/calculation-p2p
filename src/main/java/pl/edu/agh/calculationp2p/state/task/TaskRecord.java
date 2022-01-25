@@ -31,7 +31,20 @@ public class TaskRecord {
     }
 
     public String serialize() {
-        return result.serialize();
+        String resultStr = "{\"task_id\":";
+        resultStr = resultStr.concat(String.valueOf(this.taskID));
+        resultStr = resultStr.concat(",\"state\":");
+        resultStr = resultStr.concat("\""+this.state+"\"");
+        resultStr = resultStr.concat(",\"owner\":");
+        resultStr = resultStr.concat(String.valueOf(this.owner));
+        resultStr = resultStr.concat(",\"result\":");
+        if(result != null){
+            resultStr = resultStr.concat(result.serialize());
+        } else {
+            resultStr = resultStr.concat("\"null\"");
+        }
+        resultStr = resultStr.concat("}");
+        return resultStr;
     }
 
     public int getTaskID() {
@@ -55,10 +68,10 @@ public class TaskRecord {
         if(this.state.getValue() < taskState.getValue()){
             return true;
         }
-       if(this.owner < toCompare.getOwner()){
-           return true;
-       }
-       return false;
+        if(this.owner < toCompare.getOwner()){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -70,9 +83,11 @@ public class TaskRecord {
         if (getClass() != o.getClass())
             return false;
         TaskRecord other = (TaskRecord) o;
-
-        return this.getTaskID() == other.getTaskID() && this.getState() == other.getState()
-                && this.getOwner() == other.getOwner() && this.getResult() == other.getResult();
+        //TODO:
+        return this.getTaskID() == other.getTaskID() &&
+                this.getState() == other.getState() &&
+                this.getOwner() == other.getOwner();
+                //this.getResult() == other.getResult();
 
     }
 }

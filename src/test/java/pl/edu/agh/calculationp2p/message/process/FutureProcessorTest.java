@@ -8,9 +8,9 @@ class FutureProcessorTest {
 
     @Test
     void tryProcessAll() {
+
+
+
     }
 
-    @Test
-    void addFutureProcess() {
-    }
 }

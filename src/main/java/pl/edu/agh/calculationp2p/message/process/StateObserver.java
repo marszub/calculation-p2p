@@ -6,7 +6,6 @@ import pl.edu.agh.calculationp2p.message.body.Calculated;
 import pl.edu.agh.calculationp2p.message.body.Reserve;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
-import pl.edu.agh.calculationp2p.state.idle.Idle;
 import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 import pl.edu.agh.calculationp2p.state.proxy.StatusInformer;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
@@ -29,8 +28,8 @@ public class StateObserver {
         List<Message> result = new ArrayList<>();
 
         while (reservedF.isReady()){
-            int taskId = reservedF.get().getTask().getTaskID();
-            result.add(new MessageImpl(myId, -1, new Reserve(taskId)));
+            TaskRecord task = reservedF.get().getTask();
+            result.add(new MessageImpl(myId, -1, new Reserve(task)));
             reservedF = reservedF.get().getNextObservation();
         }
 
