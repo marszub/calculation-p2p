@@ -42,7 +42,7 @@ class TaskResolverTest {
             }
 
             @Override
-            public Future<Void> observeTask(Integer taskId, Thread thread) {
+            public Future<Void> observeTask(Integer taskId) {
                 return new Future<>();
             }
 

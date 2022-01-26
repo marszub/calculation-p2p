@@ -28,7 +28,7 @@ public class TaskGiverImpl implements TaskGiver {
     }
 
     @Override
-    public Future<Void> observeTask(Integer taskId, Thread thread) {
+    public Future<Void> observeTask(Integer taskId) {
         //TODO implement
         return null;
     }
