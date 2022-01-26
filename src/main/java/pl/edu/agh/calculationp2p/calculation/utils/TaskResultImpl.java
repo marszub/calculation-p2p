@@ -18,6 +18,12 @@ public class TaskResultImpl implements TaskResult {
 
     @Override
     public String serialize() {
-        return null;
+        String res = "";
+        for(int i=0;i<matchedStrings.size();i++){
+            res = res.concat(matchedStrings.get(i));
+            if(i<matchedStrings.size()-1)
+                res = res.concat(":");
+        }
+        return res;
     }
 }
