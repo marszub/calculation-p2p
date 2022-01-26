@@ -18,7 +18,7 @@ public class UpdateProgressRequest implements MethodRequest{
     public void call(Servant servant) {
         // check every priority and get the highest ones
         Progress currentProgress = servant.getProgress();
-        for(TaskRecord newRecord: newProgress.getTasks().values()){
+        for(TaskRecord newRecord: newProgress.getTasks()){
             TaskRecord oldRecord = currentProgress.get(newRecord.getTaskID());
             if (newRecord.hasHigherPriority(oldRecord)){
                 currentProgress.update(newRecord);

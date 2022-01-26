@@ -3,44 +3,43 @@ package pl.edu.agh.calculationp2p.state;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class Progress implements Cloneable {
-    private HashMap<Integer, TaskRecord> tasks;
+    private List<TaskRecord> tasks;
 
-    public Progress() {
-        tasks = new HashMap<>();
+    public Progress(Integer taskNum) {
+        tasks = new ArrayList<>(taskNum);
+        for(int i = 0; i < taskNum; i++){
+            tasks.add(new TaskRecord(i, TaskState.Free, -1, null)); // TODO: default result value
+        }
     }
 
     public void update(TaskRecord taskRecord) {
         int toUpdate = taskRecord.getTaskID();
-        tasks.remove(toUpdate);
-        tasks.put(toUpdate, taskRecord);
+        tasks.set(toUpdate, taskRecord);
     }
 
     public Progress clone() {
         try {
-            return (Progress) super.clone();
+            return (Progress) super.clone(); // TODO: repair - need deep copy (but not too deep)
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public ArrayList<Integer> getFreeTasksList() {
-        return tasks.entrySet()
+    public List<Integer> getFreeTasksList() {
+        return tasks
                 .stream()
-                .filter(e -> e.getValue().getState() == TaskState.Free)
-                .map(Map.Entry::getKey)
+                .filter(e -> e.getState() == TaskState.Free)
+                .map(TaskRecord::getTaskID)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public HashMap<Integer, TaskRecord> getTasks() {
+    public List<TaskRecord> getTasks() {
         return tasks;
     }
 
