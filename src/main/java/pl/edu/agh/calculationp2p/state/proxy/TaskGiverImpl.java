@@ -30,6 +30,7 @@ public class TaskGiverImpl implements TaskGiver {
 
     @Override
     public Future<Void> observeTask(Integer taskId) {
+
         Future<Void> flag = new Future<>();
         ObserveTaskRequest request = new ObserveTaskRequest(taskId, flag);
         try {

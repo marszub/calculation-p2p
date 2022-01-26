@@ -33,6 +33,7 @@ class UpdateProgressRequestTest {
         Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, 2);
 
         Progress progressUpdated = new Progress(4);
+
         TaskRecord taskRecord4 = new TaskRecord(3, TaskState.Calculated, 1, new HashTaskResult());
         progressUpdated.update(taskRecord4);
 

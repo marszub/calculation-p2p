@@ -9,6 +9,6 @@ public class HashTaskResultTest {
     @Test
     public void serializeEmpty(){
         HashTaskResult result = new HashTaskResult();
-        assertEquals("[]", result.serialize());
+        assertEquals("", result.serialize());
     }
 }
