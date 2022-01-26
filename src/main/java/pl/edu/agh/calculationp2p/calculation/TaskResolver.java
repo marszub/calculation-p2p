@@ -14,6 +14,7 @@ public class TaskResolver extends Thread {
     private CalculationTask calculationTask;
 
     private final int sleepTime = 50;
+    private final int deadTime = 1000;
 
     public TaskResolver(TaskGiver taskGiver, CalculationTask calculationTask) {
         this.taskGiver = taskGiver;
@@ -22,21 +23,22 @@ public class TaskResolver extends Thread {
 
     @Override
     public void run() {
-
+        int currTime = 0;
         while (true) {
+            currTime = 0;
             Future<Optional<Integer>> future = this.taskGiver.getTask();
             while(!future.isReady() || future.get().isEmpty()){
                 try {
+                    currTime+=sleepTime;
+                    if(currTime>=deadTime) return;
                     sleep(sleepTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                future = this.taskGiver.getTask();
             }
             Integer taskId = future.get().get();
-            ResultBuilder resultBuilder = calculationTask.getResultBuilder();
-
             Future<Void> observer = taskGiver.observeTask(taskId, this);
+            ResultBuilder resultBuilder = calculationTask.getResultBuilder();
 
             resultBuilder.reset();
             CalculationTaskIterator iterator  = calculationTask.getFragmentOfTheTask(taskId);
