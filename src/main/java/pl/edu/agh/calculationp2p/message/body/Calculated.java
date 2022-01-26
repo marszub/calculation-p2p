@@ -1,6 +1,6 @@
 package pl.edu.agh.calculationp2p.message.body;
 
-import pl.edu.agh.calculationp2p.calculation.utils.TaskResult;
+import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;

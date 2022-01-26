@@ -1,4 +1,4 @@
-package pl.edu.agh.calculationp2p.calculation.utils;
+package pl.edu.agh.calculationp2p.calculationTask;
 
 public interface TaskResult {
     String serialize();

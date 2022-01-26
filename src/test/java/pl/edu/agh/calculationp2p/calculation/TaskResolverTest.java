@@ -1,10 +1,8 @@
 package pl.edu.agh.calculationp2p.calculation;
 
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.calculation.utils.TaskResult;
+import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
-import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskIterator;
-import pl.edu.agh.calculationp2p.calculationTask.ResultBuilder;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreaker;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerInit;
 import pl.edu.agh.calculationp2p.state.future.Future;
