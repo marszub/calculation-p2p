@@ -74,9 +74,9 @@ public class ServantImpl implements Servant {
     public void lookAllPublishers(TaskRecord prev, TaskRecord curr) {
         if (prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Free) {
             // TODO jesli stan reserved -> free nowy request GiveTaskRequest i wywołaj sam siebie lookAll()
+            taskPublisher.look(prev, curr);
+            calculatedPublisher.look(prev, curr);
+            reservedPublisher.look(prev, curr);
         }
-        taskPublisher.look(prev, curr);
-        calculatedPublisher.look(prev, curr);
-        reservedPublisher.look(prev, curr);
     }
 }

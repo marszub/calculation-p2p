@@ -52,4 +52,7 @@ public class ReservedPublisher {
             }
         }
     }
+    public int numberOfObservers(){
+        return this.observers.size();
+    }
 }
