@@ -24,7 +24,7 @@ public class Progress implements Cloneable {
 
     public Progress clone() {
         try {
-            return (Progress) super.clone(); // TODO: repair - need deep copy (but not too deep)
+            return (Progress) super.clone(); // TODO: repair - need deep copy (but not too deep)   co? robi nam to róznice?
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -45,6 +45,12 @@ public class Progress implements Cloneable {
 
     public TaskRecord get(int taskId) {
         return tasks.get(taskId);
+    }
+
+    public int countCompleted(){
+        return (int) tasks.stream()
+                .filter(e -> e.getState() == TaskState.Calculated)
+                .count();
     }
 
     public String serialize() {

@@ -1,5 +1,6 @@
 package pl.edu.agh.calculationp2p.state;
 
+import io.netty.util.internal.SystemPropertyUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
@@ -47,6 +48,5 @@ class ProgressTest {
 
     @Test
     void serialize() {
-
     }
 }

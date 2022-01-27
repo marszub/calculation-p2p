@@ -42,4 +42,7 @@ public class TaskPublisher {
         if(previous.getOwner() != current.getOwner())
             raiseFlag(current.getTaskID());
     }
+    public int numberOfObservers(){
+        return this.observers.size();
+    }
 }
