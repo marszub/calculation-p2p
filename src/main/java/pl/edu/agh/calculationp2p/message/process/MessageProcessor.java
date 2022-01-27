@@ -15,7 +15,7 @@ public class MessageProcessor implements Runnable {
     private final StateObserver stateObserver;
     private final Idle idle;
 
-    public MessageProcessor(Router router, StateUpdater stateUpdater, StatusInformer statusInformer){
+    public MessageProcessor(Router router, StateUpdater stateUpdater, StatusInformer statusInformer, Idle idle){
         int validityTime = 10;
         int timePeriod = 10;
 
@@ -26,7 +26,7 @@ public class MessageProcessor implements Runnable {
         context.setFutureProcessor(new FutureProcessor());
         context.setNodeRegister(new NodeRegister(validityTime));
 
-        this.idle = new Idle();
+        this.idle = idle;
 
         this.heartBeatEmiter = new HeartBeatEmiter(timePeriod, router);
         this.stateObserver = new StateObserver(statusInformer, idle);

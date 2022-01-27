@@ -64,7 +64,7 @@ public class Main {
         Router router = new PrivateRouter(connectionManager, messageQueue, routingTable); // TODO: PUBLIC
 
         // message
-        MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer);
+        MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer, idle);
         Thread messageProcessorThread = new Thread(messageProcessor); // create Thread
 
         // UI
