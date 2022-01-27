@@ -14,6 +14,7 @@ class ProgressTest {
     @Test
     void update() {
         Progress progress = new Progress(2);
+
         TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new HashTaskResult());
         TaskRecord taskRecord2 = new TaskRecord(1, TaskState.Reserved, 10, new HashTaskResult());
 
