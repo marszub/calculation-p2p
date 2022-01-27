@@ -59,36 +59,5 @@ public class UIController implements Runnable {
         }
     }
 
-    public static void main(String[] args) {
-        int nodeID = 5;
-        int size = 100;
-        Progress progress = new Progress(5);
-        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Calculated, 10, new HashTaskResult());
-        TaskRecord taskRecord2 = new TaskRecord(2, TaskState.Calculated, 10, new HashTaskResult());
-        TaskRecord taskRecord3 = new TaskRecord(3, TaskState.Calculated, 10, new HashTaskResult());
-        progress.update(taskRecord1);
-
-
-        TaskPublisher taskPublisher = new TaskPublisher();
-        ReservedPublisher reservedPublisher = new ReservedPublisher();
-        CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
-        Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, nodeID);
-
-        UIController controller = new UIController();
-        controller.init(servant, nodeID, size);
-        //controller.getUiBuilder().progressBar();
-        Thread uiThread = new Thread(controller);
-        uiThread.start();
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        progress.update(taskRecord2);
-        progress.update(taskRecord3);
-
-    }
 
 }
