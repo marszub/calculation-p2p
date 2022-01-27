@@ -8,4 +8,5 @@ import pl.edu.agh.calculationp2p.state.Progress;
 public interface StateUpdater {
     Future<TaskRecord> updateTask(TaskRecord taskRecord);
     void initProgress(Progress progress);
+    void setNodeId(Integer nodeId);
 }

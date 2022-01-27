@@ -24,6 +24,8 @@ public interface Servant {
 
     void lookAllPublishers(TaskRecord prev, TaskRecord curr);
 
+    void setNodeId(Integer nodeId);
+
     Integer getNodeId();
 
     ArrayList<Integer> getFreeTasksList();

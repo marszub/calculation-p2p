@@ -65,6 +65,7 @@ public class GiveInit implements Body{
             context.getNodeRegister().addPublicNode(nodeId, ip);
         });
         context.getRouter().setId(this.newId);
+        context.getStateUpdater().setNodeId(this.newId);
     }
 
     @Override
