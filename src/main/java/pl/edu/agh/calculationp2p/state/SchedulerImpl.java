@@ -1,5 +1,6 @@
 package pl.edu.agh.calculationp2p.state;
 
+import io.netty.util.internal.SystemPropertyUtil;
 import pl.edu.agh.calculationp2p.state.request.MethodRequest;
 
 import java.util.concurrent.BlockingQueue;

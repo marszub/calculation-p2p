@@ -20,10 +20,11 @@ import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 
-public class  Main {
-    public static void main(String[] args){
+public class Main {
+    public static void main(String[] args) {
+
         // servant
-        Progress progress = new Progress(); // TODO: Task, czy coś do środka
+        Progress progress = new Progress(100); // TODO: config
         TaskPublisher taskPublisher = new TaskPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
@@ -75,5 +76,7 @@ public class  Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
+
 }

@@ -1,7 +1,7 @@
 package pl.edu.agh.calculationp2p.state.publisher;
 
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
+import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.idle.Idle;
@@ -66,9 +66,9 @@ class ReservedPublisherTest {
         publisher.subscribe(future2, interrupter2);
         publisher.subscribe(future3, interrupter3);
 
-        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 1, new TaskResultImpl());
-        TaskRecord taskRecord2 = new TaskRecord(1, TaskState.Free, 1, new TaskResultImpl());
-        TaskRecord taskRecord3 = new TaskRecord(1, TaskState.Reserved, 2, new TaskResultImpl());
+        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 1, new HashTaskResult());
+        TaskRecord taskRecord2 = new TaskRecord(1, TaskState.Free, 1, new HashTaskResult());
+        TaskRecord taskRecord3 = new TaskRecord(1, TaskState.Reserved, 2, new HashTaskResult());
 
         publisher.look(taskRecord1, taskRecord2);
         assertFalse(future1.isReady());
