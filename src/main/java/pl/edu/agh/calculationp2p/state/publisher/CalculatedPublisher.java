@@ -55,4 +55,7 @@ public class CalculatedPublisher {
             }
         }
     }
+    public int numberOfObservers(){
+        return this.observers.size();
+    }
 }

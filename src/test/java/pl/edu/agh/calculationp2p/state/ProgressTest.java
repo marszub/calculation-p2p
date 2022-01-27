@@ -1,20 +1,22 @@
 package pl.edu.agh.calculationp2p.state;
 
+import io.netty.util.internal.SystemPropertyUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
+import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
-import java.util.ArrayList;
+import java.util.List;
 
 class ProgressTest {
 
     @Test
     void update() {
-        Progress progress = new Progress();
-        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new TaskResultImpl());
-        TaskRecord taskRecord2 = new TaskRecord(1, TaskState.Reserved, 10, new TaskResultImpl());
+        Progress progress = new Progress(2);
+
+        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new HashTaskResult());
+        TaskRecord taskRecord2 = new TaskRecord(1, TaskState.Reserved, 10, new HashTaskResult());
 
         progress.update(taskRecord1);
         progress.update(taskRecord2);
@@ -25,27 +27,26 @@ class ProgressTest {
 
     @Test
     void testClone() {
-        Progress progress = new Progress();
+        Progress progress = new Progress(4);
         Progress cloned = progress.clone();
         Assertions.assertNotEquals(progress, cloned);
     }
 
     @Test
     void getFreeTasksList() {
-        Progress progress = new Progress();
-        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new TaskResultImpl());
-        TaskRecord taskRecord2 = new TaskRecord(2, TaskState.Reserved, 10, new TaskResultImpl());
-        TaskRecord taskRecord3 = new TaskRecord(3, TaskState.Free, 10, new TaskResultImpl());
+        Progress progress = new Progress(4);
+        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new HashTaskResult());
+        TaskRecord taskRecord2 = new TaskRecord(2, TaskState.Reserved, 10, new HashTaskResult());
+        TaskRecord taskRecord3 = new TaskRecord(3, TaskState.Free, 10, new HashTaskResult());
         progress.update(taskRecord1);
         progress.update(taskRecord2);
         progress.update(taskRecord3);
-        ArrayList<Integer> list = progress.getFreeTasksList();
-        Assertions.assertEquals(2, list.size());
+        List<Integer> list = progress.getFreeTasksList();
+        Assertions.assertEquals(3, list.size());
     }
 
 
     @Test
     void serialize() {
-
     }
 }

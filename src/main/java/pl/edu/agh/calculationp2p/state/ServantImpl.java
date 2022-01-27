@@ -7,6 +7,7 @@ import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,11 @@ public class ServantImpl implements Servant {
         this.taskPublisher = taskPublisher;
         this.reservedPublisher = reservedPublisher;
         this.calculatedPublisher = calculatedPublisher;
+        this.nodeId = nodeId; // TODO: set default nodeId
+    }
+
+    @Override
+    public void setNodeId(Integer nodeId){
         this.nodeId = nodeId;
     }
 
@@ -36,12 +42,11 @@ public class ServantImpl implements Servant {
     }
 
     @Override
-    public ArrayList<Integer> getFreeTasksList() {
+    public List<Integer> getFreeTasksList() {
         return progress.getTasks()
-                .entrySet()
                 .stream()
-                .filter(e -> e.getValue().getState() == TaskState.Free)
-                .map(Map.Entry::getKey)
+                .filter(e -> e.getState() == TaskState.Free)
+                .map(TaskRecord::getTaskID)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -74,9 +79,9 @@ public class ServantImpl implements Servant {
     public void lookAllPublishers(TaskRecord prev, TaskRecord curr) {
         if (prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Free) {
             // TODO jesli stan reserved -> free nowy request GiveTaskRequest i wywołaj sam siebie lookAll()
+            taskPublisher.look(prev, curr);
+            calculatedPublisher.look(prev, curr);
+            reservedPublisher.look(prev, curr);
         }
-        taskPublisher.look(prev, curr);
-        calculatedPublisher.look(prev, curr);
-        reservedPublisher.look(prev, curr);
     }
 }

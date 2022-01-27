@@ -1,7 +1,6 @@
 package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
 
-import pl.edu.agh.calculationp2p.calculation.TaskResult;
-import pl.edu.agh.calculationp2p.calculation.TaskResultImpl;
+import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.calculationTask.ResultBuilder;
 import pl.edu.agh.calculationp2p.calculationTask.TaskData;
 
@@ -10,20 +9,20 @@ import java.security.NoSuchAlgorithmException;
 
 public class HashResultBuilder implements ResultBuilder {
     String hash;
-    TaskResultImpl result;
+    HashTaskResult result;
     HashStringCreator hashStringCreator;
 
     public HashResultBuilder(String hash, HashStringCreator hashStringCreator)
     {
         this.hash = hash;
-        result = new TaskResultImpl();
+        result = new HashTaskResult();
         this.hashStringCreator = hashStringCreator;
     }
 
     @Override
     public void reset()
     {
-        result = new TaskResultImpl();
+        result = new HashTaskResult();
     }
 
     @Override
