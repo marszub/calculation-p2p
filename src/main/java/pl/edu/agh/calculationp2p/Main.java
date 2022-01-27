@@ -1,5 +1,6 @@
 package pl.edu.agh.calculationp2p;
 
+import pl.edu.agh.calculationp2p.calculation.TaskResolver;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskFactory;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerFactory;
@@ -41,7 +42,9 @@ public class Main {
         CalculationTaskFactory taskFactory = new HashBreakerFactory();
         CalculationTask task = taskFactory.createTask();
 
-        // TODO: calculation
+        // calculation
+        TaskResolver taskResolver = new TaskResolver(taskGiver, task);
+        Thread taskResolverThread = new Thread(taskResolver);
 
         // message parser
         MessageParser messageParser = new MessageParserImpl();
@@ -64,12 +67,17 @@ public class Main {
         MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer);
         Thread messageProcessorThread = new Thread(messageProcessor); // create Thread
 
+        // UI
+
+
         // start threads
         schedulerThread.start();
         connectionManagerThread.start();
         messageProcessorThread.start();
+        taskResolverThread.start();
 
         try {
+            taskResolverThread.join(0);
             messageProcessorThread.join(0);
             connectionManagerThread.join(0);
             schedulerThread.join(0);
