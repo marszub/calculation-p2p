@@ -32,11 +32,6 @@ public class ServantImpl implements Servant {
     }
 
     @Override
-    public void setNodeId(Integer nodeId) {
-        this.nodeId = nodeId;
-    }
-
-    @Override
     public Integer getNodeId() {
         return nodeId;
     }
