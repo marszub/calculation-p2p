@@ -6,13 +6,13 @@ import pl.edu.agh.calculationp2p.network.router.Router;
 
 import java.time.ZonedDateTime;
 
-public class HeartBeatEmiter {
+public class HeartBeatEmitter {
 
 
     private final Router router;
     private final int timePeriod;
     private long lastBeatTime;
-    public HeartBeatEmiter(int timePeriod, Router router){
+    public HeartBeatEmitter(int timePeriod, Router router){
         this.router = router;
         this.timePeriod = timePeriod;
         this.lastBeatTime = now();

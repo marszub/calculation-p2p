@@ -9,14 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class RouterImpl implements Router {
-    final ConnectionManager connectionManager;
-    final MessageQueueExit messageQueue;
-    final RoutingTable routingTable;
-    final Map<Integer, StaticConnection> staticInterfaces = new HashMap<>();
-    int myId = -2;
-    public final int mainServerId = -3;
-    public final int unknownId = -2;
-    public final int broadcastId = -1;
+    protected final ConnectionManager connectionManager;
+    protected final MessageQueueExit messageQueue;
+    protected final RoutingTable routingTable;
+    protected final Map<Integer, StaticConnection> staticInterfaces = new HashMap<>();
+    protected int myId = -2;
+    protected final int mainServerId = -3;
+    protected final int unknownId = -2;
+    protected final int broadcastId = -1;
 
     public RouterImpl(ConnectionManager connectionManager, MessageQueueExit messageQueue, RoutingTable routingTable)
     {
@@ -24,6 +24,18 @@ public abstract class RouterImpl implements Router {
         this.connectionManager = connectionManager;
         connectionManager.start();
         this.messageQueue = messageQueue;
+    }
+
+    public int getMainServerId() {
+        return mainServerId;
+    }
+
+    public int getUnknownId() {
+        return unknownId;
+    }
+
+    public int getBroadcastId() {
+        return broadcastId;
     }
 
     @Override

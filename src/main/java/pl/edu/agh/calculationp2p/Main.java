@@ -7,6 +7,7 @@ import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerFactory
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.message.MessageParserImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
+import pl.edu.agh.calculationp2p.message.process.statemachine.StartState;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManagerImpl;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueue;
@@ -20,6 +21,8 @@ import pl.edu.agh.calculationp2p.state.proxy.*;
 import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
+
+import java.net.InetSocketAddress;
 
 public class Main {
     public static void main(String[] args) {
@@ -63,9 +66,12 @@ public class Main {
         RoutingTable routingTable = new RoutingTableImpl();
         Router router = new PrivateRouter(connectionManager, messageQueue, routingTable); // TODO: PUBLIC
 
+        // server address
+        InetSocketAddress serverAddress = new InetSocketAddress("", 1234);
+
         // message
-        MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer, idle);
-        Thread messageProcessorThread = new Thread(messageProcessor); // create Thread
+        //MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer, idle, new StartState());
+        //Thread messageProcessorThread = new Thread(messageProcessor); // create Thread
 
         // UI
 
@@ -73,12 +79,12 @@ public class Main {
         // start threads
         schedulerThread.start();
         connectionManagerThread.start();
-        messageProcessorThread.start();
+        //messageProcessorThread.start();
         taskResolverThread.start();
 
         try {
             taskResolverThread.join(0);
-            messageProcessorThread.join(0);
+            //messageProcessorThread.join(0);
             connectionManagerThread.join(0);
             schedulerThread.join(0);
         } catch (InterruptedException e) {

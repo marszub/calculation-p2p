@@ -1,6 +1,8 @@
 package pl.edu.agh.calculationp2p.message.body;
 
+import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
+import pl.edu.agh.calculationp2p.network.router.Router;
 
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -56,15 +58,16 @@ public class GiveInit implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
+        Router router = context.getRouter();
         this.privateNodes.forEach(node -> {
-            context.getRouter().createInterface(node);
+            router.createInterface(node);
             context.getNodeRegister().addPrivateNode(node);
         });
         this.publicNodes.forEach((nodeId, ip) -> {
-            context.getRouter().createInterface(nodeId, ip);
+            router.createInterface(nodeId, ip);
             context.getNodeRegister().addPublicNode(nodeId, ip);
         });
-        context.getRouter().setId(this.newId);
+        router.setId(this.newId);
         context.getStateUpdater().setNodeId(this.newId);
     }
 

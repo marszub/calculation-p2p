@@ -1,21 +1,57 @@
 package pl.edu.agh.calculationp2p.message.process;
 
-import pl.edu.agh.calculationp2p.message.Message;
+import pl.edu.agh.calculationp2p.AppConfig;
+import pl.edu.agh.calculationp2p.message.process.statemachine.ProcessingState;
 import pl.edu.agh.calculationp2p.network.router.Router;
 import pl.edu.agh.calculationp2p.state.idle.Idle;
 import pl.edu.agh.calculationp2p.state.proxy.StateUpdater;
 import pl.edu.agh.calculationp2p.state.proxy.StatusInformer;
 
-import java.util.List;
+import java.net.InetSocketAddress;
 
 public class MessageProcessor implements Runnable {
 
     private final MessageProcessContext context;
-    private final HeartBeatEmiter heartBeatEmiter;
+    private final HeartBeatEmitter heartBeatEmitter;
     private final StateObserver stateObserver;
+
+    public Idle getIdle() {
+        return idle;
+    }
+
     private final Idle idle;
 
-    public MessageProcessor(Router router, StateUpdater stateUpdater, StatusInformer statusInformer, Idle idle){
+    public AppConfig getConfig() {
+        return config;
+    }
+
+    private final AppConfig config;
+
+    private ProcessingState state;
+
+    public void setState(ProcessingState state) {
+        this.state = state;
+        this.state.setContext(this);
+    }
+
+    public MessageProcessContext getContext() {
+        return context;
+    }
+
+    public HeartBeatEmitter getHeartBeatEmitter() {
+        return heartBeatEmitter;
+    }
+
+    public StateObserver getStateObserver() {
+        return stateObserver;
+    }
+
+    public MessageProcessor(Router router,
+                            StateUpdater stateUpdater,
+                            StatusInformer statusInformer,
+                            Idle idle,
+                            AppConfig config,
+                            ProcessingState initialState){
         int validityTime = 10;
         int timePeriod = 10;
 
@@ -26,40 +62,22 @@ public class MessageProcessor implements Runnable {
         context.setFutureProcessor(new FutureProcessor());
         context.setNodeRegister(new NodeRegister(validityTime));
 
+        setState(initialState);
         this.idle = idle;
+        this.config = config;
 
-        this.heartBeatEmiter = new HeartBeatEmiter(timePeriod, router);
+        this.heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);
         this.stateObserver = new StateObserver(statusInformer, idle);
     }
 
     @Override
     public void run() {
-
-        int routerId = this.context.getRouter().getId();
-
         while(true){
-
-            this.heartBeatEmiter.beat();
-            List<Message> newMessages = context.getRouter().getMessage();
-            newMessages.forEach(message-> message.process(context));
-
-
-            List<Message> toSend =  this.stateObserver.getMessages(routerId);
-
-            toSend.forEach(message -> context.getRouter().send(message));
-
-            List<Integer> notResponding = context.getNodeRegister().getOutdatedNodes();
-            notResponding.forEach(id -> context.getRouter().deleteInterface(id));
-
-            context.getFutureProcessor().tryProcessAll();
-
-            try {
-                this.idle.sleep(this.heartBeatEmiter.nextBeatTime());
-            } catch (InterruptedException e) {
+            try{
+                state.proceed();
+            }catch (InterruptedException e){
                 return;
             }
-
         }
     }
-
 }
