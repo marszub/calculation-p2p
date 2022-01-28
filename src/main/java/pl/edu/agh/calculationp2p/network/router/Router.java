@@ -6,6 +6,12 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 public interface Router {
+    int getMainServerId();
+
+    int getUnknownId();
+
+    int getBroadcastId();
+
     void createInterface(int nodeId, InetSocketAddress ipAddress);
 
     void createInterface(int nodeId);

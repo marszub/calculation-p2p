@@ -10,7 +10,7 @@ import java.util.List;
 import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
-class HeartBeatEmiterTest {
+class HeartBeatEmitterTest {
 
     @Test
     void beat() {
@@ -20,6 +20,21 @@ class HeartBeatEmiterTest {
 
         Router router = new Router() {
             @Override
+            public int getMainServerId() {
+                return 0;
+            }
+
+            @Override
+            public int getUnknownId() {
+                return 0;
+            }
+
+            @Override
+            public int getBroadcastId() {
+                return 0;
+            }
+
+            @Override
             public void createInterface(int nodeId, InetSocketAddress ipAddress) {}
             @Override
             public void createInterface(int nodeId) {}
@@ -37,15 +52,15 @@ class HeartBeatEmiterTest {
             public void close() {}
         };
 
-        HeartBeatEmiter heartBeatEmiter = new HeartBeatEmiter(periodTime, router);
+        HeartBeatEmitter heartBeatEmitter = new HeartBeatEmitter(periodTime, router);
 
-        assertFalse(heartBeatEmiter.beat());
+        assertFalse(heartBeatEmitter.beat());
         try {
             sleep(sleepTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assertTrue(heartBeatEmiter.beat());
+        assertTrue(heartBeatEmitter.beat());
 
     }
 
@@ -55,6 +70,21 @@ class HeartBeatEmiterTest {
         int sleepTime = 500;
         Router router = new Router() {
             @Override
+            public int getMainServerId() {
+                return 0;
+            }
+
+            @Override
+            public int getUnknownId() {
+                return 0;
+            }
+
+            @Override
+            public int getBroadcastId() {
+                return 0;
+            }
+
+            @Override
             public void createInterface(int nodeId, InetSocketAddress ipAddress) {}
             @Override
             public void createInterface(int nodeId) {}
@@ -72,8 +102,8 @@ class HeartBeatEmiterTest {
             public void close() {}
         };
 
-        HeartBeatEmiter heartBeatEmiter = new HeartBeatEmiter(timePeriod, router);
-        heartBeatEmiter.beat();
+        HeartBeatEmitter heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);
+        heartBeatEmitter.beat();
 
         try {
             sleep(sleepTime);
@@ -81,7 +111,7 @@ class HeartBeatEmiterTest {
             e.printStackTrace();
         }
 
-        int result = heartBeatEmiter.nextBeatTime();
+        int result = heartBeatEmitter.nextBeatTime();
         assertTrue(timePeriod-sleepTime+20>result && timePeriod-sleepTime-20<result);
 
     }

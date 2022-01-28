@@ -22,7 +22,7 @@ public class NodeRegister {
         this.validityTime = validityTime;
     }
 
-    protected List<Integer> getOutdatedNodes(){
+    public List<Integer> getOutdatedNodes(){
         List<Integer> result = new ArrayList<>();
         for(Integer nodeId : this.allNodes.keySet()){
             if(now() - this.allNodes.get(nodeId) > validityTime){
@@ -38,15 +38,16 @@ public class NodeRegister {
         return result;
     }
 
-
     public void addPublicNode(int id, InetSocketAddress ip){
         this.allNodes.put(id, now());
         this.publicNodes.put(id, ip);
     }
+
     public void addPrivateNode(int id){
         this.allNodes.put(id, now());
         this.privateNodes.add(id);
     }
+
     public void updateNode(int id){
         this.allNodes.replace(id, now());
     }
@@ -54,9 +55,11 @@ public class NodeRegister {
     public Map<Integer, InetSocketAddress> getPublicNodes(){
         return this.publicNodes;
     }
+
     public List<Integer> getPrivateNodes(){
         return this.privateNodes;
     }
+
     private long now(){
         return ZonedDateTime.now().toInstant().toEpochMilli();
     }
