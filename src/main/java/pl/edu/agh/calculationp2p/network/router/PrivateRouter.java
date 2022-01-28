@@ -38,7 +38,7 @@ public class PrivateRouter extends RouterImpl
     public void send(Message message)
     {
         int receiverId = message.getReceiver();
-        if(PrivateNodes.contains(receiverId) || receiverId == -1)
+        if(PrivateNodes.contains(receiverId) || receiverId == broadcastId)
         {
             Set<Integer> publicNodesSet = staticInterfaces.keySet();
             List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
@@ -68,7 +68,7 @@ public class PrivateRouter extends RouterImpl
         MessageConnectionPair result = messageQueue.get();
         while(result != null)
         {
-            if(result.message().getReceiver() == myId || myId == -1)
+            if(result.message().getReceiver() == myId || myId == unknownId)
             {
                 list.add(result.message());
             }

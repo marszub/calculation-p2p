@@ -13,7 +13,10 @@ public abstract class RouterImpl implements Router {
     final MessageQueueExit messageQueue;
     final RoutingTable routingTable;
     final Map<Integer, StaticConnection> staticInterfaces = new HashMap<>();
-    int myId = -1;
+    int myId = -2;
+    public final int mainServerId = -3;
+    public final int unknownId = -2;
+    public final int broadcastId = -1;
 
     public RouterImpl(ConnectionManager connectionManager, MessageQueueExit messageQueue, RoutingTable routingTable)
     {
@@ -45,8 +48,6 @@ public abstract class RouterImpl implements Router {
             staticInterfaces.remove(nodeId);
         }
         routingTable.removeInterface(nodeId);
-
-
     }
 
     public void setId(int id)
