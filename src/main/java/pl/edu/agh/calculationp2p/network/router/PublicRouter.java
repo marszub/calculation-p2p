@@ -12,6 +12,7 @@ import java.util.*;
 public class PublicRouter extends RouterImpl
 {
     private final HashMap<Integer, ConnectionTimestampPair> connectionQueue = new HashMap<>();
+    private final LinkedList<Connection> unknownNodeConnections = new LinkedList<>();
     final ArrayList<Integer> interfaces = new ArrayList<>();
     final long removeDeadline = 10000;
 
@@ -50,14 +51,17 @@ public class PublicRouter extends RouterImpl
     public void send(Message message)
     {
         int receiverId = message.getReceiver();
-        if(receiverId == -1)
-        {
-            processMessageToAll(message);
-        }
-        else
-        {
-            routingTable.send(receiverId, message);
-            routingTable.resendAll();
+        switch (receiverId) {
+            case broadcastId:
+                processMessageToAll(message);
+                break;
+            case unknownId:
+                Connection connection = unknownNodeConnections.pop();
+                connection.send(message);
+                break;
+            default:
+                routingTable.send(receiverId, message);
+                routingTable.resendAll();
         }
     }
 
@@ -91,7 +95,13 @@ public class PublicRouter extends RouterImpl
     private void processResult(MessageConnectionPair result, List<Message> list)
     {
         Message message = result.message();
-        if(myId == -1)
+        if(message.getReceiver() == mainServerId && message.getSender() == unknownId)
+        {
+            list.add(message);
+            unknownNodeConnections.add(result.connection());
+            return;
+        }
+        if(myId == unknownId)
         {
             list.add(message);
         }
@@ -103,7 +113,7 @@ public class PublicRouter extends RouterImpl
             }
             else
             {
-                if (message.getReceiver() == -1)
+                if (message.getReceiver() == broadcastId)
                 {
                     list.add(message.clone(myId));
                     processMessageToAll(message); //message to all
