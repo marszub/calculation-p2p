@@ -29,6 +29,31 @@ public class MessageProcessor implements Runnable {
 
     private ProcessingState state;
 
+    public MessageProcessor(Router router,
+                            StateUpdater stateUpdater,
+                            StatusInformer statusInformer,
+                            Idle idle,
+                            AppConfig config,
+                            ProcessingState initialState){
+        int validityTime = 10;
+        int timePeriod = 10;
+
+        this.context = new MessageProcessContextImpl();
+        context.setRouter(router);
+        context.setStateUpdater(stateUpdater);
+        context.setStateInformer(statusInformer);
+        context.setFutureProcessor(new FutureProcessor());
+        context.setNodeRegister(new NodeRegister(validityTime));
+
+        this.setState(initialState);
+        this.idle = idle;
+        this.config = config;
+
+        this.heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);
+        this.stateObserver = new StateObserver(statusInformer, idle);
+    }
+
+
     public void setState(ProcessingState state) {
         this.state = state;
         this.state.setContext(this);
@@ -46,29 +71,6 @@ public class MessageProcessor implements Runnable {
         return stateObserver;
     }
 
-    public MessageProcessor(Router router,
-                            StateUpdater stateUpdater,
-                            StatusInformer statusInformer,
-                            Idle idle,
-                            AppConfig config,
-                            ProcessingState initialState){
-        int validityTime = 10;
-        int timePeriod = 10;
-
-        this.context = new MessageProcessContextImpl();
-        context.setRouter(router);
-        context.setStateUpdater(stateUpdater);
-        context.setStateInformer(statusInformer);
-        context.setFutureProcessor(new FutureProcessor());
-        context.setNodeRegister(new NodeRegister(validityTime));
-
-        setState(initialState);
-        this.idle = idle;
-        this.config = config;
-
-        this.heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);
-        this.stateObserver = new StateObserver(statusInformer, idle);
-    }
 
     @Override
     public void run() {
