@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ConfigReaderTest {
 
-    String path = "config/connectionConfigTest.txt";
+    String path = "config/connectionConfigTest.json";
 
     @Test
     void getServerAddress() {
