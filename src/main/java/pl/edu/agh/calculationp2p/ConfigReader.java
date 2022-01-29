@@ -13,8 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ConfigReader implements AppConfig{
 
     private String content;
-    private TypeReference<LinkedHashMap<String,Object>> typeRef;
-    private ObjectMapper mapper;
+    private final TypeReference<LinkedHashMap<String,Object>> typeRef;
+    private final ObjectMapper mapper;
 
     public ConfigReader(String path) throws Exception{
         try {
@@ -32,17 +32,17 @@ public class ConfigReader implements AppConfig{
 
     @Override
     public InetSocketAddress getServerAddress() {
-        LinkedHashMap<String, Object> jsonMap = null;
+        LinkedHashMap<String, Object> jsonMap;
         try {
             jsonMap = mapper.readValue(content, typeRef);
 
             if (jsonMap == null)
                 return null;
 
-            String serverIpAdress = jsonMap.get("server_ip").toString();
+            String serverIpAddress = jsonMap.get("server_ip").toString();
             int port = Integer.parseInt(jsonMap.get("port").toString());
 
-            return new InetSocketAddress(serverIpAdress, port);
+            return new InetSocketAddress(serverIpAddress, port);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,7 +52,7 @@ public class ConfigReader implements AppConfig{
 
     @Override
     public String getMyIpString() {
-        LinkedHashMap<String, Object> jsonMap = null;
+        LinkedHashMap<String, Object> jsonMap;
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
@@ -67,7 +67,7 @@ public class ConfigReader implements AppConfig{
 
     @Override
     public int getMaxConnectingTime() {
-        LinkedHashMap<String, Object> jsonMap = null;
+        LinkedHashMap<String, Object> jsonMap;
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
@@ -81,7 +81,7 @@ public class ConfigReader implements AppConfig{
 
     @Override
     public int getGetProgressRetryTime() {
-        LinkedHashMap<String, Object> jsonMap = null;
+        LinkedHashMap<String, Object> jsonMap;
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
