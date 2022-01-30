@@ -17,6 +17,10 @@ public class Progress implements Cloneable {
         }
     }
 
+    public Progress(List<TaskRecord> list){
+        this.tasks = list;
+    }
+
     public void update(TaskRecord taskRecord) {
         int toUpdate = taskRecord.getTaskID();
         tasks.set(toUpdate, taskRecord);
@@ -58,6 +62,14 @@ public class Progress implements Cloneable {
     }
 
     public String serialize() {
-        throw new UnsupportedOperationException("Will be implemented");
+        String res = "";
+        res = res.concat("[");
+        for(int i=0;i<tasks.size();i++){
+            res = res.concat(this.tasks.get(i).serialize());
+            if(i< tasks.size()-1)
+                res = res.concat(",");
+        }
+        res = res.concat("]");
+        return res;
     }
 }

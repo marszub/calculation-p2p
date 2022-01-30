@@ -42,6 +42,7 @@ public class TaskResolver extends Thread {
 
             resultBuilder.reset();
             CalculationTaskIterator iterator  = calculationTask.getFragmentOfTheTask(taskId);
+            //TODO:
             while (iterator.hasNext()) {
                 if(observer.isReady()){
                     resultBuilder.reset();
