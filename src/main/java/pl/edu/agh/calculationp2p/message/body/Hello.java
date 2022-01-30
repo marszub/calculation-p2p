@@ -22,7 +22,7 @@ public class Hello implements Body{
     public String serializeContent() {
         String result = "";
         result = result.concat("{\"ip\":\"");
-        result = this.newIp==null?result.concat("null"):result.concat(this.newIp.getAddress().toString());
+        result = this.newIp==null?result.concat("null"):result.concat(this.newIp.getAddress().toString().substring(1));
         result = result.concat("\",\"port\":\"");
         result = this.newIp==null?result.concat("null"):result.concat(String.valueOf(this.newIp.getPort()));
         result = result.concat("\"}");
@@ -31,13 +31,11 @@ public class Hello implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        //TODO: router isPublic()
-        //boolean isPublic = context.getRouter().isPublic();
-        boolean isPublic = false;
+        boolean isPublic = context.getRouter().isPublic();
         if(isPublic || newIp == null){
             context.getRouter().createInterface(sender);
             context.getNodeRegister().addPrivateNode(sender);
-        } else if(!isPublic){
+        } else {
             context.getRouter().createInterface(sender, this.newIp);
         }
     }

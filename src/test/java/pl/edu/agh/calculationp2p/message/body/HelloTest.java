@@ -24,7 +24,7 @@ class HelloTest {
         assertEquals(result, hello.serializeContent());
 
         Body helloNull = new Hello(null);
-        String resultNull = "{\"ip\":\"null\"}";
+        String resultNull = "{\"ip\":\"null\",\"port\":\"null\"}";
         assertEquals(resultNull, helloNull.serializeContent());
     }
 
