@@ -19,12 +19,33 @@ public class HashTaskResult implements TaskResult {
 
     @Override
     public String serialize() {
-        String res = "";
+        String res = "[";
         for(int i=0;i<matchedStrings.size();i++){
             res = res.concat(matchedStrings.get(i));
             if(i<matchedStrings.size()-1)
-                res = res.concat(":");
+                res = res.concat(",");
         }
+        res = res.concat("]");
         return res;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        TaskResult obj = (TaskResult) o;
+        return obj.serialize().equals(this.serialize());
+    }
+
+    @Override
+    public int hashCode(){
+        return this.matchedStrings.hashCode();
     }
 }

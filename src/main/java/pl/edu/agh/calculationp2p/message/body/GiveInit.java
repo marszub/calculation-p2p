@@ -39,7 +39,9 @@ public class GiveInit implements Body{
             result = result.concat("{\"id\":");
             result = result.concat(String.valueOf(keys.get(i)));
             result = result.concat(",\"ip_address\":\"");
-            result = result.concat(String.valueOf(this.publicNodes.get(keys.get(i)).getAddress()));
+            result = result.concat(String.valueOf(this.publicNodes.get(keys.get(i)).getAddress()).substring(1));
+            result = result.concat("\",\"port\":\"");
+            result = result.concat(String.valueOf(this.publicNodes.get(keys.get(i)).getPort()));
             result = result.concat("\"}");
             if(i<keys.size()-1){
                 result = result.concat(",");

@@ -83,7 +83,7 @@ class MessageImplTest {
         assertEquals(newReceiver, heartBeatClone.getReceiver());
 
         String ip = "192.168.0.1";
-        Message hello = new MessageImpl(sender, receiver, new Hello(ip));
+        Message hello = new MessageImpl(sender, receiver, new Hello(new InetSocketAddress(ip, 2137)));
         Message helloClone = hello.clone(newReceiver);
         assertNotSame(hello, helloClone);
         assertEquals(newReceiver, helloClone.getReceiver());

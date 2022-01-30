@@ -34,6 +34,11 @@ public class PublicRouter extends RouterImpl
     }
 
     @Override
+    public boolean isPublic() {
+        return true;
+    }
+
+    @Override
     public void createInterface(int nodeId, InetSocketAddress ipAddress)
     {
         interfaces.add(nodeId);

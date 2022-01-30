@@ -11,6 +11,7 @@ import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
 import pl.edu.agh.calculationp2p.message.process.NodeRegister;
 import pl.edu.agh.calculationp2p.network.router.Router;
 
+import java.net.InetSocketAddress;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,8 +50,10 @@ public class WaitState implements ProcessingState{
             giveInitMessages.forEach(message -> message.process(messageProcessor.getContext()));
             awaitingMessages.forEach(message -> message.process(messageProcessor.getContext()));
             newMessages.forEach(message -> message.process(messageProcessor.getContext()));
+            //TODO: send our state
             messageProcessor.setState(new UninitializedWorkState());
-            router.send(new MessageImpl(router.getId(), router.getBroadcastId(), new Hello(messageProcessor.getConfig().getMyIpString())));
+            router.send(new MessageImpl(router.getId(), router.getBroadcastId(),
+                    new Hello(messageProcessor.getConfig().getMyAddress())));
             router.send(new MessageImpl(router.getId(), getRandomNodeId(), new GetProgress()));
             return;
         }

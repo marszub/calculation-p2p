@@ -6,6 +6,9 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 public interface Router {
+
+    boolean isPublic();
+
     int getMainServerId();
 
     int getUnknownId();
