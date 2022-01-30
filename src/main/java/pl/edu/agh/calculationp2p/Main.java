@@ -11,11 +11,9 @@ import pl.edu.agh.calculationp2p.message.process.statemachine.StartState;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManagerImpl;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueue;
-import pl.edu.agh.calculationp2p.network.router.PrivateRouter;
-import pl.edu.agh.calculationp2p.network.router.Router;
-import pl.edu.agh.calculationp2p.network.router.RoutingTable;
-import pl.edu.agh.calculationp2p.network.router.RoutingTableImpl;
+import pl.edu.agh.calculationp2p.network.router.*;
 import pl.edu.agh.calculationp2p.state.*;
+import pl.edu.agh.calculationp2p.state.UI.UIController;
 import pl.edu.agh.calculationp2p.state.idle.Idle;
 import pl.edu.agh.calculationp2p.state.proxy.*;
 import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
@@ -26,9 +24,21 @@ import java.net.InetSocketAddress;
 
 public class Main {
     public static void main(String[] args) {
+        //
+        ConfigReader config;
+        try {
+            config = new ConfigReader("config/connectionConfig.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // task
+        CalculationTaskFactory taskFactory = new HashBreakerFactory();
+        CalculationTask task = taskFactory.createTask();
 
         // servant
-        Progress progress = new Progress(100); // TODO: config
+        Progress progress = new Progress(task.getNumberOfTaskFragments());
         TaskPublisher taskPublisher = new TaskPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
@@ -40,10 +50,6 @@ public class Main {
         StateUpdater stateUpdater = new StateUpdaterImpl(schedulerImpl);
         StatusInformer statusInformer = new StatusInformerImpl(schedulerImpl);
         TaskGiver taskGiver = new TaskGiverImpl(schedulerImpl);
-
-        // task
-        CalculationTaskFactory taskFactory = new HashBreakerFactory();
-        CalculationTask task = taskFactory.createTask();
 
         // calculation
         TaskResolver taskResolver = new TaskResolver(taskGiver, task);
@@ -59,32 +65,36 @@ public class Main {
         Idle idle = new Idle();
 
         // connection
-        ConnectionManager connectionManager = new ConnectionManagerImpl(messageQueue, messageParser, idle); // TODO: IP
+        InetSocketAddress myAddress = new InetSocketAddress(config.getMyIpString(), 2137); // TODO: my port
+        ConnectionManager connectionManager = new ConnectionManagerImpl(messageQueue, messageParser, myAddress, idle); // TODO: IP
         Thread connectionManagerThread = new Thread(connectionManager); // create Thread
 
         // router
         RoutingTable routingTable = new RoutingTableImpl();
-        Router router = new PrivateRouter(connectionManager, messageQueue, routingTable); // TODO: PUBLIC
+        Router router = new PublicRouter(connectionManager, messageQueue, routingTable); // TODO: PUBLIC
 
         // server address
         InetSocketAddress serverAddress = new InetSocketAddress("", 1234);
 
         // message
-        //MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer, idle, new StartState());
-        //Thread messageProcessorThread = new Thread(messageProcessor); // create Thread
+        MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer, idle, config, new StartState());
+        Thread messageProcessorThread = new Thread(messageProcessor); // create Thread
 
         // UI
-
+        UIController uiController = new UIController(schedulerImpl);
+        Thread uiControllerThread = new Thread(uiController);
 
         // start threads
         schedulerThread.start();
         connectionManagerThread.start();
-        //messageProcessorThread.start();
+        messageProcessorThread.start();
         taskResolverThread.start();
+        uiControllerThread.start();
 
         try {
+            uiControllerThread.join(0);
             taskResolverThread.join(0);
-            //messageProcessorThread.join(0);
+            messageProcessorThread.join(0);
             connectionManagerThread.join(0);
             schedulerThread.join(0);
         } catch (InterruptedException e) {
