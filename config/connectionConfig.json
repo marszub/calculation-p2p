@@ -2,6 +2,6 @@
   "server_ip": "127.0.0.1",
   "port": 2137,
   "my_ip": "127.0.0.2",
-  "max_connection_time":10,
-  "progress_retry_time":20
+  "max_connection_time":1000,
+  "progress_retry_time":20000
 }
