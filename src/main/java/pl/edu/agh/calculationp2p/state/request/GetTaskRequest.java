@@ -6,10 +6,7 @@ import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.lang.management.ThreadInfo;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class GetTaskRequest implements MethodRequest {
     Future<Optional<Integer>> future;
@@ -24,9 +21,9 @@ public class GetTaskRequest implements MethodRequest {
     public void call(Servant servant) {
         List<Integer> freeTasks = servant.getFreeTasksList();
         if (!freeTasks.isEmpty()) {
-            int random = (int) (Math.random() * freeTasks.size());
-            future.put(Optional.of(random));
-
+            Random random = new Random();
+            int taskId = freeTasks.get(random.nextInt(freeTasks.size()));
+            future.put(Optional.of(taskId));
         } else {
             future.put(Optional.empty());
         }

@@ -47,6 +47,10 @@ public class Progress implements Cloneable {
         return tasks.get(taskId);
     }
 
+    public int size(){
+        return tasks.size();
+    }
+
     public int countCompleted(){
         return (int) tasks.stream()
                 .filter(e -> e.getState() == TaskState.Calculated)

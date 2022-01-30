@@ -49,7 +49,7 @@ public class TaskResolver extends Thread {
                 }
                 resultBuilder.performComputation(iterator.getNext());
             }
-            taskGiver.finishTask(taskId, resultBuilder.getResult());
+            taskGiver.finishTask(taskId, resultBuilder.getResult()); // TODO: dont finish when interrupted
         }
     }
 }

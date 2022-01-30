@@ -57,7 +57,7 @@ public class WaitState implements ProcessingState{
 
         awaitingMessages.addAll(newMessages);
 
-        messageProcessor.getIdle().sleep(messageProcessor.getHeartBeatEmitter().nextBeatTime());
+        messageProcessor.getIdle().sleep(messageProcessor.getHeartBeatEmitter().nextBeatTime()); // TODO: zle
 
         if(startTime + messageProcessor.getConfig().getMaxConnectingTime() < ZonedDateTime.now().toInstant().toEpochMilli()){
             router.setId(1);
