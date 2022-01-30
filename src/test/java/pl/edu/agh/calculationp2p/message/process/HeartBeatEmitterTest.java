@@ -20,6 +20,9 @@ class HeartBeatEmitterTest {
 
         Router router = new Router() {
             @Override
+            public boolean isPublic() {return false;}
+
+            @Override
             public int getMainServerId() {
                 return 0;
             }
@@ -69,6 +72,9 @@ class HeartBeatEmitterTest {
         int timePeriod = 1000;
         int sleepTime = 500;
         Router router = new Router() {
+            @Override
+            public boolean isPublic() {return false;}
+
             @Override
             public int getMainServerId() {
                 return 0;
