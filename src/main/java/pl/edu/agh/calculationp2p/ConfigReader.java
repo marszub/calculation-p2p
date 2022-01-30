@@ -51,6 +51,21 @@ public class ConfigReader implements AppConfig{
     }
 
     @Override
+    public InetSocketAddress getMyAddress() {
+        LinkedHashMap<String, Object> jsonMap;
+        try {
+            jsonMap = mapper.readValue(content, typeRef);
+            if (jsonMap == null)
+                return null;
+            return new InetSocketAddress(jsonMap.get("my_ip").toString(), Integer.parseInt(jsonMap.get("port").toString()));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public String getMyIpString() {
         LinkedHashMap<String, Object> jsonMap;
         try {
@@ -91,5 +106,10 @@ public class ConfigReader implements AppConfig{
             e.printStackTrace();
         }
         return -1;
+    }
+
+    @Override
+    public int numOfCalculationThreads() {
+        return 0;
     }
 }
