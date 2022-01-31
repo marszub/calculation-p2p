@@ -41,7 +41,7 @@ public class StaticConnection extends ConnectionImpl {
     public void disconnect()
     {
         try {
-            socketChannel.finishConnect();
+            socketChannel.finishConnect(); // TODO: close
         } catch (IOException e) {
             e.printStackTrace();
         }

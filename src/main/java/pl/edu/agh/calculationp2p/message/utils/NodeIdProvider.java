@@ -7,14 +7,17 @@ public class NodeIdProvider {
 
     private static int nodeId = 1;
 
-
     public static int getNodeId(Set<Integer> set, int myId){
-        int max = Collections.max(set);
+        int max = nodeId;
+
+        if(!set.isEmpty()){
+            int setMax = Collections.max(set);
+            if(setMax > max)
+                max = setMax;
+        }
+
         if(myId>max)
             max = myId;
-
-        if(nodeId>max)
-            max = nodeId;
 
         nodeId = max+1;
         return nodeId;

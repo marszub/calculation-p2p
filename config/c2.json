@@ -5,5 +5,9 @@
   "my_ip": "127.0.0.1",
   "my_port": 40001,
   "max_connection_time":5000,
-  "progress_retry_time":10000
+  "progress_retry_time":10000,
+  "heart_beat_period": 10000,
+  "heart_beat_lifetime": 10000,
+  "task_config_path": "./task.json",
+  "thread_num": 1
 }
