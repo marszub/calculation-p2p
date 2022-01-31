@@ -26,7 +26,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="info" name="message" additivity="true">
+        <Root level="info" additivity="true">
             <appender-ref ref="fileLogger" />
         </Root>
     </Loggers>
