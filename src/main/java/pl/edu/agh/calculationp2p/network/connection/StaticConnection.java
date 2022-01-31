@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
+import java.util.List;
 
 public class StaticConnection extends ConnectionImpl {
 
@@ -41,15 +42,15 @@ public class StaticConnection extends ConnectionImpl {
     public void disconnect()
     {
         try {
-            socketChannel.finishConnect(); // TODO: close
+            socketChannel.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String[] read() {
+    public void read(List messages) {
         try {
-            return super.read();
+            super.read(messages);
         } catch (ConnectionLostException e) {
             close();
             reconnect();
@@ -58,7 +59,6 @@ public class StaticConnection extends ConnectionImpl {
             } catch (ClosedChannelException ignored) {
             }
         }
-        return new String[0];
     }
 
     public void reconnect(){

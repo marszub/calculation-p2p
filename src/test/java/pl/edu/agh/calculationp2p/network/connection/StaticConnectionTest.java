@@ -8,6 +8,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.channels.*;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +32,7 @@ public class StaticConnectionTest
         getMessage(selector1);
         dynamicConnection = addNewConnection(selector2);
         dynamicConnection.send(message);
-        assertEquals(message.serialize(), getMessage(selector1)[0]);
+        assertEquals(message.serialize(), getMessage(selector1).get(0));
         selector1.close();
         selector2.close();
         connection.close();
@@ -55,7 +57,7 @@ public class StaticConnectionTest
         DynamicConnection dynamicConnection = addNewConnection(selector2);
         connection.register(selector1);
         dynamicConnection.send(message2);
-        assertEquals(message2.serialize(), getMessage(selector1)[0]);
+        assertEquals(message2.serialize(), getMessage(selector1).get(0));
         selector1.close();
         selector2.close();
         connection.close();
@@ -113,24 +115,26 @@ public class StaticConnectionTest
         return null;
     }
 
-    private String[] getMessage(Selector selector) {
+    private List<String> getMessage(Selector selector) {
         try {
             selector.select();
         } catch (IOException e) {
             e.printStackTrace();
         }
         Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+        List messages = new LinkedList<>();
         while (keys.hasNext()) {
             SelectionKey key = keys.next();
             keys.remove();
             assertTrue(key.isReadable());
             Connection connection = (Connection) key.attachment();
             try {
-                return connection.read();
+                connection.read(messages);
+                return messages;
             } catch (ConnectionLostException e) {
                 e.printStackTrace();
             }
         }
-        return new String[0];
+        return messages;
     }
 }

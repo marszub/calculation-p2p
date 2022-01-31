@@ -8,6 +8,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public abstract class ConnectionImpl implements Connection
@@ -55,7 +57,7 @@ public abstract class ConnectionImpl implements Connection
         }
     }
     @Override
-    public String[] read() throws ConnectionLostException
+    public void read(List<String> list) throws ConnectionLostException
     {
         StringBuilder messages = new StringBuilder();
         ByteBuffer buf = ByteBuffer.allocate(bytesBufferSize);
@@ -67,14 +69,16 @@ public abstract class ConnectionImpl implements Connection
                 bytesRead = socketChannel.read(buf);
             } catch (ClosedChannelException e)
             {
+                list.addAll(Arrays.asList(messages.toString().split(separator)));
                 throw new ConnectionLostException();
             } catch (IOException e)
             {
                 e.printStackTrace();
-                return null;
             }
-            if(bytesRead == -1)
+            if(bytesRead == -1) {
+                list.addAll(Arrays.asList(messages.toString().split(separator)));
                 throw new ConnectionLostException();
+            }
             buf = buf.clear();
             if(bytesRead > 0)
             {
@@ -82,7 +86,7 @@ public abstract class ConnectionImpl implements Connection
                 messages.append(word.substring(0, bytesRead));
             }
         }
-        return messages.toString().split(separator);
+        list.addAll(Arrays.asList(messages.toString().split(separator)));
 }
 
     private void trySend(Message message) throws IOException

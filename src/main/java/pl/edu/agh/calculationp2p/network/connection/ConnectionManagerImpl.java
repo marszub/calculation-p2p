@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.nio.channels.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ConnectionManagerImpl extends Thread implements ConnectionManager {
@@ -158,17 +159,21 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
         if (key.isReadable())
         {
             Connection connection = (Connection) key.attachment();
+            List<String> messages = new LinkedList();
             try {
-                String[] messages = connection.read();
-                for(String message : messages)
-                {
-                    messageQueueEntry.add(new MessageConnectionPair(messageParser.parse(message), connection));
-                }
-                return true;
+                connection.read(messages);
             } catch (ConnectionLostException e) {
                 connection.close();
                 incomingConnections.remove(connection);
             }
+            finally
+            {
+                for(String message : messages)
+                {
+                    messageQueueEntry.add(new MessageConnectionPair(messageParser.parse(message), connection));
+                }
+            }
+            return true;
         }
         return false;
     }
