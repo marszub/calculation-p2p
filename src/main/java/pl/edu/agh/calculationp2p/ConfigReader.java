@@ -40,7 +40,7 @@ public class ConfigReader implements AppConfig{
                 return null;
 
             String serverIpAddress = jsonMap.get("server_ip").toString();
-            int port = Integer.parseInt(jsonMap.get("port").toString());
+            int port = Integer.parseInt(jsonMap.get("server_port").toString());
 
             return new InetSocketAddress(serverIpAddress, port);
 
@@ -57,12 +57,30 @@ public class ConfigReader implements AppConfig{
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
                 return null;
-            return new InetSocketAddress(jsonMap.get("my_ip").toString(), Integer.parseInt(jsonMap.get("port").toString()));
+            return new InetSocketAddress(jsonMap.get("my_ip").toString(), Integer.parseInt(jsonMap.get("my_port").toString()));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public boolean getPublicFlag() {
+        LinkedHashMap<String, Object> jsonMap;
+        try {
+            jsonMap = mapper.readValue(content, typeRef);
+            if (jsonMap == null)
+                return false;
+            if (jsonMap.get("public") == null)
+                return false;
+
+            return (boolean) jsonMap.get("public");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -110,6 +128,6 @@ public class ConfigReader implements AppConfig{
 
     @Override
     public int numOfCalculationThreads() {
-        return 0;
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

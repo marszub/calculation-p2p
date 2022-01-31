@@ -1,0 +1,9 @@
+{
+  "server_ip": "127.0.0.1",
+  "server_port": 40009,
+  "public": true,
+  "my_ip": "127.0.0.1",
+  "my_port": 40000,
+  "max_connection_time":0,
+  "progress_retry_time":0
+}
