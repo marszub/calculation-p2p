@@ -1,10 +1,13 @@
 package pl.edu.agh.calculationp2p;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.ConfigReader;
 import pl.edu.agh.calculationp2p.calculation.TaskResolver;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskFactory;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerFactory;
+import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.message.MessageParserImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
@@ -25,7 +28,6 @@ import java.net.InetSocketAddress;
 
 public class Main {
     public static void main(String[] args) {
-        //
         String configFile = "config/connectionConfig.json";
         if(args.length > 0)
             configFile = args[0];
