@@ -7,7 +7,7 @@ import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
-public class FinishTaskRequest implements MethodRequest {
+public class FinishTaskRequest implements MethodRequest { // TODO: to remove
     Future<TaskRecord> future;
     int taskID;
     int nodeID;
