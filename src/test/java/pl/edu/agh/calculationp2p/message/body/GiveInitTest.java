@@ -44,9 +44,9 @@ class GiveInitTest {
         Body giveInitFew = new GiveInit(5, integerListFew, mapFew);
 
         String resultEmpty = "{\"your_new_id\":5,\"public_nodes\":[],\"private_nodes\":[]}";
-        String resultOne = "{\"your_new_id\":5,\"public_nodes\":[{\"id\":2,\"ip_address\":\"/192.168.0.1\"}],\"private_nodes\":[{\"id\":1}]}";
-        String resultFew = "{\"your_new_id\":5,\"public_nodes\":[{\"id\":4,\"ip_address\":\"/192.168.0.3\"},{\"id\":3,\"ip_address\":\"/192.168.0.2\"}],\"private_nodes\":[{\"id\":1},{\"id\":2}]}";
-        String resultFewFlip = "{\"your_new_id\":5,\"public_nodes\":[{\"id\":3,\"ip_address\":\"/192.168.0.2\"},{\"id\":4,\"ip_address\":\"/192.168.0.3\"}],\"private_nodes\":[{\"id\":1},{\"id\":2}]}";
+        String resultOne = "{\"your_new_id\":5,\"public_nodes\":[{\"id\":2,\"ip_address\":\"192.168.0.1\",\"port\":\"2000\"}],\"private_nodes\":[{\"id\":1}]}";
+        String resultFew = "{\"your_new_id\":5,\"public_nodes\":[{\"id\":4,\"ip_address\":\"192.168.0.3\",\"port\":\"2000\"},{\"id\":3,\"ip_address\":\"192.168.0.2\",\"port\":\"2000\"}],\"private_nodes\":[{\"id\":1},{\"id\":2}]}";
+        String resultFewFlip = "{\"your_new_id\":5,\"public_nodes\":[{\"id\":3,\"ip_address\":\"192.168.0.2\",\"port\":\"2000\"},{\"id\":4,\"ip_address\":\"192.168.0.3\",\"port\":\"2000\"}],\"private_nodes\":[{\"id\":1},{\"id\":2}]}";
 
         assertEquals(resultEmpty, giveInitEmpty.serializeContent());
         assertEquals(resultOne, giveInitOne.serializeContent());

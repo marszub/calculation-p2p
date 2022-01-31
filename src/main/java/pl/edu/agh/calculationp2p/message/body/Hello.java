@@ -7,11 +7,9 @@ import java.util.Objects;
 
 public class Hello implements Body{
 
-    //TODO: which port?
-    private final int port = 2137;
-    private final String newIp;
+    private final InetSocketAddress newIp;
 
-    public Hello(String ip) {
+    public Hello(InetSocketAddress ip) {
         this.newIp = ip;
     }
 
@@ -24,21 +22,21 @@ public class Hello implements Body{
     public String serializeContent() {
         String result = "";
         result = result.concat("{\"ip\":\"");
-        result = this.newIp==null?result.concat("null"):result.concat(this.newIp);
+        result = this.newIp==null?result.concat("null"):result.concat(this.newIp.getAddress().toString().substring(1));
+        result = result.concat("\",\"port\":\"");
+        result = this.newIp==null?result.concat("null"):result.concat(String.valueOf(this.newIp.getPort()));
         result = result.concat("\"}");
         return result;
     }
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        //TODO: router isPublic()
-        //boolean isPublic = context.getRouter().isPublic();
-        boolean isPublic = false;
+        boolean isPublic = context.getRouter().isPublic();
         if(isPublic || newIp == null){
             context.getRouter().createInterface(sender);
             context.getNodeRegister().addPrivateNode(sender);
-        } else if(!isPublic){
-            context.getRouter().createInterface(sender, new InetSocketAddress(newIp, port));
+        } else {
+            context.getRouter().createInterface(sender, this.newIp);
         }
     }
 
@@ -59,18 +57,18 @@ public class Hello implements Body{
             return false;
         }
         Hello message = (Hello) o;
-        return Objects.equals(message.getNewIp(), this.newIp) && message.getPort() == this.port;
+        return Objects.equals(message.getNewIp(), this.newIp) && message.getPort() == this.getPort();
     }
-    public String getNewIp() {
+    public InetSocketAddress getNewIp() {
         return newIp;
     }
 
     public int getPort() {
-        return port;
+        return this.newIp.getPort();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(port, newIp);
+        return Objects.hash(this.newIp);
     }
 }

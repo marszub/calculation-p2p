@@ -3,6 +3,7 @@ package pl.edu.agh.calculationp2p.message.body;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
+import pl.edu.agh.calculationp2p.message.utils.NodeIdProvider;
 
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -26,15 +27,10 @@ public class GetInit implements Body{
         List<Integer> privatesNodes = context.getNodeRegister().getPrivateNodes();
         Map<Integer, InetSocketAddress> publicNodes = context.getNodeRegister().getPublicNodes();
 
-        //TODO: make class to unique id (static counter) get all nodesId and check if(max(all_nodes))
-        //get new ID
-
-        int newId = 0;
         Set<Integer> idsAlreadyInUse = new HashSet<>(privatesNodes);
         idsAlreadyInUse.addAll(publicNodes.keySet());
-        while(idsAlreadyInUse.contains(newId)){
-            newId+=1;
-        }
+
+        int newId = NodeIdProvider.getNodeId(idsAlreadyInUse, myId);
 
         Message newMess = new MessageImpl(myId, sender, new GiveInit(newId, privatesNodes, publicNodes));
         context.getRouter().send(newMess);

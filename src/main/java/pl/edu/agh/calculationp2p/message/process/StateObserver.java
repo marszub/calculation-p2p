@@ -29,13 +29,14 @@ public class StateObserver {
 
         while (reservedF.isReady()){
             TaskRecord task = reservedF.get().getTask();
+            //TODO: only when nodeId is mine
             result.add(new MessageImpl(myId, -1, new Reserve(task)));
             reservedF = reservedF.get().getNextObservation();
         }
 
         while (calculatedF.isReady()){
             TaskRecord taskRecord = calculatedF.get().getTask();
-            //TODO: calculated -> update
+            //TODO: only when nodeId is mine
             result.add(new MessageImpl(myId, -1, new Calculated(taskRecord)));
             calculatedF = calculatedF.get().getNextObservation();
         }

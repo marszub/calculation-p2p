@@ -68,9 +68,7 @@ public class Calculated implements Body{
             return false;
         }
         Calculated message = (Calculated) o;
-        //TODO: equals() in taskResult
         return message.getTaskRecord().equals(this.taskRecord);
-        //&& message.getTaskResult() == this.taskResult;
     }
 
     @Override

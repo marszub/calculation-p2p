@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
+import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
 import pl.edu.agh.calculationp2p.message.body.*;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
@@ -67,10 +69,11 @@ public class MessageParserImpl implements MessageParser{
     }
     private static Hello funHello(HashMap<String, Object> jsonMapBody){
         String ipS = jsonMapBody.get("ip").toString();
+        int portS = Integer.parseInt(jsonMapBody.get("port").toString());
         if(ipS.equals("null")){
             ipS = null;
         }
-        return new Hello(ipS);
+        return new Hello(new InetSocketAddress(ipS, portS));
     }
     private static GiveProgress funGiveProcess(HashMap<String, Object> jsonMapBody){
         //TODO:
@@ -165,8 +168,12 @@ public class MessageParserImpl implements MessageParser{
                 case "reserved" -> state = TaskState.Reserved;
             }
             Integer owner = Integer.parseInt(oneObject[2].split(":")[1]);
-            //TODO: TaskResult taskResult = oneObject[2].split(":")[1];
-            result.add(new TaskRecord(taskId, state, owner, null));
+            String taskResultStr = oneObject[2].split(":")[1];
+            taskResultStr = taskResultStr.substring(1, taskResultStr.length()-1);
+            String[] taskResultStrList = taskResultStr.split(",");
+            TaskResult taskResult = new HashTaskResult();
+            Arrays.stream(taskResultStrList).forEach(taskResult::add);
+            result.add(new TaskRecord(taskId, state, owner, taskResult));
         }
 
         return result;
@@ -183,10 +190,13 @@ public class MessageParserImpl implements MessageParser{
         } else if(stateStr.equals("calculated")){
             taskState = TaskState.Calculated;
         }
-        //TODO
-        //String result = jsonMapBody.get("result");
+        String taskResultStr = jsonMapBody.get("result").toString();
+        taskResultStr = taskResultStr.substring(1, taskResultStr.length()-1);
+        String[] taskResultStrList = taskResultStr.split(",");
+        TaskResult taskResult = new HashTaskResult();
+        Arrays.stream(taskResultStrList).forEach(taskResult::add);
 
-        TaskRecord result = new TaskRecord(taskId, taskState, owner, null);
+        TaskRecord result = new TaskRecord(taskId, taskState, owner, taskResult);
         return new Calculated(result);
 
     }
@@ -206,8 +216,12 @@ public class MessageParserImpl implements MessageParser{
         } else {
             owner = Integer.parseInt(ownerStr);
         }
-        //TODO:
-        String result = jsonMapBody.get("result").toString();
-        return new Confirm(new TaskRecord(taskId, state, owner, null));
+
+        String taskResultStr = jsonMapBody.get("result").toString();
+        taskResultStr = taskResultStr.substring(1, taskResultStr.length()-1);
+        String[] taskResultStrList = taskResultStr.split(",");
+        TaskResult taskResult = new HashTaskResult();
+        Arrays.stream(taskResultStrList).forEach(taskResult::add);
+        return new Confirm(new TaskRecord(taskId, state, owner, taskResult));
     }
 }

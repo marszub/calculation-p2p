@@ -61,7 +61,7 @@ class MessageParserTest {
         assertEquals(heartBeat, messageParser.parse(heartBeat.serialize()));
 
         String ip = "192.168.0.1";
-        Message hello = new MessageImpl(sender, receiver, new Hello(ip));
+        Message hello = new MessageImpl(sender, receiver, new Hello(new InetSocketAddress(ip, 2137)));
         assertEquals(hello, messageParser.parse(hello.serialize()));
 
         Message reserve = new MessageImpl(sender, receiver, new Reserve(new TaskRecord(new TaskRecord(2, TaskState.Free, 3, null))));

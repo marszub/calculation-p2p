@@ -17,6 +17,11 @@ public class PrivateRouter extends RouterImpl
     }
 
     @Override
+    public boolean isPublic() {
+        return false;
+    }
+
+    @Override
     public void createInterface(int nodeId) throws InterfaceExistsException
     {
         if(PrivateNodes.contains(nodeId))
