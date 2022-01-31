@@ -10,14 +10,20 @@ repositories {
 }
 
 dependencies {
-    implementation 'junit:junit:4.13.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.8.9'
-    implementation 'io.vertx:vertx-core:3.5.3'
-    implementation 'org.json:json:20171018'
+    implementation 'junit:junit:4.13.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    implementation 'io.vertx:vertx-core:4.2.4'
+    implementation 'org.json:json:20211205'
 }
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'pl.edu.agh.calculationp2p.Main'
+    }
 }
