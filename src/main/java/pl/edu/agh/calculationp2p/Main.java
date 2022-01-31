@@ -1,9 +1,13 @@
 package pl.edu.agh.calculationp2p;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import pl.edu.agh.calculationp2p.ConfigReader;
 import pl.edu.agh.calculationp2p.calculation.TaskResolver;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskFactory;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerFactory;
+import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.message.MessageParserImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
@@ -24,10 +28,13 @@ import java.net.InetSocketAddress;
 
 public class Main {
     public static void main(String[] args) {
-        //
+        String configFile = "config/connectionConfig.json";
+        if(args.length > 0)
+            configFile = args[0];
+
         ConfigReader config;
         try {
-            config = new ConfigReader("config/connectionConfig.json");
+            config = new ConfigReader(configFile);
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -42,7 +49,7 @@ public class Main {
         TaskPublisher taskPublisher = new TaskPublisher();
         ReservedPublisher reservedPublisher = new ReservedPublisher();
         CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
-        Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, -1); // TODO: NodeID dostajemy od serwera!!!
+        Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, -1);
 
         // proxy
         SchedulerImpl schedulerImpl = new SchedulerImpl(servant);
@@ -65,16 +72,20 @@ public class Main {
         Idle idle = new Idle();
 
         // connection
-        InetSocketAddress myAddress = new InetSocketAddress(config.getMyIpString(), 2137); // TODO: my port
-        ConnectionManager connectionManager = new ConnectionManagerImpl(messageQueue, messageParser, myAddress, idle); // TODO: IP
+        InetSocketAddress myAddress = config.getMyAddress();
+        if(myAddress == null)
+            throw new NullPointerException("Error while reading my_address and my_port in config file.");
+
+        ConnectionManager connectionManager = new ConnectionManagerImpl(messageQueue, messageParser, myAddress, idle);
         Thread connectionManagerThread = new Thread(connectionManager); // create Thread
 
         // router
         RoutingTable routingTable = new RoutingTableImpl();
-        Router router = new PublicRouter(connectionManager, messageQueue, routingTable); // TODO: PUBLIC
-
-        // server address
-        InetSocketAddress serverAddress = new InetSocketAddress("", 1234);
+        Router router;
+        if(config.getPublicFlag())
+            router = new PublicRouter(connectionManager, messageQueue, routingTable);
+        else
+            router = new PrivateRouter(connectionManager, messageQueue, routingTable);
 
         // message
         MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer, idle, config, new StartState());

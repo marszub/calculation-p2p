@@ -13,7 +13,7 @@ public class PublicRouter extends RouterImpl
 {
     private final HashMap<Integer, ConnectionTimestampPair> connectionQueue = new HashMap<>();
     private final LinkedList<Connection> unknownNodeConnections = new LinkedList<>();
-    final ArrayList<Integer> interfaces = new ArrayList<>();
+    final List<Integer> interfaces = new ArrayList<>();
     final long removeDeadline = 10000;
 
     public PublicRouter(ConnectionManager ConnectionManager, MessageQueueExit MessageQueue, RoutingTable RoutingTable)
@@ -46,9 +46,9 @@ public class PublicRouter extends RouterImpl
     }
 
     @Override
-    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
+    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException // TODO: to Integer
     {
-        interfaces.add(nodeId);
+        interfaces.remove((Object) nodeId);
         super.deleteInterface(nodeId);
     }
 

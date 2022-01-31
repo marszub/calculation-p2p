@@ -47,6 +47,7 @@ public class WaitState implements ProcessingState{
         newMessages.removeAll(giveInitMessages);
 
         if(giveInitMessages.size() > 0) {
+            router.deleteInterface(router.getMainServerId());
             giveInitMessages.forEach(message -> message.process(messageProcessor.getContext()));
             awaitingMessages.forEach(message -> message.process(messageProcessor.getContext()));
             newMessages.forEach(message -> message.process(messageProcessor.getContext()));
@@ -60,9 +61,12 @@ public class WaitState implements ProcessingState{
 
         awaitingMessages.addAll(newMessages);
 
-        messageProcessor.getIdle().sleep(messageProcessor.getHeartBeatEmitter().nextBeatTime()); // TODO: zle
+        long waitTime = startTime + messageProcessor.getConfig().getMaxConnectingTime() - ZonedDateTime.now().toInstant().toEpochMilli();
+        messageProcessor.getIdle().sleep(waitTime);
 
-        if(startTime + messageProcessor.getConfig().getMaxConnectingTime() < ZonedDateTime.now().toInstant().toEpochMilli()){
+        waitTime = startTime + messageProcessor.getConfig().getMaxConnectingTime() - ZonedDateTime.now().toInstant().toEpochMilli();
+        if(waitTime < 0){
+            router.deleteInterface(router.getMainServerId());
             router.setId(1);
             messageProcessor.getContext().getStateUpdater().setNodeId(1);
             messageProcessor.setState(new WorkState());

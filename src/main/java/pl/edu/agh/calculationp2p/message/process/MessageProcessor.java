@@ -35,8 +35,8 @@ public class MessageProcessor implements Runnable {
                             Idle idle,
                             AppConfig config,
                             ProcessingState initialState){
-        int validityTime = 10;
-        int timePeriod = 10;
+        int validityTime = 10000; // TODO: from config
+        int timePeriod = 1000; // TODO: from config
 
         this.context = new MessageProcessContextImpl();
         context.setRouter(router);

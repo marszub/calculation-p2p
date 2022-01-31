@@ -24,6 +24,7 @@ public class CalculateRequest implements MethodRequest{
         if(newTask.hasHigherPriority(oldTask)) {
             progress.update(newTask);
         }
+        servant.getTaskPublisher().unsubscribe(taskId);
         servant.lookAllPublishers(oldTask, progress.get(taskId));
     }
 }
