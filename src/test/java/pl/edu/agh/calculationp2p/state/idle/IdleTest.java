@@ -32,7 +32,7 @@ class IdleTest {
         AtomicReference<Boolean> wasWoken = new AtomicReference<>(false);
         Thread sleeping = new Thread(() -> {
             try {
-                idle.sleep(50);
+                idle.sleep(200);
                 wasWoken.set(true);
             } catch (InterruptedException e) {
                 throw new Error("Sleep interrupted");
@@ -40,7 +40,7 @@ class IdleTest {
         });
         sleeping.start();
 
-        assertDoesNotThrow(() -> TimeUnit.MILLISECONDS.sleep(40));
+        assertDoesNotThrow(() -> TimeUnit.MILLISECONDS.sleep(100));
         assertFalse(wasWoken.get());
     }
 
