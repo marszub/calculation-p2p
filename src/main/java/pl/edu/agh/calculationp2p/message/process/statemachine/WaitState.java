@@ -58,7 +58,7 @@ public class WaitState implements ProcessingState{
             //TODO: send our state
             messageProcessor.setState(new UninitializedWorkState());
             router.send(new MessageImpl(router.getId(), router.getBroadcastId(),
-                    new Hello(messageProcessor.getConfig().getMyAddress())));
+                    new Hello(messageProcessor.getConfig().getMyAddress()))); // TODO: jak jestem private, to nie wysyłam ip
             router.send(new MessageImpl(router.getId(), getRandomNodeId(), new GetProgress()));
             return;
         }
@@ -82,6 +82,6 @@ public class WaitState implements ProcessingState{
         List<Integer> nodes = nodeRegister.getPrivateNodes();
         nodes.addAll(nodeRegister.getPublicNodes().keySet().stream().toList());
         Random rand = new Random();
-        return nodes.get(rand.nextInt(nodes.size()));
+        return nodes.get(rand.nextInt(nodes.size())); // TODO: move to NodeRegister
     }
 }
