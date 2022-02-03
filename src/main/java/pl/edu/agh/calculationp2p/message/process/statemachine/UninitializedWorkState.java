@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.message.process.statemachine;
 
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.body.GetProgress;
@@ -39,6 +41,10 @@ public class UninitializedWorkState implements ProcessingState{
         toSend.forEach(router::send);
 
         List<Integer> notResponding = messageProcessor.getContext().getNodeRegister().getOutdatedNodes();
+        if(notResponding.size() > 0){
+            Logger logger = LoggerFactory.getLogger(this.getClass());
+            logger.debug("Deleting outdated interfaces: " + notResponding);
+        }
         notResponding.forEach(router::deleteInterface);
 
         messageProcessor.getContext().getFutureProcessor().tryProcessAll();
@@ -58,6 +64,6 @@ public class UninitializedWorkState implements ProcessingState{
         List<Integer> nodes = nodeRegister.getPrivateNodes();
         nodes.addAll(nodeRegister.getPublicNodes().keySet().stream().toList());
         Random rand = new Random();
-        return nodes.get(rand.nextInt(nodes.size()));
+        return nodes.get(rand.nextInt(nodes.size())); // TODO: move to NodeRegister
     }
 }
