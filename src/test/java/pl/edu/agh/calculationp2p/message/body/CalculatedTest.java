@@ -19,19 +19,21 @@ class CalculatedTest {
 
     }
 
-    @Test
-    void serializeContent() {
+// TODO: rewrite
 
-        String expected = "task_result";
-
-        TaskRecord taskRecord = new TaskRecord(1, TaskState.Calculated, 2, null);
-
-        Body calculated = new Calculated(taskRecord);
-
-        String result = "{\"task_id\":1,\"state\":\"calculated\",\"owner\":2,\"result\":\"null\"}";
-        assertEquals(result, calculated.serializeContent());
-
-    }
+//    @Test
+//    void serializeContent() {
+//
+//        String expected = "task_result";
+//
+//        TaskRecord taskRecord = new TaskRecord(1, TaskState.Calculated, 2, null);
+//
+//        Body calculated = new Calculated(taskRecord);
+//
+//        String result = "{\"task_id\":1,\"state\":\"calculated\",\"owner\":2,\"result\":\"null\"}";
+//        assertEquals(result, calculated.serializeContent());
+//
+//    }
 
     @Test
     void process() {
