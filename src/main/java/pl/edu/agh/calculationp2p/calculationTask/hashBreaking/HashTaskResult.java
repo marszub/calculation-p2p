@@ -7,9 +7,13 @@ import java.util.List;
 
 public class HashTaskResult implements TaskResult {
 
-    private final List<String> matchedStrings = new LinkedList<>();
+    private List<String> matchedStrings = new LinkedList<>();
 
     public HashTaskResult() {
+    }
+
+    public HashTaskResult(List<String> res) {
+        this.matchedStrings = res;
     }
 
     public void add(String string)
