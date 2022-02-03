@@ -1,12 +1,14 @@
 package pl.edu.agh.calculationp2p.message;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
 import pl.edu.agh.calculationp2p.message.body.*;
+import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
@@ -78,8 +80,40 @@ public class MessageParserImpl implements MessageParser{
     private static GiveProgress funGiveProcess(HashMap<String, Object> jsonMapBody){
         //TODO:
         String progress = jsonMapBody.get("progress").toString();
+        if(progress.equals("[]")){
+            return new GiveProgress(new Progress(new ArrayList<>()));
+        }
+        String[] progressStr = progress.substring(1, progress.length()-1).split(",");
 
-        return new GiveProgress(null);
+        List<TaskRecord> result = new ArrayList<>();
+
+        for(int i=0;i<progressStr.length;i++) {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+
+            TypeReference<LinkedHashMap<String, Object>> typeRef = new TypeReference<>() {};
+
+            try {
+                LinkedHashMap<String, Object> oneObj = mapper.readValue(progressStr[i], typeRef);
+
+                String taskRecordResultStr = oneObj.get("result").toString();
+                taskRecordResultStr = taskRecordResultStr.substring(1, taskRecordResultStr.length()-1);
+                List<String> resultArray = List.of(taskRecordResultStr.split(","));
+
+                result.add(new TaskRecord(
+                        Integer.parseInt(oneObj.get("task_id").toString()),
+                        TaskState.valueOf(oneObj.get("state").toString()),
+                        Integer.parseInt(oneObj.get("owner").toString()),
+                        new HashTaskResult(resultArray)
+                ));
+
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return new GiveProgress(new Progress(result));
     }
     private static Reserve funReserve(HashMap<String, Object> jsonMapBody){
         int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());

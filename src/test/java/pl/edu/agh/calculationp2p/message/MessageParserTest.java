@@ -2,6 +2,7 @@ package pl.edu.agh.calculationp2p.message;
 
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.message.body.*;
+import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
@@ -51,7 +52,7 @@ class MessageParserTest {
         Message giveInit = new MessageImpl(sender, receiver, new GiveInit(newId, privateNodes, publicNode));
         assertEquals(giveInit, messageParser.parse(giveInit.serialize()));
 
-        Message giveProgress = new MessageImpl(sender, receiver, new GiveProgress(null));
+        Message giveProgress = new MessageImpl(sender, receiver, new GiveProgress(new Progress(new ArrayList<>())));
         assertEquals(giveProgress, messageParser.parse(giveProgress.serialize()));
 
         Message giveSynchronization = new MessageImpl(sender, receiver, new GiveSynchronization(listOfTasks));

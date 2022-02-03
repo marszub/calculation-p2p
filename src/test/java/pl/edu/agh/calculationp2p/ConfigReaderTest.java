@@ -31,7 +31,7 @@ class ConfigReaderTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals("127.0.0.2", reader.getMyIpString());
+        assertEquals("127.0.0.2", reader.getMyAddress().getAddress().toString().substring(1));
 
     }
 

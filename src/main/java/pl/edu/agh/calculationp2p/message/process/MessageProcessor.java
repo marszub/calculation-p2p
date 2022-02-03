@@ -1,6 +1,7 @@
 package pl.edu.agh.calculationp2p.message.process;
 
 import pl.edu.agh.calculationp2p.AppConfig;
+import pl.edu.agh.calculationp2p.ConfigReader;
 import pl.edu.agh.calculationp2p.message.process.statemachine.ProcessingState;
 import pl.edu.agh.calculationp2p.network.router.Router;
 import pl.edu.agh.calculationp2p.state.idle.Idle;
@@ -35,8 +36,10 @@ public class MessageProcessor implements Runnable {
                             Idle idle,
                             AppConfig config,
                             ProcessingState initialState){
-        int validityTime = 10000; // TODO: from config
-        int timePeriod = 1000; // TODO: from config
+        this.config = config;
+
+        int validityTime = config.getHeartBeatLifetime();
+        int timePeriod = config.getHeartBeatPeriod();
 
         this.context = new MessageProcessContextImpl();
         context.setRouter(router);
@@ -47,7 +50,6 @@ public class MessageProcessor implements Runnable {
 
         this.setState(initialState);
         this.idle = idle;
-        this.config = config;
 
         this.heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);
         this.stateObserver = new StateObserver(statusInformer, idle);

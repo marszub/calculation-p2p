@@ -30,14 +30,16 @@ public class StateObserver {
         while (reservedF.isReady()){
             TaskRecord task = reservedF.get().getTask();
             //TODO: only when nodeId is mine
-            result.add(new MessageImpl(myId, -1, new Reserve(task)));
+            //if(task.getOwner()==myId)
+                result.add(new MessageImpl(myId, -1, new Reserve(task)));
             reservedF = reservedF.get().getNextObservation();
         }
 
         while (calculatedF.isReady()){
             TaskRecord taskRecord = calculatedF.get().getTask();
             //TODO: only when nodeId is mine
-            result.add(new MessageImpl(myId, -1, new Calculated(taskRecord)));
+            //if(taskRecord.getOwner()==myId)
+                result.add(new MessageImpl(myId, -1, new Calculated(taskRecord)));
             calculatedF = calculatedF.get().getNextObservation();
         }
         return result;
