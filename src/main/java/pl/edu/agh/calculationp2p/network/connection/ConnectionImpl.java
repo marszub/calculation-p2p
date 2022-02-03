@@ -7,7 +7,6 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,16 +54,6 @@ public abstract class ConnectionImpl implements Connection
         {
             e.printStackTrace();
         }
-    }
-
-    public String getRemoteAddress()
-    {
-        try {
-            return socketChannel.getRemoteAddress().toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 
     @Override
