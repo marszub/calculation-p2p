@@ -48,7 +48,11 @@ public class WaitState implements ProcessingState{
 
         if(giveInitMessages.size() > 0) {
             router.deleteInterface(router.getMainServerId());
-            giveInitMessages.forEach(message -> message.process(messageProcessor.getContext()));
+            giveInitMessages.forEach(message -> {
+                router.createInterface(message.getSender(), messageProcessor.getConfig().getServerAddress());
+                messageProcessor.getContext().getNodeRegister().addPublicNode(message.getSender(), messageProcessor.getConfig().getServerAddress());
+                message.process(messageProcessor.getContext());
+            });
             awaitingMessages.forEach(message -> message.process(messageProcessor.getContext()));
             newMessages.forEach(message -> message.process(messageProcessor.getContext()));
             //TODO: send our state
