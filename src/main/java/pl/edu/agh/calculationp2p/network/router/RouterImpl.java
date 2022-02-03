@@ -41,6 +41,12 @@ public abstract class RouterImpl implements Router {
     }
 
     @Override
+    public void createInterface(int nodeId){
+        Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+        logger.debug("New interface: " + String.valueOf(nodeId));
+    }
+
+    @Override
     public void createInterface(int nodeId, InetSocketAddress ipAddress)
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);

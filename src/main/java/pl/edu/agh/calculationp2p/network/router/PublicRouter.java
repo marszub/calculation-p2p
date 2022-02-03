@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.network.router;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.Connection;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
@@ -31,6 +33,7 @@ public class PublicRouter extends RouterImpl
             routingTable.bind(nodeId, connectionQueue.get(nodeId).connection());
             connectionQueue.remove(nodeId);
         }
+        super.createInterface(nodeId);
     }
 
     @Override

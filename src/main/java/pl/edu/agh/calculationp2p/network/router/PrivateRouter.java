@@ -27,6 +27,7 @@ public class PrivateRouter extends RouterImpl
         if(PrivateNodes.contains(nodeId))
             throw new InterfaceExistsException(nodeId);
         PrivateNodes.add(nodeId);
+        super.createInterface(nodeId);
     }
 
     @Override
