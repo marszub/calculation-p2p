@@ -32,12 +32,15 @@ public class Hello implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
         boolean isPublic = context.getRouter().isPublic();
-        if(isPublic || newIp == null){
+        if(isPublic || newIp == null)
             context.getRouter().createInterface(sender);
-            context.getNodeRegister().addPrivateNode(sender);
-        } else {
+        else
             context.getRouter().createInterface(sender, this.newIp);
-        }
+
+        if(newIp == null)
+            context.getNodeRegister().addPrivateNode(sender);
+        else
+            context.getNodeRegister().addPublicNode(sender, newIp);
     }
 
     @Override
