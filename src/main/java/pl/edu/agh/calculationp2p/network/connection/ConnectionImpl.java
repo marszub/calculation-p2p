@@ -56,6 +56,17 @@ public abstract class ConnectionImpl implements Connection
             e.printStackTrace();
         }
     }
+
+    public String getRemoteAddress()
+    {
+        try {
+            return socketChannel.getRemoteAddress().toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     @Override
     public void read(List<String> list) throws ConnectionLostException
     {
@@ -97,8 +108,7 @@ public abstract class ConnectionImpl implements Connection
         buff.clear();
         buff.put(data.getBytes());
         buff.flip();
-        while(buff.hasRemaining())
-        {
+        while (buff.hasRemaining()) {
             socketChannel.write(buff);
         }
     }

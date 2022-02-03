@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.network.router;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.Connection;
 
@@ -38,6 +40,8 @@ public class RoutingTableImpl implements RoutingTable{
 
     public void send(int id, Message message) throws InterfaceDoesNotExistException
     {
+        Logger logger = LoggerFactory.getLogger(RoutingTableImpl.class);
+        logger.debug("Sending message on: " + String.valueOf(id));
         if(!interfaces.containsKey(id))
             throw new InterfaceDoesNotExistException(id);
         if (interfaces.get(id) != null)

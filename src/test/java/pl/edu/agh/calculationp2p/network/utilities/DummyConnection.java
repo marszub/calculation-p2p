@@ -40,6 +40,11 @@ public class DummyConnection implements Connection {
         return;
     }
 
+    @Override
+    public String getRemoteAddress() {
+        return null;
+    }
+
     public Message getLastMessage()
     {
         return lastMessage;
