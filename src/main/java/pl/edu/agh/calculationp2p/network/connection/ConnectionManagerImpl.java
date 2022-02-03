@@ -1,5 +1,6 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
+import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueEntry;
@@ -170,7 +171,9 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             {
                 for(String message : messages)
                 {
-                    messageQueueEntry.add(new MessageConnectionPair(messageParser.parse(message), connection));
+                    Message parsedMessage = messageParser.parse(message);
+                    if(parsedMessage != null)
+                        messageQueueEntry.add(new MessageConnectionPair(parsedMessage, connection));
                 }
             }
             return true;
