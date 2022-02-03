@@ -4,6 +4,8 @@
   "public": true,
   "my_ip": "127.0.0.1",
   "my_port": 40000,
-  "max_connection_time":0,
-  "progress_retry_time":0
+  "max_connection_time": 0,
+  "progress_retry_time": 0,
+  "heart_beat_period": 1000,
+  "heart_beat_lifetime": 10000
 }
