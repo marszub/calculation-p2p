@@ -1,9 +1,9 @@
 package pl.edu.agh.calculationp2p.state.task;
 
 public enum TaskState {
-    Free(2, "free"),
-    Reserved(1, "reserved"),
-    Calculated(0, "calculated");
+    Free(2, "Free"),
+    Reserved(1, "Reserved"),
+    Calculated(0, "Calculated");
 
     private final int value;
     private final String name;
