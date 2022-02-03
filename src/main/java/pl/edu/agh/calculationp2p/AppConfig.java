@@ -10,11 +10,15 @@ public interface AppConfig {
 
     boolean getPublicFlag();
 
-    String getMyIpString();
-
     int getMaxConnectingTime();
 
     int getGetProgressRetryTime();
+
+    int getHeartBeatPeriod();
+
+    int getHeartBeatLifetime();
+
+    String getTaskConfigPath();
 
     int numOfCalculationThreads();
 

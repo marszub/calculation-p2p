@@ -84,21 +84,6 @@ public class ConfigReader implements AppConfig{
     }
 
     @Override
-    public String getMyIpString() {
-        LinkedHashMap<String, Object> jsonMap;
-        try {
-            jsonMap = mapper.readValue(content, typeRef);
-            if (jsonMap == null)
-                return null;
-            return jsonMap.get("my_ip").toString();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
     public int getMaxConnectingTime() {
         LinkedHashMap<String, Object> jsonMap;
         try {
@@ -127,7 +112,60 @@ public class ConfigReader implements AppConfig{
     }
 
     @Override
+    public int getHeartBeatPeriod() {
+        LinkedHashMap<String, Object> jsonMap;
+        try {
+            jsonMap = mapper.readValue(content, typeRef);
+            if (jsonMap == null)
+                return -1;
+            return Integer.parseInt(jsonMap.get("heart_beat_period").toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    @Override
+    public int getHeartBeatLifetime() {
+        LinkedHashMap<String, Object> jsonMap;
+        try {
+            jsonMap = mapper.readValue(content, typeRef);
+            if (jsonMap == null)
+                return -1;
+            return Integer.parseInt(jsonMap.get("heart_beat_lifetime").toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    @Override
+    public String getTaskConfigPath() {
+        LinkedHashMap<String, Object> jsonMap;
+        try {
+            jsonMap = mapper.readValue(content, typeRef);
+            if (jsonMap == null)
+                return null;
+            return jsonMap.get("task_config_path").toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public int numOfCalculationThreads() {
-        throw new UnsupportedOperationException("Not implemented");
+        LinkedHashMap<String, Object> jsonMap;
+        try {
+            jsonMap = mapper.readValue(content, typeRef);
+            if (jsonMap == null)
+                return -1;
+            return Integer.parseInt(jsonMap.get("thread_num").toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }
+
+
