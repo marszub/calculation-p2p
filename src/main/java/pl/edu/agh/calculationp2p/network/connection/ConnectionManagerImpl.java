@@ -1,6 +1,9 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
+import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueEntry;
@@ -171,6 +174,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             {
                 for(String message : messages)
                 {
+                    Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+                    logger.debug("New message: " + message + " from: " + connection.getRemoteAddress());
                     Message parsedMessage = messageParser.parse(message);
                     if(parsedMessage != null)
                         messageQueueEntry.add(new MessageConnectionPair(parsedMessage, connection));
@@ -184,10 +189,16 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
     private void handleNewConnection(SelectionKey key) {
         ServerSocketChannel server = (ServerSocketChannel) key.channel();
         try {
+            Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
             SocketChannel connection = server.accept();
-            DynamicConnection dynamicConnection = new DynamicConnection(connection);
-            dynamicConnection.register(selector);
-            incomingConnections.add(dynamicConnection);
+            if(connection != null)
+            {
+                logger.debug("New not-null connection " + connection.getRemoteAddress().toString());
+                DynamicConnection dynamicConnection = new DynamicConnection(connection);
+                dynamicConnection.register(selector);
+                incomingConnections.add(dynamicConnection);
+            }
+            logger.debug("New null connection!");
         } catch (IOException e) {
             e.printStackTrace();
         }

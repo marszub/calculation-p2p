@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.network.router;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.connection.StaticConnection;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
@@ -41,6 +43,8 @@ public abstract class RouterImpl implements Router {
     @Override
     public void createInterface(int nodeId, InetSocketAddress ipAddress)
     {
+        Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+        logger.debug("New interface: " + String.valueOf(nodeId));
         StaticConnection newConnection = new StaticConnection(ipAddress);
         staticInterfaces.put(nodeId, newConnection);
         connectionManager.addStaticConnection(newConnection);
@@ -51,6 +55,8 @@ public abstract class RouterImpl implements Router {
     @Override
     public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
     {
+        Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+        logger.debug("Deleting interface: " + String.valueOf(nodeId));
         if(!routingTable.interfaceListContains(nodeId))
             throw new InterfaceDoesNotExistException(nodeId);
         if(staticInterfaces.containsKey(nodeId))
