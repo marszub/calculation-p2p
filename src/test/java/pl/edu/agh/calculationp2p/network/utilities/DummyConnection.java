@@ -6,6 +6,7 @@ import pl.edu.agh.calculationp2p.network.connection.Connection;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.Selector;
 import java.util.LinkedList;
+import java.util.List;
 
 public class DummyConnection implements Connection {
     private boolean sendResult;
@@ -54,8 +55,7 @@ public class DummyConnection implements Connection {
         return list;
     }
 
-    public String[] read()
+    public void read(List messages)
     {
-        return null;
     }
 }

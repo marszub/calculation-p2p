@@ -12,6 +12,8 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +29,7 @@ class ConnectionTest {
         msg.setText("TEXT");
         sendMessageToServer(ip, msg);
         DynamicConnection conn = addNewConnection(selector);
-        assertEquals(msg.serialize(), getMessage(selector)[0]);
+        assertEquals(msg.serialize(), getMessage(selector).get(0));
         conn.close();
         selector.close();
         result.server().close();
@@ -44,9 +46,9 @@ class ConnectionTest {
         DynamicConnection conn = addNewConnection(selector);
         serverConnection.send(msg);
         serverConnection.send(msg);
-        String[] tab = getMessage(selector);
-        assertEquals(msg.serialize(), tab[0]);
-        assertEquals(msg.serialize(), tab[1]);
+        List<String> tab = getMessage(selector);
+        assertEquals(msg.serialize(), tab.get(0));
+        assertEquals(msg.serialize(), tab.get(1));
         conn.close();
         selector.close();
         result.server().close();
@@ -106,24 +108,25 @@ class ConnectionTest {
         return null;
     }
 
-    private String[] getMessage(Selector selector) {
+    private List<String> getMessage(Selector selector) {
         try {
             selector.select();
         } catch (IOException e) {
             e.printStackTrace();
         }
         Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+        List<String> messages = new LinkedList<>();
         while (keys.hasNext()) {
             SelectionKey key = keys.next();
             keys.remove();
             assertTrue(key.isReadable());
             Connection connection = (Connection) key.attachment();
             try {
-                return connection.read();
+                connection.read(messages);
             } catch (ConnectionLostException e) {
                 e.printStackTrace();
             }
         }
-        return new String[0];
+        return messages;
     }
 }
