@@ -4,6 +4,7 @@ import pl.edu.agh.calculationp2p.message.Message;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.StandardSocketOptions;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 public class StaticConnection extends ConnectionImpl {
 
     private final InetSocketAddress ipAddress;
+    String connectionAddress = "";
 
     public StaticConnection(InetSocketAddress ipAddress){
         this.ipAddress = ipAddress;
@@ -19,6 +21,8 @@ public class StaticConnection extends ConnectionImpl {
             socketChannel = SocketChannel.open();
             socketChannel.connect(ipAddress);
             socketChannel.configureBlocking(false);
+            socketChannel.setOption(StandardSocketOptions.SO_KEEPALIVE, Boolean.TRUE);
+            connectionAddress = socketChannel.getRemoteAddress().toString();
         } catch(IOException e)
         {
             e.printStackTrace();
@@ -37,6 +41,11 @@ public class StaticConnection extends ConnectionImpl {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String getRemoteAddress() {
+        return connectionAddress;
     }
 
     public void disconnect()
