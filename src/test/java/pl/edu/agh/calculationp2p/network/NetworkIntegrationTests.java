@@ -341,7 +341,7 @@ public class NetworkIntegrationTests {
         idleInterrupter2.addSemaphore(semaphore2);
         idleInterrupter3.addSemaphore(semaphore3);
 
-        InetSocketAddress ip2 = new InetSocketAddress("localhost", port);
+        InetSocketAddress ip2 = new InetSocketAddress("127.0.0.1", port);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
         ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1, dummyMessageParser, idleInterrupter1);
         ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2, dummyMessageParser, ip2, idleInterrupter2);
@@ -409,7 +409,7 @@ public class NetworkIntegrationTests {
         idleInterrupter4.addSemaphore(semaphore4);
         idleInterrupter4.addSecondSemaphore(semaphore5);
         idleInterrupter2.addSecondSemaphore(semaphore5);
-        InetSocketAddress ip4 = new InetSocketAddress("localhost", port4);
+        InetSocketAddress ip4 = new InetSocketAddress("127.0.0.1", port4);
         ConnectionManagerImpl connectionManager4 = new ConnectionManagerImpl(messageQueue4, dummyMessageParser, ip4, idleInterrupter4);
         RoutingTable table4 = new RoutingTableImpl();
         PublicRouter Router4 = new PublicRouter(connectionManager4, messageQueue4, table4);

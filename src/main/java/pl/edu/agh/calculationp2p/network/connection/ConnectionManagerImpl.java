@@ -94,6 +94,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             }
             if(messageRead)
             {
+                Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+                logger.debug("ConnectionManager waked up somebody!");
                 interrupter.wake();
             }
         }
@@ -143,8 +145,7 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
     {
         try {
             server = ServerSocketChannel.open();
-            ServerSocket serverSocket = server.socket();
-            serverSocket.bind(localListeningAddress);
+            server.bind(localListeningAddress);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT, server);
         } catch (IOException e) {
@@ -174,11 +175,14 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             {
                 for(String message : messages)
                 {
-                    Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
-                    logger.debug("New message: " + message + " from: " + connection.getRemoteAddress());
-                    Message parsedMessage = messageParser.parse(message);
-                    if(parsedMessage != null)
-                        messageQueueEntry.add(new MessageConnectionPair(parsedMessage, connection));
+                    if(message != "") {
+                        Message parsedMessage = messageParser.parse(message);
+                        if (parsedMessage != null) {
+                            Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+                            logger.debug("New message: " + message + " from: " + connection.getRemoteAddress());
+                            messageQueueEntry.add(new MessageConnectionPair(parsedMessage, connection));
+                        }
+                    }
                 }
             }
             return true;
@@ -197,6 +201,7 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
                 DynamicConnection dynamicConnection = new DynamicConnection(connection);
                 dynamicConnection.register(selector);
                 incomingConnections.add(dynamicConnection);
+                return;
             }
             logger.debug("New null connection!");
         } catch (IOException e) {
