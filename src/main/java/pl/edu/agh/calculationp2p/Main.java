@@ -29,8 +29,11 @@ import java.net.InetSocketAddress;
 public class Main {
     public static void main(String[] args) {
         String configFile = "config/connectionConfig.json";
+        String taskConfigFile = "config/taskConfig.json";
         if(args.length > 0)
             configFile = args[0];
+        if(args.length > 1)
+            taskConfigFile = args[1];
 
         ConfigReader config;
         try {
@@ -41,7 +44,7 @@ public class Main {
         }
 
         // task
-        CalculationTaskFactory taskFactory = new HashBreakerFactory();
+        CalculationTaskFactory taskFactory = new HashBreakerFactory(taskConfigFile);
         CalculationTask task = taskFactory.createTask();
 
         // servant
