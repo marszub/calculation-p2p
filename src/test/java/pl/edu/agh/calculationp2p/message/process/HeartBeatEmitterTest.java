@@ -38,11 +38,11 @@ class HeartBeatEmitterTest {
             }
 
             @Override
-            public void createInterface(int nodeId, InetSocketAddress ipAddress) {}
+            public void createInterface(Integer nodeId, InetSocketAddress ipAddress) {}
             @Override
-            public void createInterface(int nodeId) {}
+            public void createInterface(Integer nodeId) {}
             @Override
-            public void deleteInterface(int nodeId) {}
+            public void deleteInterface(Integer nodeId) {}
             @Override
             public List<Message> getMessage() {return null;}
             @Override
@@ -93,11 +93,11 @@ class HeartBeatEmitterTest {
             }
 
             @Override
-            public void createInterface(int nodeId, InetSocketAddress ipAddress) {}
+            public void createInterface(Integer nodeId, InetSocketAddress ipAddress) {}
             @Override
-            public void createInterface(int nodeId) {}
+            public void createInterface(Integer nodeId) {}
             @Override
-            public void deleteInterface(int nodeId) {}
+            public void deleteInterface(Integer nodeId) {}
             @Override
             public List<Message> getMessage() {return null;}
             @Override

@@ -24,7 +24,7 @@ public class PublicRouter extends RouterImpl
     }
 
     @Override
-    public void createInterface(int nodeId) throws InterfaceExistsException
+    public void createInterface(Integer nodeId) throws InterfaceExistsException
     {
         interfaces.add(nodeId);
         routingTable.addInterface(nodeId);
@@ -42,16 +42,16 @@ public class PublicRouter extends RouterImpl
     }
 
     @Override
-    public void createInterface(int nodeId, InetSocketAddress ipAddress)
+    public void createInterface(Integer nodeId, InetSocketAddress ipAddress)
     {
         interfaces.add(nodeId);
         super.createInterface(nodeId, ipAddress);
     }
 
     @Override
-    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException // TODO: to Integer
+    public void deleteInterface(Integer nodeId) throws InterfaceDoesNotExistException
     {
-        interfaces.remove((Object) nodeId);
+        interfaces.remove(nodeId);
         super.deleteInterface(nodeId);
     }
 
