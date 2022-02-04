@@ -41,10 +41,7 @@ public class UninitializedWorkState implements ProcessingState{
         toSend.forEach(router::send);
 
         List<Integer> notResponding = messageProcessor.getContext().getNodeRegister().getOutdatedNodes();
-        if(notResponding.size() > 0){
-            Logger logger = LoggerFactory.getLogger(this.getClass());
-            logger.debug("Deleting outdated interfaces: " + notResponding);
-        }
+
         notResponding.forEach(router::deleteInterface);
 
         messageProcessor.getContext().getFutureProcessor().tryProcessAll();
