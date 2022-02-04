@@ -1,7 +1,5 @@
 package pl.edu.agh.calculationp2p.network.router;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.Connection;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
@@ -60,16 +58,15 @@ public class PublicRouter extends RouterImpl
     {
         int receiverId = message.getReceiver();
         switch (receiverId) {
-            case broadcastId:
-                processMessageToAll(message);
-                break;
-            case unknownId:
+            case broadcastId -> processMessageToAll(message);
+            case unknownId -> {
                 Connection connection = unknownNodeConnections.pop();
                 connection.send(message);
-                break;
-            default:
+            }
+            default -> {
                 routingTable.send(receiverId, message);
                 routingTable.resendAll();
+            }
         }
     }
 
