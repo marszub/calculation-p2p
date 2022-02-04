@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.request;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.Servant;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
@@ -21,8 +23,14 @@ public class GetTaskRequest implements MethodRequest {
     public void call(Servant servant) {
         List<Integer> freeTasks = servant.getFreeTasksList();
         if (!freeTasks.isEmpty()) {
+            Logger logger = LoggerFactory.getLogger(GetTaskRequest.class);
+            logger.info("Call");
             Random random = new Random();
             int taskId = freeTasks.get(random.nextInt(freeTasks.size()));
+            TaskRecord old = servant.getProgress().get(taskId);
+            TaskRecord reserved = new TaskRecord(old.getTaskID(), TaskState.Reserved, servant.getNodeId(), old.getResult());
+            servant.getProgress().update(reserved);
+
             future.put(Optional.of(taskId));
         } else {
             future.put(Optional.empty());

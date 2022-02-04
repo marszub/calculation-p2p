@@ -1,6 +1,9 @@
 package pl.edu.agh.calculationp2p.state;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.calculation.TaskResolver;
+import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
@@ -79,12 +82,24 @@ public class ServantImpl implements Servant {
     }
 
     @Override
-    public void lookAllPublishers(TaskRecord prev, TaskRecord curr) {
+    public void lookAllPublishers(TaskRecord prev, TaskRecord curr) { //TODO sprawdz kto wykonal zmiane
+        Logger logger = LoggerFactory.getLogger(ServantImpl.class);
+        logger.info("Before IF statement");
+
         if (prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Free) {
-            // TODO jesli stan reserved -> free nowy request GiveTaskRequest i wywołaj sam siebie lookAll()
+            logger.info("In IF TaskPublisher");
             taskPublisher.look(prev, curr);
+
+       }
+        if(prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Calculated){
+            logger.info("In IF CalculatedPublisher");
             calculatedPublisher.look(prev, curr);
+        }
+        if(prev.getState() == TaskState.Free && curr.getState() == TaskState.Reserved){
+            logger.info("In IF ReservedPublisher");
             reservedPublisher.look(prev, curr);
         }
+
+
     }
 }
