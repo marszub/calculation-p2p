@@ -2,13 +2,13 @@ package pl.edu.agh.calculationp2p.network.router;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.connection.StaticConnection;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class RouterImpl implements Router {
     protected final ConnectionManager connectionManager;
@@ -87,5 +87,29 @@ public abstract class RouterImpl implements Router {
     public void close()
     {
         connectionManager.close();
+    }
+
+    @Override
+    public void sendHelloMessage(Message message)
+    {
+        sendMessageViaMiddleman(message);
+    }
+
+    void sendMessageViaMiddleman(Message message)
+    {
+        Set<Integer> publicNodesSet = staticInterfaces.keySet();
+        List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
+        Random random = new Random();
+        while(publicNodesList.size() > 0)
+        {
+            int id = publicNodesList.get(random.nextInt(publicNodesList.size()));
+            if(!routingTable.trySend(id, message))
+                publicNodesList.remove(id);
+            else
+            {
+                routingTable.resendAll();
+                return;
+            }
+        }
     }
 }
