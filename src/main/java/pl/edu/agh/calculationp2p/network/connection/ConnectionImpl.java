@@ -83,7 +83,7 @@ public abstract class ConnectionImpl implements Connection
             if(bytesRead > 0)
             {
                 String word = new String(buf.array());
-                messages.append(word.substring(0, bytesRead));
+                messages.append(word, 0, bytesRead);
             }
         }
         list.addAll(Arrays.asList(messages.toString().split(separator)));

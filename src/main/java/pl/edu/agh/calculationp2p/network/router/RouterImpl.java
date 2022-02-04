@@ -41,16 +41,16 @@ public abstract class RouterImpl implements Router {
     }
 
     @Override
-    public void createInterface(int nodeId){
+    public void createInterface(Integer nodeId){
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("New interface: " + String.valueOf(nodeId));
+        logger.debug("New interface: " + nodeId);
     }
 
     @Override
-    public void createInterface(int nodeId, InetSocketAddress ipAddress)
+    public void createInterface(Integer nodeId, InetSocketAddress ipAddress)
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("New interface: " + String.valueOf(nodeId));
+        logger.debug("New interface: " + nodeId);
         StaticConnection newConnection = new StaticConnection(ipAddress);
         staticInterfaces.put(nodeId, newConnection);
         connectionManager.addStaticConnection(newConnection);
@@ -59,10 +59,10 @@ public abstract class RouterImpl implements Router {
     }
 
     @Override
-    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
+    public void deleteInterface(Integer nodeId) throws InterfaceDoesNotExistException
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("Deleting interface: " + String.valueOf(nodeId));
+        logger.debug("Deleting interface: " + nodeId);
         if(!routingTable.interfaceListContains(nodeId))
             throw new InterfaceDoesNotExistException(nodeId);
         if(staticInterfaces.containsKey(nodeId))
