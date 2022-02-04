@@ -13,7 +13,7 @@ public class Progress implements Cloneable {
     public Progress(Integer taskNum) {
         tasks = new ArrayList<>(taskNum);
         for(int i = 0; i < taskNum; i++){
-            tasks.add(new TaskRecord(i, TaskState.Free, -1, null)); // TODO: default result value
+            tasks.add(new TaskRecord(i, TaskState.Free, -1, null)); // TODO: default result value (brzydki null)
         }
     }
 
@@ -29,6 +29,7 @@ public class Progress implements Cloneable {
     public Progress clone() {
         try {
             return (Progress) super.clone(); // TODO: repair - need deep copy (but not too deep)   co? robi nam to róznice?
+            // pytanie czy skopiuje liste -> do sprawdzenia (lista osobne referencje)
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

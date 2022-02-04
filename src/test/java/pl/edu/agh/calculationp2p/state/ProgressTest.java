@@ -17,12 +17,14 @@ class ProgressTest {
 
         TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new HashTaskResult());
         TaskRecord taskRecord2 = new TaskRecord(1, TaskState.Reserved, 10, new HashTaskResult());
-
+        TaskRecord taskRecord3 = new TaskRecord(1, TaskState.Calculated, 10, new HashTaskResult());
         progress.update(taskRecord1);
         progress.update(taskRecord2);
+        progress.update(taskRecord3);
 
         Assertions.assertNotEquals(progress.get(taskRecord2.getTaskID()), taskRecord1);
-        Assertions.assertEquals(progress.get(taskRecord1.getTaskID()), taskRecord2);
+        Assertions.assertNotEquals(progress.get(taskRecord1.getTaskID()), taskRecord2);
+        Assertions.assertEquals(progress.get(taskRecord1.getTaskID()), taskRecord3);
     }
 
     @Test
