@@ -10,6 +10,9 @@ public interface MessageProcessContext {
     StatusInformer getStateInformer();
     NodeRegister getNodeRegister();
     FutureProcessor getFutureProcessor();
+    MessageProcessor getMessageProcessor();
+
+    void setMessageProcessor(MessageProcessor messageProcessor);
     void setRouter(Router router);
     void setStateUpdater(StateUpdater stateUpdater);
     void setStateInformer(StatusInformer stateInformer);

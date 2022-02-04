@@ -47,6 +47,7 @@ public class MessageProcessor implements Runnable {
         context.setStateInformer(statusInformer);
         context.setFutureProcessor(new FutureProcessor());
         context.setNodeRegister(new NodeRegister(validityTime));
+        context.setMessageProcessor(this);
 
         this.setState(initialState);
         this.idle = idle;
