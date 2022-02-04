@@ -46,20 +46,7 @@ public class PrivateRouter extends RouterImpl
         int receiverId = message.getReceiver();
         if(PrivateNodes.contains(receiverId) || receiverId == broadcastId)
         {
-            Set<Integer> publicNodesSet = staticInterfaces.keySet();
-            List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
-            Random random = new Random();
-            while(publicNodesList.size() > 0)
-            {
-                int id = publicNodesList.get(random.nextInt(publicNodesList.size()));
-                if(!routingTable.trySend(id, message))
-                    publicNodesList.remove(id);
-                else
-                {
-                    routingTable.resendAll();
-                    return;
-                }
-            }
+            super.sendMessageViaMiddleman(message);
         }
         else
         {

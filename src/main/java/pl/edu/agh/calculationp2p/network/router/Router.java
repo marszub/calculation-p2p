@@ -30,4 +30,6 @@ public interface Router {
     int getId();
 
     void close();
+
+    void sendHelloMessage(Message message);
 }

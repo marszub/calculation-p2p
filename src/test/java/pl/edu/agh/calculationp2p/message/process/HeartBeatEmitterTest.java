@@ -53,6 +53,8 @@ class HeartBeatEmitterTest {
             public int getId() {return 0;}
             @Override
             public void close() {}
+            @Override
+            public void sendHelloMessage(Message message){}
         };
 
         HeartBeatEmitter heartBeatEmitter = new HeartBeatEmitter(periodTime, router);
@@ -106,6 +108,8 @@ class HeartBeatEmitterTest {
             public int getId() {return 0;}
             @Override
             public void close() {}
+            @Override
+            public void sendHelloMessage(Message message) {}
         };
 
         HeartBeatEmitter heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);
