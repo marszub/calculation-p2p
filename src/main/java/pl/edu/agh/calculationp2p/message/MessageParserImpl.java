@@ -107,11 +107,11 @@ public class MessageParserImpl implements MessageParser{
         int owner = Integer.parseInt(jsonMapBody.get("owner").toString());
         String stateStr = jsonMapBody.get("state").toString();
         TaskState taskState = null;
-        if(stateStr.equals("free")){
+        if(stateStr.equals("Free")){
             taskState = TaskState.Free;
-        } else if(stateStr.equals("reserve")){
+        } else if(stateStr.equals("Reserved")){
             taskState = TaskState.Reserved;
-        } else if(stateStr.equals("calculated")){
+        } else if(stateStr.equals("Calculated")){
             taskState = TaskState.Calculated;
         }
         return new Reserve(new TaskRecord(taskId, taskState, owner, null));
@@ -226,9 +226,9 @@ public class MessageParserImpl implements MessageParser{
         TaskState state = null;
         String stateString = jsonMapBody.get("state").toString();
         switch (stateString) {
-            case "calculated" -> state = TaskState.Calculated;
-            case "free" -> state = TaskState.Free;
-            case "reserved" -> state = TaskState.Reserved;
+            case "Calculated" -> state = TaskState.Calculated;
+            case "Free" -> state = TaskState.Free;
+            case "Reserved" -> state = TaskState.Reserved;
         }
         String ownerStr = jsonMapBody.get("owner").toString();
         Integer owner;
