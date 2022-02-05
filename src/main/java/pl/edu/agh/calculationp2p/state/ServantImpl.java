@@ -24,7 +24,7 @@ public class ServantImpl implements Servant {
         this.taskPublisher = taskPublisher;
         this.reservedPublisher = reservedPublisher;
         this.calculatedPublisher = calculatedPublisher;
-        this.nodeId = nodeId; // TODO: set default nodeId
+        this.nodeId = nodeId; // TODO: set default nodeId // delete nodeID - nie ustawiasz bo go nie masz
     }
 
     @Override
@@ -80,11 +80,9 @@ public class ServantImpl implements Servant {
 
     @Override
     public void lookAllPublishers(TaskRecord prev, TaskRecord curr) {
-        if (prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Free) {
-            // TODO jesli stan reserved -> free nowy request GiveTaskRequest i wywołaj sam siebie lookAll()
             taskPublisher.look(prev, curr);
             calculatedPublisher.look(prev, curr);
             reservedPublisher.look(prev, curr);
         }
     }
-}
+
