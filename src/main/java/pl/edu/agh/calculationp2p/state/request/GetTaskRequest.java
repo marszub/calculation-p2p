@@ -2,6 +2,7 @@ package pl.edu.agh.calculationp2p.state.request;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.state.Servant;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
@@ -29,8 +30,7 @@ public class GetTaskRequest implements MethodRequest {
             int taskId = freeTasks.get(random.nextInt(freeTasks.size()));
             TaskRecord old = servant.getProgress().get(taskId);
             TaskRecord reserved = new TaskRecord(old.getTaskID(), TaskState.Reserved, servant.getNodeId(), old.getResult());
-            servant.getProgress().update(reserved);
-
+            servant.getProgress().update(reserved); //TODO change to reserved in progress
             future.put(Optional.of(taskId));
         } else {
             future.put(Optional.empty());

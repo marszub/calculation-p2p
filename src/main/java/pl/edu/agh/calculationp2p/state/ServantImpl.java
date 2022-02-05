@@ -27,7 +27,7 @@ public class ServantImpl implements Servant {
         this.taskPublisher = taskPublisher;
         this.reservedPublisher = reservedPublisher;
         this.calculatedPublisher = calculatedPublisher;
-        this.nodeId = nodeId; // TODO: set default nodeId
+        this.nodeId = nodeId; // TODO: set default nodeId // delete nodeID - nie ustawiasz bo go nie masz
     }
 
     @Override
@@ -102,4 +102,4 @@ public class ServantImpl implements Servant {
 
 
     }
-}
+
