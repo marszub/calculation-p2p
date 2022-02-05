@@ -2,13 +2,13 @@ package pl.edu.agh.calculationp2p.network.router;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.connection.StaticConnection;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class RouterImpl implements Router {
     protected final ConnectionManager connectionManager;
@@ -41,16 +41,16 @@ public abstract class RouterImpl implements Router {
     }
 
     @Override
-    public void createInterface(int nodeId){
+    public void createInterface(Integer nodeId){
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("New interface: " + String.valueOf(nodeId));
+        logger.debug("New interface: " + nodeId);
     }
 
     @Override
-    public void createInterface(int nodeId, InetSocketAddress ipAddress)
+    public void createInterface(Integer nodeId, InetSocketAddress ipAddress)
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("New interface: " + String.valueOf(nodeId));
+        logger.debug("New interface: " + nodeId);
         StaticConnection newConnection = new StaticConnection(ipAddress);
         staticInterfaces.put(nodeId, newConnection);
         connectionManager.addStaticConnection(newConnection);
@@ -59,10 +59,10 @@ public abstract class RouterImpl implements Router {
     }
 
     @Override
-    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
+    public void deleteInterface(Integer nodeId) throws InterfaceDoesNotExistException
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("Deleting interface: " + String.valueOf(nodeId));
+        logger.debug("Deleting interface: " + nodeId);
         if(!routingTable.interfaceListContains(nodeId))
             throw new InterfaceDoesNotExistException(nodeId);
         if(staticInterfaces.containsKey(nodeId))
@@ -87,5 +87,29 @@ public abstract class RouterImpl implements Router {
     public void close()
     {
         connectionManager.close();
+    }
+
+    @Override
+    public void sendHelloMessage(Message message)
+    {
+        sendMessageViaMiddleman(message);
+    }
+
+    void sendMessageViaMiddleman(Message message)
+    {
+        Set<Integer> publicNodesSet = staticInterfaces.keySet();
+        List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
+        Random random = new Random();
+        while(publicNodesList.size() > 0)
+        {
+            int id = publicNodesList.get(random.nextInt(publicNodesList.size()));
+            if(!routingTable.trySend(id, message))
+                publicNodesList.remove(id);
+            else
+            {
+                routingTable.resendAll();
+                return;
+            }
+        }
     }
 }

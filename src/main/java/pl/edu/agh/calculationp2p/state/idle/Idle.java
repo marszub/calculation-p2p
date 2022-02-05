@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Idle implements IdleInterrupter{
     private final Lock lock;
     private final Condition wake;
-    private boolean hasWork;
+    private volatile boolean hasWork;
 
     public Idle(){
         lock = new ReentrantLock();

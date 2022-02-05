@@ -75,6 +75,7 @@ public class StaticConnection extends ConnectionImpl {
             socketChannel = SocketChannel.open(ipAddress);
             socketChannel.configureBlocking(false);
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

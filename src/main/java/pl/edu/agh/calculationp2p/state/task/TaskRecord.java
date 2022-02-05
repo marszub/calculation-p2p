@@ -83,7 +83,7 @@ public class TaskRecord {
         if (getClass() != o.getClass())
             return false;
         TaskRecord other = (TaskRecord) o;
-        //TODO:
+
         return this.getTaskID() == other.getTaskID() &&
                 this.getState() == other.getState() &&
                 this.getOwner() == other.getOwner();
