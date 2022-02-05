@@ -31,20 +31,20 @@ public class ServantImpl implements Servant {
     }
 
     @Override
-    public void setNodeId(Integer nodeId){
+    public Integer getNodeId() {
+        return nodeId;
+    }
+
+    @Override
+    public void setNodeId(Integer nodeId) {
         int size = progress.size();
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             TaskRecord record = progress.get(i);
             if (record.getOwner() == this.nodeId) {
                 progress.update(new TaskRecord(record.getTaskID(), record.getState(), nodeId, record.getResult()));
             }
         }
         this.nodeId = nodeId;
-    }
-
-    @Override
-    public Integer getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -90,16 +90,17 @@ public class ServantImpl implements Servant {
             logger.info("In IF TaskPublisher");
             taskPublisher.look(prev, curr);
 
-       }
-        if(prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Calculated){
+        }
+        if (prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Calculated) {
             logger.info("In IF CalculatedPublisher");
             calculatedPublisher.look(prev, curr);
         }
-        if(prev.getState() == TaskState.Free && curr.getState() == TaskState.Reserved){
+        if (prev.getState() == TaskState.Free && curr.getState() == TaskState.Reserved) {
             logger.info("In IF ReservedPublisher");
             reservedPublisher.look(prev, curr);
         }
 
 
     }
+}
 
