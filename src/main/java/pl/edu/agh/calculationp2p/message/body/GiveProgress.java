@@ -1,6 +1,7 @@
 package pl.edu.agh.calculationp2p.message.body;
 
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
+import pl.edu.agh.calculationp2p.message.process.statemachine.WorkState;
 import pl.edu.agh.calculationp2p.state.Progress;
 
 import java.util.Objects;
@@ -30,6 +31,7 @@ public class GiveProgress implements Body{
     @Override
     public void process(int sender, MessageProcessContext context) {
         context.getStateUpdater().initProgress(this.progress);
+        context.getMessageProcessor().setState(new WorkState());
     }
 
     @Override

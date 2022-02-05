@@ -3,7 +3,6 @@ package pl.edu.agh.calculationp2p.network.connection;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
-import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueEntry;
@@ -11,7 +10,6 @@ import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.channels.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -175,7 +173,7 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             {
                 for(String message : messages)
                 {
-                    if(message != "") {
+                    if(!message.equals("")) {
                         Message parsedMessage = messageParser.parse(message);
                         if (parsedMessage != null) {
                             Logger logger = LoggerFactory.getLogger(ConnectionManager.class);

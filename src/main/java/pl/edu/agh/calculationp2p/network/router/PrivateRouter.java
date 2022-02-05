@@ -22,7 +22,7 @@ public class PrivateRouter extends RouterImpl
     }
 
     @Override
-    public void createInterface(int nodeId) throws InterfaceExistsException
+    public void createInterface(Integer nodeId) throws InterfaceExistsException
     {
         if(PrivateNodes.contains(nodeId))
             throw new InterfaceExistsException(nodeId);
@@ -31,11 +31,10 @@ public class PrivateRouter extends RouterImpl
     }
 
     @Override
-    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException
+    public void deleteInterface(Integer nodeId) throws InterfaceDoesNotExistException
     {
-        Integer node = nodeId;
         if(PrivateNodes.contains(nodeId))
-            PrivateNodes.remove(node);
+            PrivateNodes.remove(nodeId);
         else
             super.deleteInterface(nodeId);
     }
@@ -46,20 +45,7 @@ public class PrivateRouter extends RouterImpl
         int receiverId = message.getReceiver();
         if(PrivateNodes.contains(receiverId) || receiverId == broadcastId)
         {
-            Set<Integer> publicNodesSet = staticInterfaces.keySet();
-            List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
-            Random random = new Random();
-            while(publicNodesList.size() > 0)
-            {
-                int id = publicNodesList.get(random.nextInt(publicNodesList.size()));
-                if(!routingTable.trySend(id, message))
-                    publicNodesList.remove(id);
-                else
-                {
-                    routingTable.resendAll();
-                    return;
-                }
-            }
+            super.sendMessageViaMiddleman(message);
         }
         else
         {

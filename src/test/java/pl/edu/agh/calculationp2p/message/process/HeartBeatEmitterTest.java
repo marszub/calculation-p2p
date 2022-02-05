@@ -38,11 +38,11 @@ class HeartBeatEmitterTest {
             }
 
             @Override
-            public void createInterface(int nodeId, InetSocketAddress ipAddress) {}
+            public void createInterface(Integer nodeId, InetSocketAddress ipAddress) {}
             @Override
-            public void createInterface(int nodeId) {}
+            public void createInterface(Integer nodeId) {}
             @Override
-            public void deleteInterface(int nodeId) {}
+            public void deleteInterface(Integer nodeId) {}
             @Override
             public List<Message> getMessage() {return null;}
             @Override
@@ -53,6 +53,8 @@ class HeartBeatEmitterTest {
             public int getId() {return 0;}
             @Override
             public void close() {}
+            @Override
+            public void sendHelloMessage(Message message){}
         };
 
         HeartBeatEmitter heartBeatEmitter = new HeartBeatEmitter(periodTime, router);
@@ -91,11 +93,11 @@ class HeartBeatEmitterTest {
             }
 
             @Override
-            public void createInterface(int nodeId, InetSocketAddress ipAddress) {}
+            public void createInterface(Integer nodeId, InetSocketAddress ipAddress) {}
             @Override
-            public void createInterface(int nodeId) {}
+            public void createInterface(Integer nodeId) {}
             @Override
-            public void deleteInterface(int nodeId) {}
+            public void deleteInterface(Integer nodeId) {}
             @Override
             public List<Message> getMessage() {return null;}
             @Override
@@ -106,6 +108,8 @@ class HeartBeatEmitterTest {
             public int getId() {return 0;}
             @Override
             public void close() {}
+            @Override
+            public void sendHelloMessage(Message message) {}
         };
 
         HeartBeatEmitter heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);

@@ -1,8 +1,5 @@
 package pl.edu.agh.calculationp2p.network.messagequeue;
 
-import pl.edu.agh.calculationp2p.network.connection.Connection;
-import pl.edu.agh.calculationp2p.message.Message;
-
 import java.util.NoSuchElementException;
 import java.util.concurrent.LinkedBlockingQueue;
 

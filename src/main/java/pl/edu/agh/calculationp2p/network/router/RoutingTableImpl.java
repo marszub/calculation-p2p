@@ -41,7 +41,7 @@ public class RoutingTableImpl implements RoutingTable{
     public void send(int id, Message message) throws InterfaceDoesNotExistException
     {
         Logger logger = LoggerFactory.getLogger(RoutingTableImpl.class);
-        logger.debug("Sending message on: " + String.valueOf(id) + " message: " + message.serialize());
+        logger.debug("Sending message on: " + id + " message: " + message.serialize());
         if(!interfaces.containsKey(id))
             throw new InterfaceDoesNotExistException(id);
         if (interfaces.get(id) != null)
@@ -93,7 +93,7 @@ public class RoutingTableImpl implements RoutingTable{
     private void addToMessageQueue(int ID, Message message)
     {
         Logger logger = LoggerFactory.getLogger(RoutingTableImpl.class);
-        logger.debug("Sending message failed!!!!!!!: " + String.valueOf(ID));
+        logger.debug("Sending message failed!!!!!!!: " + ID);
         LinkedList<Message> Queue = messageInterfaceQueue.get(ID);
         Queue.addLast(message);
     }
