@@ -2,14 +2,14 @@ package pl.edu.agh.calculationp2p.message.process.statemachine;
 
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
-import pl.edu.agh.calculationp2p.message.body.GetProgress;
-import pl.edu.agh.calculationp2p.message.body.GiveInit;
-import pl.edu.agh.calculationp2p.message.body.HeartBeat;
-import pl.edu.agh.calculationp2p.message.body.Hello;
+import pl.edu.agh.calculationp2p.message.body.*;
 import pl.edu.agh.calculationp2p.message.process.HeartBeatEmitter;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
 import pl.edu.agh.calculationp2p.message.process.NodeRegister;
 import pl.edu.agh.calculationp2p.network.router.Router;
+import pl.edu.agh.calculationp2p.state.Progress;
+import pl.edu.agh.calculationp2p.state.future.Future;
+import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.net.InetSocketAddress;
 import java.time.ZonedDateTime;
@@ -62,25 +62,38 @@ public class WaitState implements ProcessingState{
             });
             awaitingMessages.forEach(message -> message.process(messageProcessor.getContext()));
             newMessages.forEach(message -> message.process(messageProcessor.getContext()));
-            //TODO: send our state
-            messageProcessor.setState(new UninitializedWorkState());
             router.send(new MessageImpl(router.getId(), router.getBroadcastId(),
                     new Hello(messageProcessor.getConfig().getPublicFlag()?messageProcessor.getConfig().getMyAddress():null)));
+
+            //Send our state
+
+            Future<Progress> progressFuture = messageProcessor.getContext().getStateInformer().getProgress();
+            messageProcessor.getContext().getFutureProcessor().addFutureProcess(progressFuture, () ->{
+                progressFuture.get().getTasks().stream().filter(taskRecord -> taskRecord.getState() == TaskState.Reserved)
+                        .forEach(taskRecord -> {
+                            router.send(new MessageImpl(router.getId(), router.getBroadcastId(), new Reserve(taskRecord)));
+                });
+
+                progressFuture.get().getTasks().stream().filter(taskRecord -> taskRecord.getState() == TaskState.Calculated)
+                        .forEach(taskRecord -> {
+                            router.send(new MessageImpl(router.getId(), router.getBroadcastId(), new Calculated(taskRecord)));
+                });
+            });
+
             router.send(new MessageImpl(router.getId(), messageProcessor.getContext().getNodeRegister().getRandomNodeId(), new GetProgress()));
+            messageProcessor.setState(new UninitializedWorkState());
             return;
         }
 
         awaitingMessages.addAll(newMessages);
 
         long waitTime = startTime + messageProcessor.getConfig().getMaxConnectingTime() - ZonedDateTime.now().toInstant().toEpochMilli();
-        messageProcessor.getIdle().sleep(waitTime);
-
-        waitTime = startTime + messageProcessor.getConfig().getMaxConnectingTime() - ZonedDateTime.now().toInstant().toEpochMilli();
         if(waitTime < 0){
             router.deleteInterface(router.getMainServerId());
             router.setId(1);
             messageProcessor.getContext().getStateUpdater().setNodeId(1);
             messageProcessor.setState(new WorkState());
         }
+        messageProcessor.getIdle().sleep(waitTime);
     }
 }
