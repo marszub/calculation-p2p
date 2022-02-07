@@ -38,7 +38,17 @@ public class WaitState implements ProcessingState{
      * Performs steps:
      * 1. GiveInit came?
      *    YES:
-     *    1.
+     *    1. Delete temporary server interface
+     *    2. For GiveInit create server interface with real id
+     *    3. Process GiveInit
+     *    4. Process awaiting messages and just received
+     *    5. broadcast Hello
+     *    6. Broadcast current progress (as Calculated/Reserve)
+     *    7. Change state to UninitializedWorkState
+     *    NO:
+     *    1. Put all received messages on queue
+     *    2. If time exceeded wait time, delete temporary server interface, set id to 1 and change state to Work
+     *    3. Sleep
      * @throws InterruptedException
      */
     @Override

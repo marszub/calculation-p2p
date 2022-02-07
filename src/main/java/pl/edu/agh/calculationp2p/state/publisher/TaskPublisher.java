@@ -39,8 +39,8 @@ public class TaskPublisher {
     }
 
 
-    public void look(TaskRecord previous, TaskRecord current) {
-        if(previous.getOwner() != current.getOwner())
+    public void look(TaskRecord previous, TaskRecord current, Integer nodeId) {
+        if(previous.getOwner() == nodeId && current.getOwner() != nodeId && previous.getState() == TaskState.Reserved)
             raiseFlag(current.getTaskID());
     }
     public int numberOfObservers(){
