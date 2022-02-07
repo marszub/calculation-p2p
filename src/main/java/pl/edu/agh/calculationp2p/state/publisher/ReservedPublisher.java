@@ -40,7 +40,7 @@ public class ReservedPublisher {
         // check if are some changes in observed items
         // anything -> reserved
 
-        if (current.getState() == TaskState.Reserved && !previous.equals(current)
+        if (current.getState() == TaskState.Reserved && previous.getState()!=TaskState.Reserved
                 && previous.getTaskID() == current.getTaskID()) {
             for (Pair<Future<Observation>, IdleInterrupter> pair : observers) {
                 Future<Observation> oldF = pair.getL();
