@@ -16,8 +16,6 @@ public class MessageImpl implements Message{
         this.sender = sender;
         this.receiver = receiver;
         this.body = body;
-        Logger logger = LoggerFactory.getLogger(MessageImpl.class);
-        logger.info(serialize());
     }
 
     @Override

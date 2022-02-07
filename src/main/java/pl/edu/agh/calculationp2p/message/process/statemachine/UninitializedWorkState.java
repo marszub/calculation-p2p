@@ -53,7 +53,10 @@ public class UninitializedWorkState implements ProcessingState{
 
         List<Integer> notResponding = messageProcessor.getContext().getNodeRegister().getOutdatedNodes();
 
-        notResponding.forEach(router::deleteInterface);
+        notResponding.forEach(id -> {
+            router.deleteInterface(id);
+            messageProcessor.getContext().getStateUpdater().clearNodeReservations(id);
+        });
 
         messageProcessor.getContext().getFutureProcessor().tryProcessAll();
 
