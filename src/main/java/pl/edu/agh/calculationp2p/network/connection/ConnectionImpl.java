@@ -7,7 +7,6 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,6 +55,7 @@ public abstract class ConnectionImpl implements Connection
             e.printStackTrace();
         }
     }
+
     @Override
     public void read(List<String> list) throws ConnectionLostException
     {
@@ -83,7 +83,7 @@ public abstract class ConnectionImpl implements Connection
             if(bytesRead > 0)
             {
                 String word = new String(buf.array());
-                messages.append(word.substring(0, bytesRead));
+                messages.append(word, 0, bytesRead);
             }
         }
         list.addAll(Arrays.asList(messages.toString().split(separator)));
@@ -97,8 +97,7 @@ public abstract class ConnectionImpl implements Connection
         buff.clear();
         buff.put(data.getBytes());
         buff.flip();
-        while(buff.hasRemaining())
-        {
+        while (buff.hasRemaining()) {
             socketChannel.write(buff);
         }
     }

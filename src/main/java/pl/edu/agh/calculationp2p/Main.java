@@ -29,8 +29,11 @@ import java.net.InetSocketAddress;
 public class Main {
     public static void main(String[] args) {
         String configFile = "config/connectionConfig.json";
+        String taskConfigFile = "config/taskConfig.json";
         if(args.length > 0)
             configFile = args[0];
+        if(args.length > 1)
+            taskConfigFile = args[1];
 
         ConfigReader config;
         try {
@@ -41,7 +44,7 @@ public class Main {
         }
 
         // task
-        CalculationTaskFactory taskFactory = new HashBreakerFactory();
+        CalculationTaskFactory taskFactory = new HashBreakerFactory(taskConfigFile);
         CalculationTask task = taskFactory.createTask();
 
         // servant
@@ -77,7 +80,6 @@ public class Main {
             throw new NullPointerException("Error while reading my_address and my_port in config file.");
 
         ConnectionManager connectionManager = new ConnectionManagerImpl(messageQueue, messageParser, myAddress, idle);
-        Thread connectionManagerThread = new Thread(connectionManager); // create Thread
 
         // router
         RoutingTable routingTable = new RoutingTableImpl();
@@ -97,7 +99,6 @@ public class Main {
 
         // start threads
         schedulerThread.start();
-        connectionManagerThread.start();
         messageProcessorThread.start();
         taskResolverThread.start();
         uiControllerThread.start();
@@ -106,7 +107,6 @@ public class Main {
             uiControllerThread.join(0);
             taskResolverThread.join(0);
             messageProcessorThread.join(0);
-            connectionManagerThread.join(0);
             schedulerThread.join(0);
         } catch (InterruptedException e) {
             e.printStackTrace();

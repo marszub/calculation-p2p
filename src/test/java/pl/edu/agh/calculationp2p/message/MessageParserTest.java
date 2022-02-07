@@ -57,6 +57,7 @@ class MessageParserTest {
         assertEquals(confirm5, messageParser.parse(confirm5.serialize()));
     }
 
+
     @Test
     void parseGetInit() {
         Message getInit = new MessageImpl(1, 2, new GetInit());
@@ -188,6 +189,7 @@ class MessageParserTest {
         Message reserve = new MessageImpl(1, 2, new Reserve(new TaskRecord(new TaskRecord(2, TaskState.Free, 3, null))));
         assertEquals(reserve, messageParser.parse(reserve.serialize()));
     }
+
 
 
 

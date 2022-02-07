@@ -1,5 +1,8 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueEntry;
@@ -7,7 +10,6 @@ import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.channels.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -90,6 +92,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             }
             if(messageRead)
             {
+                Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+                logger.debug("ConnectionManager waked up somebody!");
                 interrupter.wake();
             }
         }
@@ -139,8 +143,7 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
     {
         try {
             server = ServerSocketChannel.open();
-            ServerSocket serverSocket = server.socket();
-            serverSocket.bind(localListeningAddress);
+            server.bind(localListeningAddress);
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT, server);
         } catch (IOException e) {
@@ -170,7 +173,14 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             {
                 for(String message : messages)
                 {
-                    messageQueueEntry.add(new MessageConnectionPair(messageParser.parse(message), connection));
+                    if(!message.equals("")) {
+                        Message parsedMessage = messageParser.parse(message);
+                        if (parsedMessage != null) {
+                            Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
+                            logger.debug("New message: " + message + " from: " + connection.getRemoteAddress());
+                            messageQueueEntry.add(new MessageConnectionPair(parsedMessage, connection));
+                        }
+                    }
                 }
             }
             return true;
@@ -181,10 +191,17 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
     private void handleNewConnection(SelectionKey key) {
         ServerSocketChannel server = (ServerSocketChannel) key.channel();
         try {
+            Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
             SocketChannel connection = server.accept();
-            DynamicConnection dynamicConnection = new DynamicConnection(connection);
-            dynamicConnection.register(selector);
-            incomingConnections.add(dynamicConnection);
+            if(connection != null)
+            {
+                logger.debug("New not-null connection " + connection.getRemoteAddress().toString());
+                DynamicConnection dynamicConnection = new DynamicConnection(connection);
+                dynamicConnection.register(selector);
+                incomingConnections.add(dynamicConnection);
+                return;
+            }
+            logger.debug("New null connection!");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -22,7 +22,7 @@ public class PublicRouter extends RouterImpl
     }
 
     @Override
-    public void createInterface(int nodeId) throws InterfaceExistsException
+    public void createInterface(Integer nodeId) throws InterfaceExistsException
     {
         interfaces.add(nodeId);
         routingTable.addInterface(nodeId);
@@ -31,6 +31,7 @@ public class PublicRouter extends RouterImpl
             routingTable.bind(nodeId, connectionQueue.get(nodeId).connection());
             connectionQueue.remove(nodeId);
         }
+        super.createInterface(nodeId);
     }
 
     @Override
@@ -39,16 +40,16 @@ public class PublicRouter extends RouterImpl
     }
 
     @Override
-    public void createInterface(int nodeId, InetSocketAddress ipAddress)
+    public void createInterface(Integer nodeId, InetSocketAddress ipAddress)
     {
         interfaces.add(nodeId);
         super.createInterface(nodeId, ipAddress);
     }
 
     @Override
-    public void deleteInterface(int nodeId) throws InterfaceDoesNotExistException // TODO: to Integer
+    public void deleteInterface(Integer nodeId) throws InterfaceDoesNotExistException
     {
-        interfaces.remove((Object) nodeId);
+        interfaces.remove(nodeId);
         super.deleteInterface(nodeId);
     }
 
@@ -57,16 +58,15 @@ public class PublicRouter extends RouterImpl
     {
         int receiverId = message.getReceiver();
         switch (receiverId) {
-            case broadcastId:
-                processMessageToAll(message);
-                break;
-            case unknownId:
+            case broadcastId -> processMessageToAll(message);
+            case unknownId -> {
                 Connection connection = unknownNodeConnections.pop();
                 connection.send(message);
-                break;
-            default:
+            }
+            default -> {
                 routingTable.send(receiverId, message);
                 routingTable.resendAll();
+            }
         }
     }
 

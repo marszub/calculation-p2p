@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.request;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Servant;
@@ -18,6 +20,8 @@ public class CalculateRequest implements MethodRequest{
 
     @Override
     public void call(Servant servant){
+        Logger logger = LoggerFactory.getLogger(CalculateRequest.class);
+        logger.info("Call");
         Progress progress = servant.getProgress();
         TaskRecord oldTask = progress.get(taskId);
         TaskRecord newTask = new TaskRecord(taskId, TaskState.Calculated, servant.getNodeId(), result);

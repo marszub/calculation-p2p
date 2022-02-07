@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.request;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Servant;
 import pl.edu.agh.calculationp2p.state.future.Future;
@@ -17,13 +19,15 @@ public class UpdateProgressRequest implements MethodRequest{
     @Override
     public void call(Servant servant) {
         // check every priority and get the highest ones
+        Logger logger = LoggerFactory.getLogger(UpdateProgressRequest.class);
+        logger.info("Call");
         Progress currentProgress = servant.getProgress();
         for(TaskRecord newRecord: newProgress.getTasks()){
             TaskRecord oldRecord = currentProgress.get(newRecord.getTaskID());
             if (newRecord.hasHigherPriority(oldRecord)){
                 currentProgress.update(newRecord);
+                servant.lookAllPublishers(oldRecord, servant.getProgress().get(newRecord.getTaskID()));
             }
-            servant.lookAllPublishers(oldRecord, servant.getProgress().get(newRecord.getTaskID()));
         }
     }
 }

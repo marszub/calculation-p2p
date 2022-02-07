@@ -57,6 +57,7 @@ public class MessageParserImpl implements MessageParser{
         return new Hello(new InetSocketAddress(ipS, portS));
     }
 
+
     private static GiveProgress funGiveProcess(JSONObject jsonMapBody){
         JSONArray progress = jsonMapBody.getJSONArray("progress");
         if(progress.isEmpty()){
@@ -75,16 +76,19 @@ public class MessageParserImpl implements MessageParser{
                     TaskState.valueOf(record.getString("state")),
                     record.getInt("owner"),
                     new HashTaskResult(resultArray)
+
             ));
         }
         return new GiveProgress(new Progress(result));
     }
+
     private static Reserve funReserve(JSONObject jsonMapBody){
         int taskId = jsonMapBody.getInt("task_id");
         int owner = jsonMapBody.getInt("owner");
         String stateStr = jsonMapBody.getString("state");
         TaskState taskState = TaskState.valueOf(stateStr);
         //TODO:
+
         return new Reserve(new TaskRecord(taskId, taskState, owner, null));
     }
 
@@ -131,6 +135,7 @@ public class MessageParserImpl implements MessageParser{
         List<String> taskResultList = new ArrayList<>();
         for(int i=0;i<taskResultStr.length();i++){
             taskResultList.add(taskResultStr.getString(i));
+
         }
         TaskResult taskResult = new HashTaskResult();
         taskResultList.forEach(taskResult::add);
@@ -145,6 +150,7 @@ public class MessageParserImpl implements MessageParser{
         TaskResult taskResult;
         if(jsonMapBody.get("result").toString().equals("null")){
             taskResult = null;
+
         } else {
             JSONArray taskResultStr = jsonMapBody.getJSONArray("result");
             List<String> res = new ArrayList<>();

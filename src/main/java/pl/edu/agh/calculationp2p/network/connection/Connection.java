@@ -13,5 +13,7 @@ public interface Connection {
 
     void close();
 
+    String getRemoteAddress();
+
     void read(List<String> messages) throws ConnectionLostException;
 }

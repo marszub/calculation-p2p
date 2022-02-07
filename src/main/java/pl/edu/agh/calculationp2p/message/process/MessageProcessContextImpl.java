@@ -13,6 +13,18 @@ public class MessageProcessContextImpl implements MessageProcessContext{
     private NodeRegister nodeRegister;
     private FutureProcessor futureProcessor;
 
+    @Override
+    public MessageProcessor getMessageProcessor() {
+        return messageProcessor;
+    }
+
+    @Override
+    public void setMessageProcessor(MessageProcessor messageProcessor) {
+        this.messageProcessor = messageProcessor;
+    }
+
+    private MessageProcessor messageProcessor;
+
     public void MessageProcessContext(){}
 
     @Override

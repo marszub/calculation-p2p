@@ -38,6 +38,7 @@ public class TaskPublisher {
         }
     }
 
+
     public void look(TaskRecord previous, TaskRecord current) {
         if(previous.getOwner() != current.getOwner())
             raiseFlag(current.getTaskID());

@@ -15,11 +15,11 @@ public interface Router {
 
     int getBroadcastId();
 
-    void createInterface(int nodeId, InetSocketAddress ipAddress);
+    void createInterface(Integer nodeId, InetSocketAddress ipAddress);
 
-    void createInterface(int nodeId);
+    void createInterface(Integer nodeId);
 
-    void deleteInterface(int nodeId);
+    void deleteInterface(Integer nodeId);
 
     List<Message> getMessage();
 
@@ -30,4 +30,6 @@ public interface Router {
     int getId();
 
     void close();
+
+    void sendHelloMessage(Message message);
 }
