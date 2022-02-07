@@ -21,32 +21,29 @@ class GiveProgressTest {
 
     }
 
-    // TODO: rewrite
+    @Test
+    void serializeContent() {
 
-//    @Test
-//    void serializeContent() {
-//
-//        Body giveProcess = new GiveProgress(null);
-//
-//        String result = "{\"progress\":\"null\"}";
-//        assertEquals(result, giveProcess.serializeContent());
-//
-//    }
+        Body giveProcess = new GiveProgress(null);
 
-    // TODO: rewrite
+        String result = "{\"progress\":\"null\"}";
+        assertEquals(result, giveProcess.serializeContent());
 
-//    @Test
-//    void serializeContent01() {
-//
-//        Progress progress = new Progress(new ArrayList<>(List.of(new TaskRecord(2, TaskState.Reserved, 2, new HashTaskResult()))));
-//
-//        Body giveProcess = new GiveProgress(progress);
-//
-//        String result = "{\"progress\":[{\"task_id\":2,\"state\":\"reserved\",\"owner\":2,\"result\":[]}]}";
-//
-//        assertEquals(result, giveProcess.serializeContent());
-//
-//    }
+    }
+
+    @Test
+    void serializeContent01() {
+
+        Progress progress = new Progress(new ArrayList<>(List.of(new TaskRecord(2, TaskState.Reserved, 2, new HashTaskResult()))));
+
+        Body giveProcess = new GiveProgress(progress);
+
+        String result = "{\"progress\":[{\"task_id\":2,\"state\":\"Reserved\",\"owner\":2,\"result\":[]}]}";
+
+        assertEquals(result, giveProcess.serializeContent());
+
+    }
+
 
     @Test
     void process() {

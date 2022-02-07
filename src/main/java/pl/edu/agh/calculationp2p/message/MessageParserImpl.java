@@ -1,10 +1,5 @@
 package pl.edu.agh.calculationp2p.message;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
@@ -14,235 +9,157 @@ import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 
 public class MessageParserImpl implements MessageParser{
 
     public Message parse(String messageS){
-
         int sender = -2;
         int receiver = -2;
         Body bodyResult = null;
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        try {
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-
-            TypeReference<LinkedHashMap<String,Object>> typeRef = new TypeReference<>() {};
-
-            LinkedHashMap<String,Object> jsonMap = mapper.readValue(messageS, typeRef);
-
-            if(jsonMap != null){
-
-                LinkedHashMap<String, Object> head = (LinkedHashMap<String, Object>) jsonMap.get("header");
-                LinkedHashMap<String, Object> body = (LinkedHashMap<String, Object>) jsonMap.get("body");
-
-                sender = Integer.parseInt(head.get("sender").toString());
-                receiver = Integer.parseInt(head.get("receiver").toString());
-                String messType = head.get("message_type").toString();
-
-                switch (messType) {
-                    case "get_init" -> bodyResult = new GetInit();
-                    case "give_init" -> bodyResult = funGiveInit(body);
-                    case "hello" -> bodyResult = funHello(body);
-                    case "get_progress" -> bodyResult = new GetProgress();
-                    case "give_progress" -> bodyResult = funGiveProcess(body);
-                    case "heart_beat" -> bodyResult = new HeartBeat();
-                    case "reserve" -> bodyResult = funReserve(body);
-                    case "confirm" -> bodyResult = funConfirm(body);
-                    case "calculated" -> bodyResult = funCalculated(body);
-                    case "get_synchronization" -> bodyResult = funGetSynchronization(body);
-                    case "give_synchronization" -> bodyResult = funGiveSynchronization(body);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        JSONObject jsonObject = new JSONObject(messageS);
+        JSONObject headObj = jsonObject.getJSONObject("header");
+        JSONObject bodyObj = jsonObject.getJSONObject("body");
+        sender = headObj.getInt("sender");
+        receiver = headObj.getInt("receiver");
+        String messType = headObj.getString("message_type");
+        switch (messType) {
+            case "get_init" -> bodyResult = new GetInit();
+            case "give_init" -> bodyResult = funGiveInit(bodyObj);
+            case "hello" -> bodyResult = funHello(bodyObj);
+            case "get_progress" -> bodyResult = new GetProgress();
+            case "give_progress" -> bodyResult = funGiveProcess(bodyObj);
+            case "heart_beat" -> bodyResult = new HeartBeat();
+            case "reserve" -> bodyResult = funReserve(bodyObj);
+            case "confirm" -> bodyResult = funConfirm(bodyObj);
+            case "calculated" -> bodyResult = funCalculated(bodyObj);
+            case "get_synchronization" -> bodyResult = funGetSynchronization(bodyObj);
+            case "give_synchronization" -> bodyResult = funGiveSynchronization(bodyObj);
         }
         return new MessageImpl(sender, receiver, bodyResult);
     }
-    private static GetSynchronization funGetSynchronization(HashMap<String, Object> jsonMapBody){
-        String tasksArrayString = jsonMapBody.get("tasks").toString();
-        List<Integer> taskArray = parseStringArrPrivate(tasksArrayString);
-        return new GetSynchronization(taskArray);
-    }
-    private static Hello funHello(HashMap<String, Object> jsonMapBody){
-        String ipS = jsonMapBody.get("ip").toString();
-        int portS = Integer.parseInt(jsonMapBody.get("port").toString());
-        if(ipS.equals("null")){
-            ipS = null;
+    private static GetSynchronization funGetSynchronization(JSONObject jsonMapBody){
+        JSONArray tasksArrayString = jsonMapBody.getJSONArray("tasks");
+        List<Integer> result = new ArrayList<>();
+        for(int i=0;i<tasksArrayString.length(); i++){
+            result.add(tasksArrayString.getJSONObject(i).getInt("task_id"));
         }
+        return new GetSynchronization(result);
+    }
+
+    private static Hello funHello(JSONObject jsonMapBody){
+
+        String ipS = jsonMapBody.getString("ip");
+        if(ipS.equals("null"))
+            return new Hello(null);
+        int portS = jsonMapBody.getInt("port");
         return new Hello(new InetSocketAddress(ipS, portS));
     }
-    private static GiveProgress funGiveProcess(HashMap<String, Object> jsonMapBody){
-        String progressStr = jsonMapBody.get("progress").toString();
 
-        List<LinkedHashMap<String, Object>> progress = (List<LinkedHashMap<String, Object>>) jsonMapBody.get("progress");
-        List<TaskRecord> result = new ArrayList<>(progress.size());
-        for (LinkedHashMap<String, Object> record: progress) {
-            List<String> resList;
-            if(record.get("result").equals("null")){
-                resList = new LinkedList<>();
-            }else{
-                resList = (List<String>) record.get("result");
+
+    private static GiveProgress funGiveProcess(JSONObject jsonMapBody){
+        JSONArray progress = jsonMapBody.getJSONArray("progress");
+        if(progress.isEmpty()){
+            return new GiveProgress(new Progress(new ArrayList<>()));
+        }
+        List<TaskRecord> result = new ArrayList<>();
+        for(int i=0;i<progress.length();i++) {
+            JSONObject record = progress.getJSONObject(i);
+            JSONArray taskRecordResultStr = record.getJSONArray("result");
+            List<String> resultArray = new ArrayList<>();
+            for(int j=0;j<taskRecordResultStr.length();i++){
+                resultArray.add(taskRecordResultStr.getString(i));
             }
-
             result.add(new TaskRecord(
-                    (Integer) record.get("task_id"),
-                    TaskState.valueOf((String) record.get("state")),
-                    (Integer) record.get("owner"),
-                    new HashTaskResult(resList)
+                    record.getInt("task_id"),
+                    TaskState.valueOf(record.getString("state")),
+                    record.getInt("owner"),
+                    new HashTaskResult(resultArray)
+
             ));
         }
-
         return new GiveProgress(new Progress(result));
     }
-    private static Reserve funReserve(HashMap<String, Object> jsonMapBody){
-        int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
-        int owner = Integer.parseInt(jsonMapBody.get("owner").toString());
-        String stateStr = jsonMapBody.get("state").toString();
-        TaskState taskState = null;
-        if(stateStr.equals("Free")){
-            taskState = TaskState.Free;
-        } else if(stateStr.equals("Reserved")){
-            taskState = TaskState.Reserved;
-        } else if(stateStr.equals("Calculated")){
-            taskState = TaskState.Calculated;
-        }
+
+    private static Reserve funReserve(JSONObject jsonMapBody){
+        int taskId = jsonMapBody.getInt("task_id");
+        int owner = jsonMapBody.getInt("owner");
+        String stateStr = jsonMapBody.getString("state");
+        TaskState taskState = TaskState.valueOf(stateStr);
+        //TODO:
+
         return new Reserve(new TaskRecord(taskId, taskState, owner, null));
     }
-    private static GiveInit funGiveInit(HashMap<String, Object> jsonMapBody){
 
-        int newId = Integer.parseInt(jsonMapBody.get("your_new_id").toString());
-        String publicNodesArrayStr = jsonMapBody.get("public_nodes").toString();
-        String privateNodesArrayStr = jsonMapBody.get("private_nodes").toString();
-
-        List<Integer> privateNodes = parseStringArrPrivate(privateNodesArrayStr);
-        Map<Integer, InetSocketAddress> publicNodes = parseStringArr(publicNodesArrayStr);
-
-        return new GiveInit(newId, privateNodes, publicNodes );
+    private static GiveInit funGiveInit(JSONObject jsonMapBody){
+        int newId = jsonMapBody.getInt("your_new_id");
+        JSONArray privateNodesArrayStr = jsonMapBody.getJSONArray("private_nodes");
+        List<Integer> privateNodes = new ArrayList<>();
+        for(int i=0;i<privateNodesArrayStr.length();i++){
+            privateNodes.add(privateNodesArrayStr.getJSONObject(i).getInt("id"));
+        }
+        JSONArray publicNodes = jsonMapBody.getJSONArray("public_nodes");
+        Map<Integer, InetSocketAddress> publicNodesRes = new HashMap<>();
+        for(int i=0;i<publicNodes.length();i++){
+            JSONObject record = publicNodes.getJSONObject(i);
+            publicNodesRes.put(record.getInt("id"), new InetSocketAddress(record.getString("ip_address"), record.getInt("port")));
+        }
+        return new GiveInit(newId, privateNodes, publicNodesRes);
     }
-    private static Map<Integer, InetSocketAddress> parseStringArr(String inputArrS){
-        Map<Integer, InetSocketAddress> result = new HashMap<>();
 
-        if(inputArrS.equals("[]")){
-            return result;
+    private static GiveSynchronization funGiveSynchronization(JSONObject jsonMapBody){
+        JSONArray tasksArray = jsonMapBody.getJSONArray("tasks");
+        List<TaskRecord> list = new ArrayList<>();
+        for(int i=0;i<tasksArray.length();i++){
+            JSONObject record = tasksArray.getJSONObject(i);
+            TaskResult res = new HashTaskResult();
+            if(record.get("result").toString().equals("null")){
+                res = new HashTaskResult();
+            } else {
+                JSONArray jsonArray = record.getJSONArray("result");
+                for(int j=0;j<jsonArray.length();j++) {
+                    res.add(String.valueOf(jsonArray.getInt(i)));
+                }
+            }
+            list.add(new TaskRecord(record.getInt("task_id"), TaskState.valueOf(record.getString("state")), record.getInt("owner"), res));
         }
-
-        String[] splitArr = inputArrS.split("},");
-
-        splitArr[0] = splitArr[0].substring(1);
-        splitArr[splitArr.length-1] = splitArr[splitArr.length-1].substring(0,splitArr[splitArr.length-1].length()-1);
-
-        for (String oneObjectString : splitArr) {
-            String[] oneObject = oneObjectString.split(",");
-            int id = Integer.parseInt(oneObject[0].split(":")[1]);
-            String ip = oneObject[0].split(":")[1];
-            result.put(id, new InetSocketAddress(ip, 2000));
-        }
-
-        return result;
-    }
-    private static List<Integer> parseStringArrPrivate(String inputArrS){
-        List<Integer> result = new ArrayList<>();
-        if(inputArrS.equals("[]")){
-            return result;
-        }
-        String[] splitArr = inputArrS.split("},");
-
-        splitArr[0] = splitArr[0].substring(2);
-        splitArr[splitArr.length-1] = splitArr[splitArr.length-1].substring(0,splitArr[splitArr.length-1].length()-2);
-
-        for (String oneObject : splitArr) {
-            int id = Integer.parseInt(oneObject.split(":")[1]);
-            result.add(id);
-        }
-
-        return result;
-    }
-    private static GiveSynchronization funGiveSynchronization(HashMap<String, Object> jsonMapBody){
-        String tasksArray = jsonMapBody.get("tasks").toString();
-        List<TaskRecord> list = getTasksArrFromString(tasksArray);
         return new GiveSynchronization(list);
     }
-    private static List<TaskRecord> getTasksArrFromString(String input){
-        List<TaskRecord> result = new ArrayList<>();
-        if(Objects.equals(input, "[]")){
-            return result;
-        }
-        String[] splitArr = input.split("},");
-        splitArr[0] = splitArr[0].substring(1);
-        splitArr[splitArr.length-1] = splitArr[splitArr.length-1].substring(0,splitArr[splitArr.length-1].length()-1);
-        for (String oneObjectString : splitArr) {
-            String[] oneObject = oneObjectString.split(",");
-            int taskId = Integer.parseInt(oneObject[0].split(":")[1]);
-            TaskState state = null;
-            String stateString = oneObject[2].split(":")[1];
-            switch (stateString) {
-                case "Calculated" -> state = TaskState.Calculated;
-                case "Free" -> state = TaskState.Free;
-                case "Reserved" -> state = TaskState.Reserved;
-            }
-            Integer owner = Integer.parseInt(oneObject[2].split(":")[1]);
-            String taskResultStr = oneObject[2].split(":")[1];
-            taskResultStr = taskResultStr.substring(1, taskResultStr.length()-1);
-            String[] taskResultStrList = taskResultStr.split(",");
-            TaskResult taskResult = new HashTaskResult();
-            Arrays.stream(taskResultStrList).forEach(taskResult::add);
-            result.add(new TaskRecord(taskId, state, owner, taskResult));
-        }
 
-        return result;
-    }
-    private static Calculated funCalculated(HashMap<String, Object> jsonMapBody){
-        int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
-        int owner = Integer.parseInt(jsonMapBody.get("owner").toString());
-        String stateStr = jsonMapBody.get("state").toString();
-        TaskState taskState = null;
-        if(stateStr.equals("Free")){
-            taskState = TaskState.Free;
-        } else if(stateStr.equals("Reserve")){
-            taskState = TaskState.Reserved;
-        } else if(stateStr.equals("Calculated")){
-            taskState = TaskState.Calculated;
+    private static Calculated funCalculated(JSONObject jsonMapBody){
+        int taskId = jsonMapBody.getInt("task_id");
+        int owner = jsonMapBody.getInt("owner");
+        TaskState taskState = TaskState.valueOf(jsonMapBody.getString("state"));
+        JSONArray taskResultStr = jsonMapBody.getJSONArray("result");
+        List<String> taskResultList = new ArrayList<>();
+        for(int i=0;i<taskResultStr.length();i++){
+            taskResultList.add(taskResultStr.getString(i));
+
         }
-        String taskResultStr = jsonMapBody.get("result").toString();
-        taskResultStr = taskResultStr.substring(1, taskResultStr.length()-1);
-        String[] taskResultStrList = taskResultStr.split(",");
         TaskResult taskResult = new HashTaskResult();
-        Arrays.stream(taskResultStrList).forEach(taskResult::add);
-
+        taskResultList.forEach(taskResult::add);
         TaskRecord result = new TaskRecord(taskId, taskState, owner, taskResult);
         return new Calculated(result);
-
     }
-    private static Confirm funConfirm(HashMap<String, Object> jsonMapBody){
-        int taskId = Integer.parseInt(jsonMapBody.get("task_id").toString());
-        TaskState state = null;
-        String stateString = jsonMapBody.get("state").toString();
-        switch (stateString) {
-            case "Calculated" -> state = TaskState.Calculated;
-            case "Free" -> state = TaskState.Free;
-            case "Reserved" -> state = TaskState.Reserved;
-        }
-        String ownerStr = jsonMapBody.get("owner").toString();
-        Integer owner;
-        if(ownerStr.equals("null")){
-            owner = null;
-        } else {
-            owner = Integer.parseInt(ownerStr);
-        }
 
-        String taskResultStr = jsonMapBody.get("result").toString();
-        taskResultStr = taskResultStr.substring(1, taskResultStr.length()-1);
-        String[] taskResultStrList = taskResultStr.split(",");
-        TaskResult taskResult = new HashTaskResult();
-        Arrays.stream(taskResultStrList).forEach(taskResult::add);
+    private static Confirm funConfirm(JSONObject jsonMapBody){
+        int taskId = jsonMapBody.getInt("task_id");
+        TaskState state = TaskState.valueOf(jsonMapBody.getString("state"));
+        int owner = jsonMapBody.getInt("owner");
+        TaskResult taskResult;
+        if(jsonMapBody.get("result").toString().equals("null")){
+            taskResult = null;
+
+        } else {
+            JSONArray taskResultStr = jsonMapBody.getJSONArray("result");
+            List<String> res = new ArrayList<>();
+            for(int i=0;i<taskResultStr.length();i++){
+                res.add(String.valueOf(taskResultStr.getInt(i)));
+            }
+            taskResult = new HashTaskResult();
+            res.forEach(taskResult::add);
+        }
         return new Confirm(new TaskRecord(taskId, state, owner, taskResult));
     }
 }

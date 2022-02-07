@@ -60,15 +60,12 @@ public class Hello implements Body{
             return false;
         }
         Hello message = (Hello) o;
-        return Objects.equals(message.getNewIp(), this.newIp) && message.getPort() == this.getPort();
+        return Objects.equals(message.getNewIp(), this.newIp);
     }
     public InetSocketAddress getNewIp() {
         return newIp;
     }
 
-    public int getPort() {
-        return this.newIp.getPort();
-    }
 
     @Override
     public int hashCode() {
