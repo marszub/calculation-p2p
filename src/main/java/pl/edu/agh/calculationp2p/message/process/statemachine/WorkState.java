@@ -29,7 +29,10 @@ public class WorkState implements ProcessingState{
         toSend.forEach(message -> messageProcessor.getContext().getRouter().send(message));
 
         List<Integer> notResponding = messageProcessor.getContext().getNodeRegister().getOutdatedNodes();
-        notResponding.forEach(id -> messageProcessor.getContext().getRouter().deleteInterface(id));
+        notResponding.forEach(id -> {
+            messageProcessor.getContext().getRouter().deleteInterface(id);
+            messageProcessor.getContext().getStateUpdater().clearNodeReservations(id);
+        });
 
         messageProcessor.getContext().getFutureProcessor().tryProcessAll();
 

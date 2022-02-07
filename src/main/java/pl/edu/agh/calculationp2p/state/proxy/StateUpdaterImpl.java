@@ -48,6 +48,11 @@ public class StateUpdaterImpl implements StateUpdater{
         }
     }
 
+    @Override
+    public void clearNodeReservations(Integer nodeID) {
+
+    }
+
     public Future<TaskRecord> reserve(int task, int nodeId) { // TODO: delete
         Future<TaskRecord> future = new Future<>();
         ReserveRequest request = new ReserveRequest(future, task, nodeId);
