@@ -22,7 +22,7 @@ class ConfirmTest {
 
         Body confirm = new Confirm(new TaskRecord(1, TaskState.Free, 5, null));
 
-        String result = "{\"task_id\":1,\"state\":\"free\",\"owner\":5,\"result\":\"null\"}";
+        String result = "{\"task_id\":1,\"state\":\"Free\",\"owner\":5,\"result\":\"null\"}";
         assertEquals(result, confirm.serializeContent());
 
     }

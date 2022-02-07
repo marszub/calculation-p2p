@@ -38,7 +38,7 @@ class GiveProgressTest {
 
         Body giveProcess = new GiveProgress(progress);
 
-        String result = "{\"progress\":[{\"task_id\":2,\"state\":\"reserved\",\"owner\":2,\"result\":[]}]}";
+        String result = "{\"progress\":[{\"task_id\":2,\"state\":\"Reserved\",\"owner\":2,\"result\":[]}]}";
 
         assertEquals(result, giveProcess.serializeContent());
 

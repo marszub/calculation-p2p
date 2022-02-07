@@ -28,7 +28,7 @@ class CalculatedTest {
 
         Body calculated = new Calculated(taskRecord);
 
-        String result = "{\"task_id\":1,\"state\":\"calculated\",\"owner\":2,\"result\":\"null\"}";
+        String result = "{\"task_id\":1,\"state\":\"Calculated\",\"owner\":2,\"result\":\"null\"}";
         assertEquals(result, calculated.serializeContent());
 
     }

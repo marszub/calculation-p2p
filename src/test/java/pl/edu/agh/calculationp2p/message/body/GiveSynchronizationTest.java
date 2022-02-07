@@ -35,7 +35,7 @@ class GiveSynchronizationTest {
         String resultOne = "{\"tasks\":[" +
                 "{" +
                 "\"task_id\":1," +
-                "\"state\":\"free\"," +
+                "\"state\":\"Free\"," +
                 "\"owner\":5," +
                 "\"result\":\"null\"" +
                 "}" +
@@ -43,13 +43,13 @@ class GiveSynchronizationTest {
         String resultFew = "{\"tasks\":[" +
                 "{" +
                 "\"task_id\":1," +
-                "\"state\":\"free\"," +
+                "\"state\":\"Free\"," +
                 "\"owner\":5," +
                 "\"result\":\"null\"" +
                 "}," +
                 "{" +
                 "\"task_id\":2," +
-                "\"state\":\"free\"," +
+                "\"state\":\"Free\"," +
                 "\"owner\":5," +
                 "\"result\":\"null\"" +
                 "}" +
