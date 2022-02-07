@@ -8,4 +8,5 @@ public interface StateUpdater {
     Future<TaskRecord> updateTask(TaskRecord taskRecord);
     void initProgress(Progress progress);
     void setNodeId(Integer nodeId);
+    void clearNodeReservations(Integer nodeID);
 }
