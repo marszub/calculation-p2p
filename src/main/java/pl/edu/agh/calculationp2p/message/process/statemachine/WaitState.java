@@ -58,7 +58,7 @@ public class WaitState implements ProcessingState{
             //TODO: send our state
             messageProcessor.setState(new UninitializedWorkState());
             router.send(new MessageImpl(router.getId(), router.getBroadcastId(),
-                    new Hello(messageProcessor.getConfig().getMyAddress()))); // TODO: jak jestem private, to nie wysyłam ip
+                    new Hello(messageProcessor.getConfig().getPublicFlag()?messageProcessor.getConfig().getMyAddress():null)));
             router.send(new MessageImpl(router.getId(), getRandomNodeId(), new GetProgress()));
             return;
         }
