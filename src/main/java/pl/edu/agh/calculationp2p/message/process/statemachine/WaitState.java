@@ -72,7 +72,7 @@ public class WaitState implements ProcessingState{
             });
             awaitingMessages.forEach(message -> message.process(messageProcessor.getContext()));
             newMessages.forEach(message -> message.process(messageProcessor.getContext()));
-            router.send(new MessageImpl(router.getId(), router.getBroadcastId(),
+            router.sendHelloMessage(new MessageImpl(router.getId(), router.getBroadcastId(),
                     new Hello(messageProcessor.getConfig().getPublicFlag()?messageProcessor.getConfig().getMyAddress():null)));
 
             //Send our state
