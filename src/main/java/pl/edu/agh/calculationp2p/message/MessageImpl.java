@@ -1,7 +1,5 @@
 package pl.edu.agh.calculationp2p.message;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.body.Body;
 import pl.edu.agh.calculationp2p.message.body.HeartBeat;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
@@ -40,8 +38,6 @@ public class MessageImpl implements Message{
     @Override
     public void process(MessageProcessContext context) {
         this.body.process(this.sender, context);
-        Logger logger = LoggerFactory.getLogger(MessageImpl.class);
-        logger.info(serialize());
     }
 
     @Override

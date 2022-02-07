@@ -66,10 +66,12 @@ public class MessageParserImpl implements MessageParser{
         List<TaskRecord> result = new ArrayList<>();
         for(int i=0;i<progress.length();i++) {
             JSONObject record = progress.getJSONObject(i);
-            JSONArray taskRecordResultStr = record.getJSONArray("result");
             List<String> resultArray = new ArrayList<>();
-            for(int j=0;j<taskRecordResultStr.length();i++){
-                resultArray.add(taskRecordResultStr.getString(i));
+            if(!record.get("result").toString().equals("[]") && !record.get("result").toString().equals("null")){
+                JSONArray taskRecordResultStr = record.getJSONArray("result");
+                for(int j=0;j<taskRecordResultStr.length();i++){
+                    resultArray.add(taskRecordResultStr.getString(i));
+                }
             }
             result.add(new TaskRecord(
                     record.getInt("task_id"),

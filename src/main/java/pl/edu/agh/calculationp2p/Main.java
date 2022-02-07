@@ -1,7 +1,5 @@
 package pl.edu.agh.calculationp2p;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.ConfigReader;
 import pl.edu.agh.calculationp2p.calculation.TaskResolver;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;

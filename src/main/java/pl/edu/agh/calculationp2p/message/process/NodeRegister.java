@@ -57,7 +57,7 @@ public class NodeRegister {
         return this.privateNodes;
     }
 
-    public Integer getRandomNodeId(){
+    public Integer getRandomNodeId(){ // TODO: What if 0 nodes in net???
         List<Integer> nodes = getPrivateNodes();
         nodes.addAll(getPublicNodes().keySet().stream().toList());
         Random rand = new Random();
