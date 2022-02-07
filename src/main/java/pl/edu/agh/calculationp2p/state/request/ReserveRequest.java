@@ -8,7 +8,7 @@ import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
-public class ReserveRequest implements MethodRequest{
+public class ReserveRequest implements MethodRequest{ // TODO: to delete??????
     Future<TaskRecord> future;
     Integer taskID;
     Integer nodeID;

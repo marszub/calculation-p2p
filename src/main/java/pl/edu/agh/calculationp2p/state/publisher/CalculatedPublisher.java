@@ -41,10 +41,7 @@ public class CalculatedPublisher {
 
 
     public void look(TaskRecord previous, TaskRecord current) {
-        // check if are some changes in observed items
-        // anything -> calculated
-        if (current.getState() == TaskState.Calculated && previous.getState()!=TaskState.Calculated
-                && previous.getTaskID() == current.getTaskID()) {
+        if (previous.getState() != TaskState.Calculated && current.getState() == TaskState.Calculated) {
             for (Pair<Future<Observation>, IdleInterrupter> pair : observers) {
                 Future<Observation> oldFuture = pair.getL();
                 Future<Observation> newFuture = new Future<>();

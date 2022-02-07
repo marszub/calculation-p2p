@@ -15,6 +15,8 @@ public class StateUpdaterImpl implements StateUpdater{
     }
 
 
+    // TODO: hard update - only reserved by nodeId, this node was disconnected
+
     @Override
     public Future<TaskRecord> updateTask(TaskRecord taskRecord) {
         Future<TaskRecord> future = new Future<>();

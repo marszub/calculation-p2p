@@ -27,6 +27,17 @@ public class UninitializedWorkState implements ProcessingState{
         this.messageProcessor = messageProcessor;
     }
 
+    /**
+     * Performs steps:
+     * 1. Send heart beat
+     * 2. Process incoming messages
+     * 3. Send updates of my calculation progress
+     * 4. Delete inactive interfaces
+     * 5. Process future tasks
+     * 6. Resend progress request
+     * 7. Sleep
+     * @throws InterruptedException
+     */
     @Override
     public void proceed() throws InterruptedException {
         Router router = messageProcessor.getContext().getRouter();
@@ -53,17 +64,9 @@ public class UninitializedWorkState implements ProcessingState{
                 - ZonedDateTime.now().toInstant().toEpochMilli());
         if(timeOfNextProgress < 0){
             timeOfNextProgress = messageProcessor.getConfig().getGetProgressRetryTime();
-            router.send(new MessageImpl(router.getId(), getRandomNodeId(), new GetProgress()));
+            router.send(new MessageImpl(router.getId(), messageProcessor.getContext().getNodeRegister().getRandomNodeId(), new GetProgress()));
         }
         int waitTime = Math.min(messageProcessor.getHeartBeatEmitter().nextBeatTime(), timeOfNextProgress);
         messageProcessor.getIdle().sleep(waitTime);
-    }
-
-    private Integer getRandomNodeId(){
-        NodeRegister nodeRegister = messageProcessor.getContext().getNodeRegister();
-        List<Integer> nodes = nodeRegister.getPrivateNodes();
-        nodes.addAll(nodeRegister.getPublicNodes().keySet().stream().toList());
-        Random rand = new Random();
-        return nodes.get(rand.nextInt(nodes.size())); // TODO: move to NodeRegister
     }
 }

@@ -13,7 +13,7 @@ public class HashTaskResult implements TaskResult {
     }
 
     public HashTaskResult(List<String> res) {
-        this.matchedStrings = res;
+        this.matchedStrings = new LinkedList<>(res);
     }
 
     public void add(String string)

@@ -29,6 +29,7 @@ public class CalculateRequest implements MethodRequest{
             progress.update(newTask);
         }
         servant.getTaskPublisher().unsubscribe(taskId);
+
         servant.lookAllPublishers(oldTask, progress.get(taskId));
     }
 }
