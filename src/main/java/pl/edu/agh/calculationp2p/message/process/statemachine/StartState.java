@@ -18,6 +18,13 @@ public class StartState implements ProcessingState{
         this.messageProcessor = messageProcessor;
     }
 
+    /**
+     * Performs steps:
+     * 1. Sets router id to unknown
+     * 2. Creates temporary server interface
+     * 3. Sends GetInit to the server
+     * 4. Changes state to Wait
+     */
     @Override
     public void proceed() {
 

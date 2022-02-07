@@ -2,10 +2,7 @@ package pl.edu.agh.calculationp2p.message.process;
 
 import java.net.InetSocketAddress;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NodeRegister {
     private final int validityTime;
@@ -58,6 +55,13 @@ public class NodeRegister {
 
     public List<Integer> getPrivateNodes(){
         return this.privateNodes;
+    }
+
+    public Integer getRandomNodeId(){
+        List<Integer> nodes = getPrivateNodes();
+        nodes.addAll(getPublicNodes().keySet().stream().toList());
+        Random rand = new Random();
+        return nodes.get(rand.nextInt(nodes.size()));
     }
 
     private long now(){

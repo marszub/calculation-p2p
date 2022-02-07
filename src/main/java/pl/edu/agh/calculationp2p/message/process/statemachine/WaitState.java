@@ -34,6 +34,13 @@ public class WaitState implements ProcessingState{
         this.messageProcessor = messageProcessor;
     }
 
+    /**
+     * Performs steps:
+     * 1. GiveInit came?
+     *    YES:
+     *    1.
+     * @throws InterruptedException
+     */
     @Override
     public void proceed() throws InterruptedException {
         Router router = messageProcessor.getContext().getRouter();
@@ -59,7 +66,7 @@ public class WaitState implements ProcessingState{
             messageProcessor.setState(new UninitializedWorkState());
             router.send(new MessageImpl(router.getId(), router.getBroadcastId(),
                     new Hello(messageProcessor.getConfig().getPublicFlag()?messageProcessor.getConfig().getMyAddress():null)));
-            router.send(new MessageImpl(router.getId(), getRandomNodeId(), new GetProgress()));
+            router.send(new MessageImpl(router.getId(), messageProcessor.getContext().getNodeRegister().getRandomNodeId(), new GetProgress()));
             return;
         }
 
@@ -75,13 +82,5 @@ public class WaitState implements ProcessingState{
             messageProcessor.getContext().getStateUpdater().setNodeId(1);
             messageProcessor.setState(new WorkState());
         }
-    }
-
-    private Integer getRandomNodeId(){
-        NodeRegister nodeRegister = messageProcessor.getContext().getNodeRegister();
-        List<Integer> nodes = nodeRegister.getPrivateNodes();
-        nodes.addAll(nodeRegister.getPublicNodes().keySet().stream().toList());
-        Random rand = new Random();
-        return nodes.get(rand.nextInt(nodes.size())); // TODO: move to NodeRegister
     }
 }
