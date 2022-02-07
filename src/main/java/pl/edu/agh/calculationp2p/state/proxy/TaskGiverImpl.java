@@ -5,6 +5,7 @@ import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.request.CalculateRequest;
 import pl.edu.agh.calculationp2p.state.request.GetTaskRequest;
+import pl.edu.agh.calculationp2p.state.request.MethodRequest;
 import pl.edu.agh.calculationp2p.state.request.ObserveTaskRequest;
 
 import java.util.Optional;
@@ -43,7 +44,7 @@ public class TaskGiverImpl implements TaskGiver {
 
     @Override
     public void finishTask(Integer taskId, TaskResult result) {
-        CalculateRequest request = new CalculateRequest(taskId, result);
+        MethodRequest request = new CalculateRequest(taskId, result);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {

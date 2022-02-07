@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.request;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.Servant;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
@@ -19,6 +21,8 @@ public class ReserveRequest implements MethodRequest{
 
     @Override
     public void call(Servant servant) {
+        Logger logger = LoggerFactory.getLogger(ReserveRequest.class);
+        logger.info("Call");
         TaskRecord oldTask = servant.getProgress().get(taskID);
         TaskRecord newTask = new TaskRecord(taskID, TaskState.Reserved, nodeID, oldTask.getResult());
         if (newTask.hasHigherPriority(oldTask)) {

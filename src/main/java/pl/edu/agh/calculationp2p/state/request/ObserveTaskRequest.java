@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.request;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Servant;
 import pl.edu.agh.calculationp2p.state.future.Future;
@@ -17,6 +19,8 @@ public class ObserveTaskRequest implements MethodRequest {
 
     @Override
     public void call(Servant servant) {
+        Logger logger = LoggerFactory.getLogger(ObserveTaskRequest.class);
+        logger.info("Call");
         servant.getTaskPublisher().subscribe(taskID, flag, servant.getNodeId(), servant.getProgress());
     }
 
