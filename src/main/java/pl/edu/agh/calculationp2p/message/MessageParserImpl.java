@@ -87,9 +87,14 @@ public class MessageParserImpl implements MessageParser{
         int owner = jsonMapBody.getInt("owner");
         String stateStr = jsonMapBody.getString("state");
         TaskState taskState = TaskState.valueOf(stateStr);
-        //TODO:
-
-        return new Reserve(new TaskRecord(taskId, taskState, owner, null));
+        TaskResult taskResult = new HashTaskResult();
+        if(!jsonMapBody.get("result").toString().equals("[]") && !jsonMapBody.get("result").toString().equals("null")){
+            JSONArray array = jsonMapBody.getJSONArray("result");
+            for(int i=0;i<array.length();i++){
+                taskResult.add(String.valueOf(array.getInt(i)));
+            }
+        }
+        return new Reserve(new TaskRecord(taskId, taskState, owner, taskResult));
     }
 
     private static GiveInit funGiveInit(JSONObject jsonMapBody){
