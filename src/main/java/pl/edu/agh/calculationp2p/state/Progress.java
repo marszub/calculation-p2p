@@ -65,6 +65,8 @@ public class Progress implements Cloneable {
         String res = "";
         res = res.concat("[");
         for(int i=0;i<tasks.size();i++){
+            if(this.tasks.get(i).getState()==TaskState.Free)
+                continue;
             res = res.concat(this.tasks.get(i).serialize());
             if(i< tasks.size()-1)
                 res = res.concat(",");
