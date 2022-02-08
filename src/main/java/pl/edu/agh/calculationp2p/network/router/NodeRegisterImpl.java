@@ -44,7 +44,8 @@ public class NodeRegisterImpl implements NodeRegister {
     }
 
     @Override
-    public Integer getRandomNodeId(){ // TODO: What if 0 nodes in net??
+    public Integer getRandomNodeId()
+    {
         List<Integer> nodes = publicNodes.keySet().stream().toList();
         if(nodes.size() == 0)
         {
@@ -55,8 +56,14 @@ public class NodeRegisterImpl implements NodeRegister {
     }
 
     @Override
-    public Set<Integer> getAllNodes() {
+    public Set<Integer> getAllNodesKeys() {
         return allNodes.keySet();
+    }
+
+    @Override
+    public Map<Integer, Long>getAllNodes()
+    {
+        return allNodes;
     }
 
     @Override

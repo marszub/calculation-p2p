@@ -131,7 +131,7 @@ public class PublicRouter extends RouterImpl
 
     private void processMessageToAll(Message message)
     {
-        for(int nodeId : nodeRegister.getAllNodes())
+        for(int nodeId : nodeRegister.getAllNodesKeys())
         {
             if(nodeId != message.getSender())
             {

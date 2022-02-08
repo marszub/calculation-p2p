@@ -8,7 +8,7 @@ public interface MessageProcessContext {
     Router getRouter();
     StateUpdater getStateUpdater();
     StatusInformer getStateInformer();
-    NodeRegister getNodeRegister();
+    OutdatedNodesDeleter getOutdatedNodesDeleter();
     FutureProcessor getFutureProcessor();
     MessageProcessor getMessageProcessor();
 
@@ -16,6 +16,6 @@ public interface MessageProcessContext {
     void setRouter(Router router);
     void setStateUpdater(StateUpdater stateUpdater);
     void setStateInformer(StatusInformer stateInformer);
-    void setNodeRegister(NodeRegister nodeRegister);
+    void setOutdatedNodesDeleter(OutdatedNodesDeleter outdatedNodesDeleter);
     void setFutureProcessor(FutureProcessor futureProcessor);
 }

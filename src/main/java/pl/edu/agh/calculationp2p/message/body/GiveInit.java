@@ -63,11 +63,9 @@ public class GiveInit implements Body{
         Router router = context.getRouter();
         this.privateNodes.forEach(node -> {
             router.createInterface(node);
-            context.getNodeRegister().addPrivateNode(node);
         });
         this.publicNodes.forEach((nodeId, ip) -> {
-            router.createInterface(nodeId, ip);
-            context.getNodeRegister().addPublicNode(nodeId, ip);
+            router.connectToInterface(nodeId, ip);
         });
         router.setId(this.newId);
         context.getStateUpdater().setNodeId(this.newId);

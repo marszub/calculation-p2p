@@ -39,7 +39,12 @@ public class DummyNodeRegister implements NodeRegister {
   }
 
   @Override
-  public Set<Integer> getAllNodes() {
+  public Set<Integer> getAllNodesKeys() {
+    return null;
+  }
+
+  @Override
+  public Map<Integer, Long> getAllNodes() {
     return null;
   }
 

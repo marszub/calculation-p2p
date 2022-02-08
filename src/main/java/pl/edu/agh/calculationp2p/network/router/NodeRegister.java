@@ -18,7 +18,9 @@ public interface NodeRegister {
 
   Integer getRandomNodeId();
 
-  Set<Integer> getAllNodes();
+  Set<Integer> getAllNodesKeys();
+
+  Map<Integer, Long> getAllNodes();
 
   void deleteInterface(Integer id);
 
