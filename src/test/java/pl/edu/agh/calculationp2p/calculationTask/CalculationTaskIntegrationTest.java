@@ -76,6 +76,6 @@ public class CalculationTaskIntegrationTest
             result.addAll(Collections.singleton(resultBuilder.getResult().serialize()));
         }
         assertEquals(3, result.size());
-        assertTrue(result.contains("[123]"));
+        assertTrue(result.contains("[\"123\"]"));
     }
 }
