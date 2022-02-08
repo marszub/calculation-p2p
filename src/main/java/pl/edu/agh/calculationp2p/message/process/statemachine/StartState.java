@@ -30,7 +30,7 @@ public class StartState implements ProcessingState{
 
         Router router = messageProcessor.getContext().getRouter();
         router.setId(router.getUnknownId());
-        router.createInterface(router.getMainServerId(), messageProcessor.getConfig().getServerAddress());
+        router.connectToInterface(router.getMainServerId(), messageProcessor.getConfig().getServerAddress());
 
 
         Message message = new MessageImpl(router.getUnknownId(), router.getMainServerId(), new GetInit());

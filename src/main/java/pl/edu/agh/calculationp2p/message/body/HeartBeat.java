@@ -1,7 +1,7 @@
 package pl.edu.agh.calculationp2p.message.body;
 
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
-import pl.edu.agh.calculationp2p.message.process.NodeRegister;
+import pl.edu.agh.calculationp2p.network.router.NodeRegister;
 
 import java.util.Objects;
 
@@ -20,9 +20,9 @@ public class HeartBeat implements Body{
 
     @Override
     public void process(int sender, MessageProcessContext context) {
-        NodeRegister nodeRegister = context.getNodeRegister();
+        NodeRegister nodeRegister = context.getRouter().getNodeRegister();
         if(nodeRegister.getPrivateNodes().contains(sender) || nodeRegister.getPublicNodes().containsKey(sender))
-            context.getNodeRegister().updateNode(sender);
+            nodeRegister.updateNode(sender);
     }
 
     @Override

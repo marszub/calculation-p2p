@@ -4,12 +4,10 @@ import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.body.GetProgress;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
-import pl.edu.agh.calculationp2p.message.process.NodeRegister;
 import pl.edu.agh.calculationp2p.network.router.Router;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Random;
 
 public class UninitializedWorkState implements ProcessingState{
     private MessageProcessor messageProcessor;
@@ -49,7 +47,8 @@ public class UninitializedWorkState implements ProcessingState{
 
         toSend.forEach(router::send);
 
-        List<Integer> notResponding = messageProcessor.getContext().getNodeRegister().getOutdatedNodes();
+        List<Integer> notResponding = messageProcessor.getContext()
+                .getOutdatedNodesDeleter().getOutdatedNodes(router.getNodeRegister().getAllNodes());
 
         notResponding.forEach(id -> {
             router.deleteInterface(id);
@@ -62,7 +61,7 @@ public class UninitializedWorkState implements ProcessingState{
                 - ZonedDateTime.now().toInstant().toEpochMilli());
         if(timeOfNextProgress < 0){
             timeOfNextProgress = messageProcessor.getConfig().getGetProgressRetryTime();
-            router.send(new MessageImpl(router.getId(), messageProcessor.getContext().getNodeRegister().getRandomNodeId(), new GetProgress()));
+            router.send(new MessageImpl(router.getId(), messageProcessor.getContext().getRouter().getNodeRegister().getRandomNodeId(), new GetProgress()));
         }
         int waitTime = Math.min(messageProcessor.getHeartBeatEmitter().nextBeatTime(), timeOfNextProgress);
         messageProcessor.getIdle().sleep(waitTime);

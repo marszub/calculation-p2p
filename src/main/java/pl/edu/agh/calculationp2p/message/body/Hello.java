@@ -35,12 +35,7 @@ public class Hello implements Body{
         if(isPublic || newIp == null)
             context.getRouter().createInterface(sender);
         else
-            context.getRouter().createInterface(sender, this.newIp);
-
-        if(newIp == null)
-            context.getNodeRegister().addPrivateNode(sender);
-        else
-            context.getNodeRegister().addPublicNode(sender, newIp);
+            context.getRouter().connectToInterface(sender, this.newIp);
     }
 
     @Override

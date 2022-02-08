@@ -3,19 +3,15 @@ package pl.edu.agh.calculationp2p.message.process.statemachine;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.body.*;
-import pl.edu.agh.calculationp2p.message.process.HeartBeatEmitter;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
-import pl.edu.agh.calculationp2p.message.process.NodeRegister;
 import pl.edu.agh.calculationp2p.network.router.Router;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
-import java.net.InetSocketAddress;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class WaitState implements ProcessingState{
@@ -66,8 +62,7 @@ public class WaitState implements ProcessingState{
         if(giveInitMessages.size() > 0) {
             router.deleteInterface(router.getMainServerId());
             giveInitMessages.forEach(message -> {
-                router.createInterface(message.getSender(), messageProcessor.getConfig().getServerAddress());
-                messageProcessor.getContext().getNodeRegister().addPublicNode(message.getSender(), messageProcessor.getConfig().getServerAddress());
+                router.connectToInterface(message.getSender(), messageProcessor.getConfig().getServerAddress());
                 message.process(messageProcessor.getContext());
             });
             awaitingMessages.forEach(message -> message.process(messageProcessor.getContext()));
@@ -91,7 +86,8 @@ public class WaitState implements ProcessingState{
                 });
             });
 
-            router.send(new MessageImpl(router.getId(), messageProcessor.getContext().getNodeRegister().getRandomNodeId(), new GetProgress()));
+            router.send(new MessageImpl(router.getId(),
+                    messageProcessor.getContext().getRouter().getNodeRegister().getRandomNodeId(), new GetProgress()));
             messageProcessor.setState(new UninitializedWorkState());
             return;
         }
