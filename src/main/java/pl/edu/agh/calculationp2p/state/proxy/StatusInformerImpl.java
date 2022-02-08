@@ -15,7 +15,7 @@ public class StatusInformerImpl implements StatusInformer{
         this.scheduler = scheduler;
     }
 
-
+    // TODO: GetTaskRequest
 
     @Override
     public void clearNodeReservations(Integer nodeID) {
