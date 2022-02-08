@@ -10,5 +10,5 @@ public interface TaskGiver {
     Future<Optional<Integer>> getTask();
     Future<Void> observeTask(Integer taskId);
     void finishTask(Integer taskId, TaskResult result);
-    Future<Boolean> reserveTask(Integer taskID);
+    void reserveTask(Integer taskID);
 }
