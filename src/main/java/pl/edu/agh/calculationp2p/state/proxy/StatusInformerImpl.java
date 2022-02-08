@@ -61,7 +61,6 @@ public class StatusInformerImpl implements StatusInformer{
             e.printStackTrace();
         }
         return future;
-
     }
 
     @Override
