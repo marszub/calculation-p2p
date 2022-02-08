@@ -48,15 +48,6 @@ public class StaticConnection extends ConnectionImpl {
         return connectionAddress;
     }
 
-    public void disconnect()
-    {
-        try {
-            socketChannel.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void read(List messages) {
         try {
             super.read(messages);

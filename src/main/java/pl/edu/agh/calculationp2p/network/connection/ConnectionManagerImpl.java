@@ -58,7 +58,7 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
     @Override
     public void removeStaticConnection(StaticConnection staticConnection) {
         this.outgoingConnections.remove(staticConnection);
-        staticConnection.disconnect();
+        staticConnection.close();
     }
 
     @Override

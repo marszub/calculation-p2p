@@ -6,6 +6,7 @@ import pl.edu.agh.calculationp2p.network.connection.ConnectionManager;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageConnectionPair;
 import pl.edu.agh.calculationp2p.network.messagequeue.MessageQueueExit;
 
+import java.net.InetSocketAddress;
 import java.util.*;
 
 public class PublicRouter extends RouterImpl
@@ -29,6 +30,18 @@ public class PublicRouter extends RouterImpl
             connectionQueue.remove(nodeId);
         }
         super.createInterface(nodeId);
+    }
+
+    @Override
+    public void createInterface(Integer nodeId, InetSocketAddress ip) throws InterfaceExistsException
+    {
+        routingTable.addInterface(nodeId);
+        if(connectionQueue.containsKey(nodeId))
+        {
+            routingTable.bind(nodeId, connectionQueue.get(nodeId).connection());
+            connectionQueue.remove(nodeId);
+        }
+        super.createInterface(nodeId, ip);
     }
 
     @Override
