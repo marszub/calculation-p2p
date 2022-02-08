@@ -8,6 +8,9 @@ import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
 import pl.edu.agh.calculationp2p.state.request.*;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
+import java.util.List;
+import java.util.Optional;
+
 public class StatusInformerImpl implements StatusInformer{
     private Scheduler scheduler;
 
@@ -15,7 +18,29 @@ public class StatusInformerImpl implements StatusInformer{
         this.scheduler = scheduler;
     }
 
-    // TODO: GetTaskRequest
+    @Override
+    public Future<List<TaskRecord>> getReservedTasks() {
+        Future<List<TaskRecord>> future = new Future();
+        MethodRequest getReservedTasksRequest = new GetReservedTasksRequest(future);
+        try {
+            scheduler.enqueue(getReservedTasksRequest);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return future;
+    }
+
+    @Override
+    public Future<Optional<Integer>> getFreeTask() {
+        Future<Optional<Integer>> taskIDFuture = new Future();
+        MethodRequest findInteger = new GetTaskRequest(taskIDFuture);
+        try {
+            scheduler.enqueue(findInteger);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return taskIDFuture;
+    }
 
     @Override
     public void clearNodeReservations(Integer nodeID) {
