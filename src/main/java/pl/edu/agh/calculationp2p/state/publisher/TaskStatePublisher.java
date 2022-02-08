@@ -10,16 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ReservedPublisher {
-
+public class TaskStatePublisher {
     List<Pair<Future<Observation>, IdleInterrupter>> observers;
+    TaskState publisherState;
 
-    public ReservedPublisher() {
+    public TaskStatePublisher(TaskState publisherState) {
         this.observers = new ArrayList<>();
+        this.publisherState = publisherState;
     }
 
     public void subscribe(Future<Observation> observer, IdleInterrupter interrupter) {
-        // check if subscription already exist
         long filtered = observers.stream()
                 .filter(p -> p.getR() == interrupter).count();
         if (filtered == 0) {
@@ -35,7 +35,7 @@ public class ReservedPublisher {
     }
 
     public void look(TaskRecord previous, TaskRecord current) {
-        if (previous.getState() != TaskState.Reserved && current.getState() == TaskState.Reserved) {
+        if (previous.getState() != publisherState && current.getState() ==  publisherState) {
             for (Pair<Future<Observation>, IdleInterrupter> pair : observers) {
                 Future<Observation> oldF = pair.getL();
                 Future<Observation> newF = new Future<>();

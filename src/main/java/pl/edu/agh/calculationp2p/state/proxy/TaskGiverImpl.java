@@ -3,11 +3,9 @@ package pl.edu.agh.calculationp2p.state.proxy;
 import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
-import pl.edu.agh.calculationp2p.state.request.CalculateRequest;
-import pl.edu.agh.calculationp2p.state.request.GetTaskRequest;
-import pl.edu.agh.calculationp2p.state.request.MethodRequest;
-import pl.edu.agh.calculationp2p.state.request.ObserveTaskRequest;
+import pl.edu.agh.calculationp2p.state.request.*;
 
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 public class TaskGiverImpl implements TaskGiver {
@@ -19,10 +17,22 @@ public class TaskGiverImpl implements TaskGiver {
 
     @Override
     public Future<Optional<Integer>> getTask() {
-        Future<Optional<Integer>> future = new Future();
-        GetTaskRequest request = new GetTaskRequest(future, Thread.currentThread().getId());
+        Future<Optional<Integer>> taskIDFuture = new Future();
+        MethodRequest findInteger = new GetTaskRequest(taskIDFuture);
         try {
-            scheduler.enqueue(request);
+            scheduler.enqueue(findInteger);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return taskIDFuture;
+    }
+
+    @Override
+    public Future<Boolean> reserveTask(Integer taskID) {
+        Future<Boolean> future = new Future<>();
+        MethodRequest reserveRequest = new ReserveRequest(future, taskID);
+        try {
+            scheduler.enqueue(reserveRequest);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -33,7 +43,7 @@ public class TaskGiverImpl implements TaskGiver {
     public Future<Void> observeTask(Integer taskId) {
 
         Future<Void> flag = new Future<>();
-        ObserveTaskRequest request = new ObserveTaskRequest(taskId, flag);
+        MethodRequest request = new ObserveTaskRequest(taskId, flag);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {

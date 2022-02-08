@@ -15,8 +15,7 @@ public class GetTaskRequest implements MethodRequest {
     Future<Optional<Integer>> future;
     long threadID;
 
-    public GetTaskRequest(Future<Optional<Integer>> future, long threadID) {
-        this.threadID = threadID;
+    public GetTaskRequest(Future<Optional<Integer>> future) {
         this.future = future;
     }
 
@@ -28,10 +27,6 @@ public class GetTaskRequest implements MethodRequest {
             logger.info("Call");
             Random random = new Random();
             int taskId = freeTasks.get(random.nextInt(freeTasks.size()));
-            TaskRecord old = servant.getProgress().get(taskId);
-            TaskRecord reserved = new TaskRecord(old.getTaskID(), TaskState.Reserved, servant.getNodeId(), old.getResult());
-            servant.getProgress().update(reserved);
-            servant.lookAllPublishers(old, reserved);
             future.put(Optional.of(taskId));
         } else {
             future.put(Optional.empty());

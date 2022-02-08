@@ -15,10 +15,22 @@ public class StatusInformerImpl implements StatusInformer{
         this.scheduler = scheduler;
     }
 
+
+
+    @Override
+    public void clearNodeReservations(Integer nodeID) {
+        MethodRequest request = new ClearReservationRequest(nodeID);
+        try {
+            scheduler.enqueue(request);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public Future<Progress> getProgress() {
         Future<Progress> future = new Future<>();
-        GetProgressRequest request = new GetProgressRequest(future);
+        MethodRequest request = new GetProgressRequest(future);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
@@ -30,7 +42,7 @@ public class StatusInformerImpl implements StatusInformer{
     @Override
     public Future<TaskRecord> getTaskProgress(Integer taskID) {
         Future<TaskRecord> future = new Future<>();
-        GetTaskProgressRequest request = new GetTaskProgressRequest(future, taskID);
+        MethodRequest request = new GetTaskProgressRequest(future, taskID);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
@@ -42,20 +54,19 @@ public class StatusInformerImpl implements StatusInformer{
     @Override
     public Future<Observation> observeCalculated(IdleInterrupter interrupter) {
         Future<Observation> future = new Future<>();
-        ObserveCalculatedRequest request = new ObserveCalculatedRequest(future, interrupter);
+        MethodRequest request = new ObserveCalculatedRequest(future, interrupter);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return future;
-
     }
 
     @Override
     public Future<Observation> observeReserved(IdleInterrupter interrupter) {
         Future<Observation> future = new Future<>();
-        ObserveReservedRequest request = new ObserveReservedRequest(future, interrupter);
+        MethodRequest request = new ObserveReservedRequest(future, interrupter);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
@@ -66,7 +77,7 @@ public class StatusInformerImpl implements StatusInformer{
 
     @Override
     public void cancelObservation(IdleInterrupter interrupter) {
-        CancelObservationRequest request = new CancelObservationRequest(interrupter);
+        MethodRequest request = new CancelObservationRequest(interrupter);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
