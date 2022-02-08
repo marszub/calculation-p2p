@@ -243,7 +243,6 @@ public class NetworkIntegrationTests {
         Semaphore semaphore2 = variables.semaphore2();
         Semaphore semaphore3 = variables.semaphore3();
         Semaphore semaphore4 = variables.semaphore4();
-        Semaphore semaphore5 = variables.semaphore5();
 
         DummyMessageParser dummyMessageParser = (DummyMessageParser) variables.messageParser();
 
@@ -259,38 +258,15 @@ public class NetworkIntegrationTests {
         dummyMessageParser.addParse(message4.serialize(), message4);
 
         Router1.send(message1);
-        semaphore5.acquire();
         semaphore2.acquire();
         semaphore3.acquire();
         semaphore4.acquire();
-        semaphore5.tryAcquire(2000, TimeUnit.MILLISECONDS);
-        List<Message> list2 = Router2.getMessage();
-        List<Message> list4 = Router4.getMessage();
-        if(list2.size() > 0)
-        {
-            if(list4.size() > 0)
-            {
-                assertEquals(message4.serialize(), list4.get(0).serialize());
-                semaphore3.tryAcquire(2000, TimeUnit.MILLISECONDS);
-                assertEquals(message3, Router3.getMessage().get(0));
-            }
-            else
-            {
-                assertEquals(message2.serialize(), list2.get(0).serialize());
-                semaphore4.tryAcquire(1000, TimeUnit.MILLISECONDS);
-                assertEquals(message4.serialize(), Router4.getMessage().get(0).serialize());
-                semaphore3.tryAcquire(1000, TimeUnit.MILLISECONDS);
-                assertEquals(message3.serialize(), Router3.getMessage().get(0).serialize());
-            }
-        }
-        else
-        {
-            assertEquals(message4.serialize(), list4.get(0).serialize());
-            semaphore2.tryAcquire(2000, TimeUnit.MILLISECONDS);
-            assertEquals(message2, Router2.getMessage().get(0));
-            semaphore3.tryAcquire(2000, TimeUnit.MILLISECONDS);
-            assertEquals(message3, Router3.getMessage().get(0));
-        }
+        semaphore2.tryAcquire(1000, TimeUnit.MILLISECONDS);
+        semaphore4.tryAcquire(1000, TimeUnit.MILLISECONDS);
+        assertEquals(message4.serialize(), Router4.getMessage().get(0).serialize());
+        assertEquals(message2.serialize(), Router2.getMessage().get(0).serialize());
+        semaphore3.tryAcquire(1000, TimeUnit.MILLISECONDS);
+        assertEquals(message3.serialize(), Router3.getMessage().get(0).serialize());
         Router1.close();
         Router2.close();
         Router3.close();
