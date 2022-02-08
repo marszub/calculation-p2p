@@ -17,6 +17,16 @@ public class WorkState implements ProcessingState{
         this.messageProcessor = messageProcessor;
     }
 
+    /**
+     * Performs steps:
+     * 1. Send heart beat
+     * 2. Process incoming messages
+     * 3. Send updates of my calculation progress
+     * 4. Delete inactive interfaces
+     * 5. Process future tasks
+     * 6. Sleep
+     * @throws InterruptedException
+     */
     @Override
     public void proceed() throws InterruptedException {
         messageProcessor.getHeartBeatEmitter().beat();

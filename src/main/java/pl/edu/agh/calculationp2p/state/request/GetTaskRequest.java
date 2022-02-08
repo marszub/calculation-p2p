@@ -30,7 +30,8 @@ public class GetTaskRequest implements MethodRequest {
             int taskId = freeTasks.get(random.nextInt(freeTasks.size()));
             TaskRecord old = servant.getProgress().get(taskId);
             TaskRecord reserved = new TaskRecord(old.getTaskID(), TaskState.Reserved, servant.getNodeId(), old.getResult());
-            servant.getProgress().update(reserved); //TODO change to reserved in progress
+            servant.getProgress().update(reserved);
+            servant.lookAllPublishers(old, reserved);
             future.put(Optional.of(taskId));
         } else {
             future.put(Optional.empty());

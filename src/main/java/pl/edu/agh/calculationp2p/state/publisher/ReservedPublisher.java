@@ -35,13 +35,7 @@ public class ReservedPublisher {
     }
 
     public void look(TaskRecord previous, TaskRecord current) {
-        // check if are some changes in observed items
-        // have to test stream version
-        // check if are some changes in observed items
-        // anything -> reserved
-
-        if (current.getState() == TaskState.Reserved && previous.getState()!=TaskState.Reserved
-                && previous.getTaskID() == current.getTaskID()) {
+        if (previous.getState() != TaskState.Reserved && current.getState() == TaskState.Reserved) {
             for (Pair<Future<Observation>, IdleInterrupter> pair : observers) {
                 Future<Observation> oldF = pair.getL();
                 Future<Observation> newF = new Future<>();

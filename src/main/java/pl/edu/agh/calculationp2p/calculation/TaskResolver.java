@@ -13,8 +13,7 @@ public class TaskResolver extends Thread {
     private TaskGiver taskGiver;
     private CalculationTask calculationTask;
 
-    private final int sleepTime = 50;
-    private final int deadTime = 1000;
+    private final int sleepTime = 100;
 
     public TaskResolver(TaskGiver taskGiver, CalculationTask calculationTask) {
         this.taskGiver = taskGiver;
@@ -23,34 +22,36 @@ public class TaskResolver extends Thread {
 
     @Override
     public void run() {
-        int currTime = 0;
+        Future<Optional<Integer>> task = taskGiver.getTask();
         while (true) {
-            currTime = 0;
-            Future<Optional<Integer>> future = this.taskGiver.getTask();
-            while(!future.isReady() || future.get().isEmpty()){
+            while(!task.isReady()){
                 try {
-                    currTime+=sleepTime;
-                    if(currTime>=deadTime) return;
                     sleep(sleepTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            Integer taskId = future.get().get();
+
+            if(task.get().isEmpty()){
+                task = taskGiver.getTask();
+                continue;
+            }
+
+            Integer taskId = task.get().get();
+            task = taskGiver.getTask();
             Future<Void> observer = taskGiver.observeTask(taskId);
             ResultBuilder resultBuilder = calculationTask.getResultBuilder();
-
             resultBuilder.reset();
-            CalculationTaskIterator iterator  = calculationTask.getFragmentOfTheTask(taskId);
-            //TODO:
+            CalculationTaskIterator iterator = calculationTask.getFragmentOfTheTask(taskId);
+
             while (iterator.hasNext()) {
-                if(observer.isReady()){
-                    resultBuilder.reset();
+                if(observer.isReady())
                     break;
-                }
                 resultBuilder.performComputation(iterator.getNext());
             }
-            taskGiver.finishTask(taskId, resultBuilder.getResult()); // TODO: dont finish when interrupted
+
+            if(!observer.isReady())
+                taskGiver.finishTask(taskId, resultBuilder.getResult());
         }
     }
 }

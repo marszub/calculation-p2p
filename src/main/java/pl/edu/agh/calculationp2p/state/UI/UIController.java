@@ -10,6 +10,8 @@ import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.io.IOException;
 
+// TODO: current result, my stats, global stats
+
 public class UIController implements Runnable {
     UIBuilder uiBuilder;
 

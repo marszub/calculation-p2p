@@ -25,5 +25,6 @@ public class UpdateTask implements MethodRequest {
             servant.getProgress().update(newTaskRecord);
             servant.lookAllPublishers(oldTask, servant.getProgress().get(oldTaskID));
         }
+        future.put(servant.getTaskProgress(newTaskRecord.getTaskID()));
     }
 }

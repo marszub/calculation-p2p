@@ -82,25 +82,13 @@ public class ServantImpl implements Servant {
     }
 
     @Override
-    public void lookAllPublishers(TaskRecord prev, TaskRecord curr) { //TODO sprawdz kto wykonal zmiane
+    public void lookAllPublishers(TaskRecord prev, TaskRecord curr) {
         Logger logger = LoggerFactory.getLogger(ServantImpl.class);
-        logger.info("Before IF statement");
+        logger.info("Look all publishers");
 
-        if (prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Free) {
-            logger.info("In IF TaskPublisher");
-            taskPublisher.look(prev, curr);
-
-        }
-        if (prev.getState() == TaskState.Reserved && curr.getState() == TaskState.Calculated) {
-            logger.info("In IF CalculatedPublisher");
-            calculatedPublisher.look(prev, curr);
-        }
-        if (prev.getState() == TaskState.Free && curr.getState() == TaskState.Reserved) {
-            logger.info("In IF ReservedPublisher");
-            reservedPublisher.look(prev, curr);
-        }
-
-
+        taskPublisher.look(prev, curr, nodeId);
+        calculatedPublisher.look(prev, curr);
+        reservedPublisher.look(prev, curr);
     }
 }
 
