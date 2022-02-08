@@ -18,7 +18,7 @@ public class StaticConnection extends ConnectionImpl {
 
     public StaticConnection(InetSocketAddress ipAddress){
         Logger logger = LoggerFactory.getLogger(StaticConnection.class);
-        logger.info("Establihing new connection with: " + ipAddress.toString());
+        logger.debug("Establishing new connection with: " + ipAddress.toString());
         this.ipAddress = ipAddress;
         try
         {
