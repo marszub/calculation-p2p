@@ -136,6 +136,16 @@ class MessageParserTest {
                 )));
         assertEquals(giveProgress3, messageParser.parse(giveProgress3.serialize()));
 
+        result.add("a");
+        Message giveProgress4 = new MessageImpl(1, 2, new GiveProgress(
+                new Progress(
+                        new ArrayList<>(
+                                List.of(
+                                        new TaskRecord(1, TaskState.Free, 2, result)
+                                )
+                        )
+                )));
+        assertEquals(giveProgress4, messageParser.parse(giveProgress4.serialize()));
     }
 
 
