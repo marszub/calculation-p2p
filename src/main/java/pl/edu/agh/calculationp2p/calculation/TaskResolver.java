@@ -38,6 +38,7 @@ public class TaskResolver extends Thread {
             }
 
             Integer taskId = task.get().get();
+            taskGiver.reserveTask(taskId);
             task = taskGiver.getTask();
             Future<Void> observer = taskGiver.observeTask(taskId);
             ResultBuilder resultBuilder = calculationTask.getResultBuilder();
