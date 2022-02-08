@@ -82,10 +82,11 @@ public class Main {
         // router
         RoutingTable routingTable = new RoutingTableImpl();
         Router router;
+        NodeRegister nodeRegister = new NodeRegisterImpl();
         if(config.getPublicFlag())
-            router = new PublicRouter(connectionManager, messageQueue, routingTable);
+            router = new PublicRouter(connectionManager, messageQueue, routingTable, nodeRegister);
         else
-            router = new PrivateRouter(connectionManager, messageQueue, routingTable);
+            router = new PrivateRouter(connectionManager, messageQueue, routingTable, nodeRegister);
 
         // message
         MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer, idle, config, new StartState());

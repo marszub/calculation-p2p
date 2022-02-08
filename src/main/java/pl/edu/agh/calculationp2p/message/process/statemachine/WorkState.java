@@ -4,6 +4,7 @@ import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
 
 import java.util.List;
+import java.util.Map;
 
 public class WorkState implements ProcessingState{
     private MessageProcessor messageProcessor;
@@ -38,7 +39,8 @@ public class WorkState implements ProcessingState{
 
         toSend.forEach(message -> messageProcessor.getContext().getRouter().send(message));
 
-        List<Integer> notResponding = messageProcessor.getContext().getNodeRegister().getOutdatedNodes();
+        Map<Integer, Long> allNodes = messageProcessor.getContext().getRouter().getNodeRegister().getAllNodes();
+        List<Integer> notResponding = messageProcessor.getContext().getOutdatedNodesDeleter().getOutdatedNodes(allNodes);
         notResponding.forEach(id -> {
             messageProcessor.getContext().getRouter().deleteInterface(id);
             messageProcessor.getContext().getStateUpdater().clearNodeReservations(id);

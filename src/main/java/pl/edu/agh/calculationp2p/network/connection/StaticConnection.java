@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 
 import java.io.IOException;
@@ -15,6 +17,8 @@ public class StaticConnection extends ConnectionImpl {
     String connectionAddress = "";
 
     public StaticConnection(InetSocketAddress ipAddress){
+        Logger logger = LoggerFactory.getLogger(StaticConnection.class);
+        logger.info("Establihing new connection with: " + ipAddress.toString());
         this.ipAddress = ipAddress;
         try
         {
