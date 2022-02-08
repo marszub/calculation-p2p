@@ -40,8 +40,6 @@ public class RoutingTableImpl implements RoutingTable{
 
     public void send(int id, Message message) throws InterfaceDoesNotExistException
     {
-        Logger logger = LoggerFactory.getLogger(RoutingTableImpl.class);
-        logger.debug("Sending message on: " + id + " message: " + message.serialize());
         if(!interfaces.containsKey(id))
             throw new InterfaceDoesNotExistException(id);
         if (interfaces.get(id) != null)
@@ -56,8 +54,14 @@ public class RoutingTableImpl implements RoutingTable{
     {
         if(!interfaces.containsKey(id))
             throw new InterfaceDoesNotExistException(id);
-        if (interfaces.get(id) != null)
-            return interfaces.get(id).send(message);
+        if (interfaces.get(id) != null) {
+            boolean result = interfaces.get(id).send(message);
+            if(result) {
+                Logger logger = LoggerFactory.getLogger("");
+                logger.info("Sending message via: " + id + " | " + message.serialize());
+            }
+            return result;
+        }
         return false;
     }
 
@@ -88,12 +92,17 @@ public class RoutingTableImpl implements RoutingTable{
     {
         if (!connection.send(message))
             addToMessageQueue(id, message);
+        else
+        {
+            Logger logger = LoggerFactory.getLogger("");
+            logger.info("Sending message via: " + id + " | " + message.serialize());
+        }
     }
 
     private void addToMessageQueue(int ID, Message message)
     {
-        Logger logger = LoggerFactory.getLogger(RoutingTableImpl.class);
-        logger.info("Sending message failed!!!!!!!: " + ID);
+        Logger logger = LoggerFactory.getLogger("");
+        logger.info("Sending message failed!: " + ID + " | " + message.serialize());
         LinkedList<Message> Queue = messageInterfaceQueue.get(ID);
         Queue.addLast(message);
     }

@@ -123,9 +123,6 @@ public abstract class RouterImpl implements Router {
                 publicNodesList.remove(id);
             else
             {
-                Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-                logger.info("---------------------------------------------Sending message via middleman---------------------: " + message.getReceiver());
-                logger.info("Sending message on: " + id + " message: " + message.serialize());
                 routingTable.resendAll();
                 return id;
             }

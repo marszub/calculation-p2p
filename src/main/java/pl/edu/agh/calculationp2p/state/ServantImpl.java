@@ -84,9 +84,6 @@ public class ServantImpl implements Servant {
 
     @Override
     public void lookAllPublishers(TaskRecord prev, TaskRecord curr) {
-        Logger logger = LoggerFactory.getLogger(ServantImpl.class);
-        logger.info("Look all publishers");
-
         taskPublisher.look(prev, curr, nodeId);
         calculatedPublisher.look(prev, curr);
         reservedPublisher.look(prev, curr);

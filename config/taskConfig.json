@@ -2,6 +2,6 @@
   "hash": "B59C67BF196A4758191E42F76670CEBA",
   "taskSize": 1000000,
   "atomicTaskSize": 100000,
-  "maxStringLength": 8,
-  "characters": "01234567"
+  "maxStringLength": 7,
+  "characters": "012345678"
 }

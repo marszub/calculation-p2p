@@ -23,8 +23,6 @@ public class GetTaskRequest implements MethodRequest {
     public void call(Servant servant) {
         List<Integer> freeTasks = servant.getFreeTasksList();
         if (!freeTasks.isEmpty()) {
-            Logger logger = LoggerFactory.getLogger(GetTaskRequest.class);
-            logger.info("Call");
             Random random = new Random();
             int taskId = freeTasks.get(random.nextInt(freeTasks.size()));
             future.put(Optional.of(taskId));
