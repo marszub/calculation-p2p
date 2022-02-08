@@ -12,6 +12,8 @@ import pl.edu.agh.calculationp2p.state.publisher.TaskStatePublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
+import java.util.Optional;
+
 class ReserveRequestTest {
 
     @Test
@@ -32,8 +34,9 @@ class ReserveRequestTest {
 
         Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, 2);
 
-        Future<TaskRecord> future = new Future<>();
-        MethodRequest request = new ReserveRequest(future, 3, 2);
+        Future<Boolean> future = new Future<>();
+
+        MethodRequest request = new ReserveRequest(future, 3);
         request.call(servant);
 
         Assertions.assertTrue(progress.get(3).getState() == TaskState.Reserved);

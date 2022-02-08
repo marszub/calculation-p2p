@@ -36,7 +36,7 @@ class GetTaskRequestTest {
 
         Future<Optional<Integer>> future = new Future();
 
-        MethodRequest request = new GetTaskRequest(future, Thread.currentThread().getId());
+        MethodRequest request = new GetTaskRequest(future);
         request.call(servant);
 
         Assertions.assertTrue(future.isReady());

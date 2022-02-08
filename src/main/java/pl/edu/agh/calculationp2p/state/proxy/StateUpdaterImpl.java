@@ -44,7 +44,7 @@ public class StateUpdaterImpl implements StateUpdater{
 
     @Override
     public void setNodeId(Integer nodeId) {
-        SetIdRequest request = new SetIdRequest(nodeId);
+        MethodRequest request = new SetIdRequest(nodeId);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
@@ -54,28 +54,12 @@ public class StateUpdaterImpl implements StateUpdater{
 
     @Override
     public void clearNodeReservations(Integer nodeID) {
-
-    }
-
-    public Future<TaskRecord> reserve(int task, int nodeId) { // TODO: delete
-        Future<TaskRecord> future = new Future<>();
-        ReserveRequest request = new ReserveRequest(future, task, nodeId);
+        MethodRequest request = new ClearReservationRequest(nodeID);
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return future;
     }
 
-    public Future<TaskRecord> calculate(int task, int nodeId, TaskResult result) { // TODO: delete
-        Future<TaskRecord> future = new Future<>();
-        FinishTaskRequest request = new FinishTaskRequest(future, task, nodeId, result);
-        try {
-            scheduler.enqueue(request);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return future;
-    }
 }
