@@ -278,9 +278,9 @@ public class NetworkIntegrationTests {
             {
                 assertEquals(message2.serialize(), list2.get(0).serialize());
                 semaphore4.tryAcquire(1000, TimeUnit.MILLISECONDS);
-                assertEquals(message4, Router4.getMessage().get(0));
+                assertEquals(message4.serialize(), Router4.getMessage().get(0).serialize());
                 semaphore3.tryAcquire(1000, TimeUnit.MILLISECONDS);
-                assertEquals(message3, Router3.getMessage().get(0));
+                assertEquals(message3.serialize(), Router3.getMessage().get(0).serialize());
             }
         }
         else
