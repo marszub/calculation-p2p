@@ -75,20 +75,19 @@ public abstract class RouterImpl implements Router {
     }
 
     @Override
-    public void deleteInterface(Integer nodeId) throws InterfaceDoesNotExistException
+    public void deleteInterface(Integer nodeId)
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
         logger.debug("Deleting interface: " + nodeId);
         nodeRegister.deleteInterface(nodeId);
-        if(!routingTable.interfaceListContains(nodeId))
-            throw new InterfaceDoesNotExistException(nodeId);
+        if(routingTable.interfaceListContains(nodeId))
+            routingTable.removeInterface(nodeId);
         if(staticInterfaces.containsKey(nodeId))
         {
             StaticConnection StaticConnection = staticInterfaces.get(nodeId);
             connectionManager.removeStaticConnection(StaticConnection);
             staticInterfaces.remove(nodeId);
         }
-        routingTable.removeInterface(nodeId);
     }
 
     public void setId(int id)

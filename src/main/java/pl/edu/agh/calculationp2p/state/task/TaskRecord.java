@@ -65,11 +65,20 @@ public class TaskRecord {
 
     public boolean hasHigherPriority(TaskRecord toCompare) {
         TaskState taskState = toCompare.getState();
-        if(this.state.getValue() < taskState.getValue()){
-            return true;
-        }
-        if(this.owner < toCompare.getOwner()){
-            return true;
+        if ((toCompare.getOwner() * this.getOwner()) > 0) {
+            if (this.state.getValue() < taskState.getValue()) {
+                return true;
+            }
+            if (this.owner < toCompare.getOwner()) {
+                return true;
+            }
+        } else {
+            if (this.owner > 0 && toCompare.getOwner() < 0) {
+                return true;
+            }
+            if (toCompare.getOwner() > 0 && this.owner < 0) {
+                return false;
+            }
         }
         return false;
     }

@@ -23,10 +23,10 @@ public class ReserveRequest implements MethodRequest {
     public void call(Servant servant) {
         Logger logger = LoggerFactory.getLogger(ReserveRequest.class);
         logger.info("Call");
-        System.out.println("RESERVE REQUEST");
         TaskRecord oldTask = servant.getProgress().get(taskID);
         TaskRecord reserved = new TaskRecord(taskID, TaskState.Reserved, servant.getNodeId(), oldTask.getResult());
         if (reserved.hasHigherPriority(oldTask)) {
+            logger.info("Call " + oldTask.getTaskID() + " | OLD: "+ oldTask.getOwner() + " | NEW: " + reserved.getOwner() + " | OLD STATE: " + oldTask.getState() + " | NEW STATE: " + reserved.getState());
             servant.getProgress().update(reserved);
             servant.lookAllPublishers(oldTask, servant.getProgress().get(taskID));
 

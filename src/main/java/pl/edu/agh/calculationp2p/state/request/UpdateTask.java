@@ -20,8 +20,8 @@ public class UpdateTask implements MethodRequest {
         Logger logger = LoggerFactory.getLogger(UpdateTask.class);
         Integer oldTaskID = newTaskRecord.getTaskID();
         TaskRecord oldTask = servant.getProgress().get(oldTaskID);
-        logger.info("Call | OLD: "+ oldTaskID + " | NEW: " + newTaskRecord.getTaskID());
         if (newTaskRecord.hasHigherPriority(oldTask)) {
+            logger.info("Call " + oldTaskID + " | OLD: "+ oldTask.getOwner() + " | NEW: " + newTaskRecord.getOwner() + " | OLD STATE: " + oldTask.getState() + " | NEW STATE: " + newTaskRecord.getState());
             servant.getProgress().update(newTaskRecord);
             servant.lookAllPublishers(oldTask, servant.getProgress().get(oldTaskID));
         }
