@@ -28,15 +28,13 @@ public class TaskGiverImpl implements TaskGiver {
     }
 
     @Override
-    public Future<Boolean> reserveTask(Integer taskID) {
-        Future<Boolean> future = new Future<>();
-        MethodRequest reserveRequest = new ReserveRequest(future, taskID);
+    public void reserveTask(Integer taskID) {
+        MethodRequest reserveRequest = new ReserveRequest(taskID);
         try {
             scheduler.enqueue(reserveRequest);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return future;
     }
 
     @Override

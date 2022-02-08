@@ -12,18 +12,15 @@ import pl.edu.agh.calculationp2p.state.task.TaskState;
 import java.util.Optional;
 
 public class ReserveRequest implements MethodRequest {
-    Future<Boolean> future;
     Integer taskID;
 
 
-    public ReserveRequest(Future<Boolean> future, Integer taskID) {
+    public ReserveRequest(Integer taskID) {
         this.taskID = taskID;
-        this.future = future;
     }
 
     @Override
     public void call(Servant servant) {
-        Boolean toPut = false;
         Logger logger = LoggerFactory.getLogger(ReserveRequest.class);
         logger.info("Call");
         System.out.println("RESERVE REQUEST");
@@ -32,9 +29,9 @@ public class ReserveRequest implements MethodRequest {
         if (reserved.hasHigherPriority(oldTask)) {
             servant.getProgress().update(reserved);
             servant.lookAllPublishers(oldTask, servant.getProgress().get(taskID));
-            toPut = true;
+
         }
-        future.put(toPut);
+
     }
 
 

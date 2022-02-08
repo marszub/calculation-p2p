@@ -36,7 +36,7 @@ class ReserveRequestTest {
 
         Future<Boolean> future = new Future<>();
 
-        MethodRequest request = new ReserveRequest(future, 3);
+        MethodRequest request = new ReserveRequest(3);
         request.call(servant);
 
         Assertions.assertTrue(progress.get(3).getState() == TaskState.Reserved);
