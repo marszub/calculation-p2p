@@ -70,7 +70,7 @@ public class MessageParserImpl implements MessageParser{
             if(!record.get("result").toString().equals("[]") && !record.get("result").toString().equals("null")){
                 JSONArray taskRecordResultStr = record.getJSONArray("result");
                 for(int j=0;j<taskRecordResultStr.length();i++){
-                    resultArray.add(taskRecordResultStr.getString(i));
+                    resultArray.add(String.valueOf(taskRecordResultStr.getInt(i)));
                 }
             }
             result.add(new TaskRecord(
