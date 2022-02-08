@@ -142,7 +142,6 @@ public class MessageParserImpl implements MessageParser{
         List<String> taskResultList = new ArrayList<>();
         for(int i=0;i<taskResultStr.length();i++){
             taskResultList.add(taskResultStr.getString(i));
-
         }
         TaskResult taskResult = new HashTaskResult();
         taskResultList.forEach(taskResult::add);
