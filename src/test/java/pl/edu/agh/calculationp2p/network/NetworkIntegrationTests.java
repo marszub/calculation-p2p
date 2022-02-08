@@ -277,19 +277,19 @@ public class NetworkIntegrationTests {
             else
             {
                 assertEquals(message2.serialize(), list2.get(0).serialize());
-                semaphore4.tryAcquire(2000, TimeUnit.MILLISECONDS);
-                semaphore3.tryAcquire(2000, TimeUnit.MILLISECONDS);
-                assertEquals(message3, Router3.getMessage().get(0));
+                semaphore4.tryAcquire(1000, TimeUnit.MILLISECONDS);
                 assertEquals(message4, Router4.getMessage().get(0));
+                semaphore3.tryAcquire(1000, TimeUnit.MILLISECONDS);
+                assertEquals(message3, Router3.getMessage().get(0));
             }
         }
         else
         {
             assertEquals(message4.serialize(), list4.get(0).serialize());
             semaphore2.tryAcquire(2000, TimeUnit.MILLISECONDS);
+            assertEquals(message2, Router2.getMessage().get(0));
             semaphore3.tryAcquire(2000, TimeUnit.MILLISECONDS);
             assertEquals(message3, Router3.getMessage().get(0));
-            assertEquals(message2, Router2.getMessage().get(0));
         }
         Router1.close();
         Router2.close();
