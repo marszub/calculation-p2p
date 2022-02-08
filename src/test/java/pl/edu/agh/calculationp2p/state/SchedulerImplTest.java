@@ -3,9 +3,8 @@ package pl.edu.agh.calculationp2p.state;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
-import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.TaskStatePublisher;
 import pl.edu.agh.calculationp2p.state.request.MethodRequest;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
@@ -23,8 +22,8 @@ class SchedulerImplTest {
         Integer nodeID = 10;
         Progress progress = new Progress(6);
         TaskPublisher taskPublisher = new TaskPublisher();
-        CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
-        ReservedPublisher reservedPublisher = new ReservedPublisher();
+        TaskStatePublisher calculatedPublisher = new  TaskStatePublisher(TaskState.Calculated);
+        TaskStatePublisher reservedPublisher = new  TaskStatePublisher(TaskState.Reserved);
 
         TaskRecord taskRecord1 = new TaskRecord(5, TaskState.Free, 10, new HashTaskResult());
         progress.update(taskRecord1);

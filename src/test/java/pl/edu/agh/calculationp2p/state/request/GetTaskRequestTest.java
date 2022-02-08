@@ -7,9 +7,8 @@ import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Servant;
 import pl.edu.agh.calculationp2p.state.ServantImpl;
 import pl.edu.agh.calculationp2p.state.future.Future;
-import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.TaskStatePublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
@@ -22,8 +21,8 @@ class GetTaskRequestTest {
         Integer nodeID = 10;
         Progress progress = new Progress(4);
         TaskPublisher taskPublisher = new TaskPublisher();
-        CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
-        ReservedPublisher reservedPublisher = new ReservedPublisher();
+        TaskStatePublisher calculatedPublisher = new  TaskStatePublisher(TaskState.Calculated);
+        TaskStatePublisher reservedPublisher = new  TaskStatePublisher(TaskState.Reserved);
 
         TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 10, new HashTaskResult());
         TaskRecord taskRecord2 = new TaskRecord(2, TaskState.Free, 10, new HashTaskResult());

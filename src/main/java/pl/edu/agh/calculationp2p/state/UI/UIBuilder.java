@@ -1,19 +1,12 @@
 package pl.edu.agh.calculationp2p.state.UI;
 
-import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Scheduler;
-import pl.edu.agh.calculationp2p.state.Servant;
-import pl.edu.agh.calculationp2p.state.ServantImpl;
 import pl.edu.agh.calculationp2p.state.future.Future;
-import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class UIBuilder {
     int size;

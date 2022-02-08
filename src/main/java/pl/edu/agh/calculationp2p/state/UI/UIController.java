@@ -1,12 +1,6 @@
 package pl.edu.agh.calculationp2p.state.UI;
 
-import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashTaskResult;
 import pl.edu.agh.calculationp2p.state.*;
-import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
-import pl.edu.agh.calculationp2p.state.task.TaskRecord;
-import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.io.IOException;
 

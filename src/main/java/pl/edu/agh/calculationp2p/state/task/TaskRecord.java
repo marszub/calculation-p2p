@@ -90,4 +90,5 @@ public class TaskRecord {
                 //this.getResult() == other.getResult();
 
     }
+
 }

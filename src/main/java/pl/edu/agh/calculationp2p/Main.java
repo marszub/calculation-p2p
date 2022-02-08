@@ -1,11 +1,9 @@
 package pl.edu.agh.calculationp2p;
 
-import pl.edu.agh.calculationp2p.ConfigReader;
 import pl.edu.agh.calculationp2p.calculation.TaskResolver;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskFactory;
 import pl.edu.agh.calculationp2p.calculationTask.hashBreaking.HashBreakerFactory;
-import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.MessageParser;
 import pl.edu.agh.calculationp2p.message.MessageParserImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
@@ -18,9 +16,9 @@ import pl.edu.agh.calculationp2p.state.*;
 import pl.edu.agh.calculationp2p.state.UI.UIController;
 import pl.edu.agh.calculationp2p.state.idle.Idle;
 import pl.edu.agh.calculationp2p.state.proxy.*;
-import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.TaskStatePublisher;
+import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.net.InetSocketAddress;
 
@@ -48,8 +46,8 @@ public class Main {
         // servant
         Progress progress = new Progress(task.getNumberOfTaskFragments());
         TaskPublisher taskPublisher = new TaskPublisher();
-        ReservedPublisher reservedPublisher = new ReservedPublisher();
-        CalculatedPublisher calculatedPublisher = new CalculatedPublisher();
+        TaskStatePublisher reservedPublisher = new TaskStatePublisher(TaskState.Reserved);
+        TaskStatePublisher calculatedPublisher = new TaskStatePublisher(TaskState.Calculated);
         Servant servant = new ServantImpl(progress, taskPublisher, reservedPublisher, calculatedPublisher, -1);
 
         // proxy
