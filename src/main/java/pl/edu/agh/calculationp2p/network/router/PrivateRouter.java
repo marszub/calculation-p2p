@@ -9,11 +9,9 @@ import java.util.*;
 
 public class PrivateRouter extends RouterImpl
 {
-    List<Integer> PrivateNodes = new ArrayList<>();
-
-    public PrivateRouter(ConnectionManager ConnectionManager, MessageQueueExit MessageQueue, RoutingTable RoutingTable)
+    public PrivateRouter(ConnectionManager ConnectionManager, MessageQueueExit MessageQueue, RoutingTable RoutingTable, NodeRegister nodeRegister)
     {
-        super(ConnectionManager, MessageQueue, RoutingTable);
+        super(ConnectionManager, MessageQueue, RoutingTable, nodeRegister);
     }
 
     @Override
@@ -22,36 +20,29 @@ public class PrivateRouter extends RouterImpl
     }
 
     @Override
-    public void createInterface(Integer nodeId) throws InterfaceExistsException
-    {
-        if(PrivateNodes.contains(nodeId))
-            throw new InterfaceExistsException(nodeId);
-        PrivateNodes.add(nodeId);
-        super.createInterface(nodeId);
-    }
-
-    @Override
-    public void deleteInterface(Integer nodeId) throws InterfaceDoesNotExistException
-    {
-        if(PrivateNodes.contains(nodeId))
-            PrivateNodes.remove(nodeId);
-        else
-            super.deleteInterface(nodeId);
-    }
-
-    @Override
     public void send(Message message)
     {
         int receiverId = message.getReceiver();
-        if(PrivateNodes.contains(receiverId) || receiverId == broadcastId)
+        if(receiverId == broadcastId)
+        {
+            Integer broadcastSentThrough = null;
+            if(nodeRegister.getPrivateNodes().size() > 0)
+                broadcastSentThrough = super.sendMessageViaMiddleman(message);
+            for(Integer id : nodeRegister.getPublicNodes().keySet())
+            {
+                if(!id.equals(broadcastSentThrough))
+                    routingTable.send(id, message.clone(id));
+            }
+            return;
+        }
+        if(nodeRegister.getPrivateNodes().contains(receiverId))
         {
             super.sendMessageViaMiddleman(message);
-        }
-        else
-        {
-            routingTable.send(receiverId, message);
             routingTable.resendAll();
+            return;
         }
+        routingTable.send(receiverId, message);
+        routingTable.resendAll();
     }
 
     public List<Message> getMessage()

@@ -3,6 +3,7 @@ package pl.edu.agh.calculationp2p.message.process;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.network.router.*;
+import pl.edu.agh.calculationp2p.network.router.NodeRegister;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -39,6 +40,10 @@ class HeartBeatEmitterTest {
 
             @Override
             public void createInterface(Integer nodeId, InetSocketAddress ipAddress) {}
+
+            @Override
+            public void connectToInterface(Integer nodeId, InetSocketAddress ipAddress) {}
+
             @Override
             public void createInterface(Integer nodeId) {}
             @Override
@@ -55,6 +60,11 @@ class HeartBeatEmitterTest {
             public void close() {}
             @Override
             public void sendHelloMessage(Message message){}
+
+            @Override
+            public NodeRegister getNodeRegister() {
+                return null;
+            }
         };
 
         HeartBeatEmitter heartBeatEmitter = new HeartBeatEmitter(periodTime, router);
@@ -94,6 +104,10 @@ class HeartBeatEmitterTest {
 
             @Override
             public void createInterface(Integer nodeId, InetSocketAddress ipAddress) {}
+
+            @Override
+            public void connectToInterface(Integer nodeId, InetSocketAddress ipAddress) {}
+
             @Override
             public void createInterface(Integer nodeId) {}
             @Override
@@ -110,6 +124,11 @@ class HeartBeatEmitterTest {
             public void close() {}
             @Override
             public void sendHelloMessage(Message message) {}
+
+            @Override
+            public NodeRegister getNodeRegister() {
+                return null;
+            }
         };
 
         HeartBeatEmitter heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);

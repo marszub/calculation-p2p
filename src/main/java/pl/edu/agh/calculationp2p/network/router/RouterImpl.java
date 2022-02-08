@@ -19,9 +19,11 @@ public abstract class RouterImpl implements Router {
     protected final int mainServerId = -3;
     protected final int unknownId = -2;
     protected final int broadcastId = -1;
+    protected final NodeRegister nodeRegister;
 
-    public RouterImpl(ConnectionManager connectionManager, MessageQueueExit messageQueue, RoutingTable routingTable)
+    public RouterImpl(ConnectionManager connectionManager, MessageQueueExit messageQueue, RoutingTable routingTable, NodeRegister nodeRegister)
     {
+        this.nodeRegister = nodeRegister;
         this.routingTable = routingTable;
         this.connectionManager = connectionManager;
         connectionManager.start();
@@ -40,18 +42,32 @@ public abstract class RouterImpl implements Router {
         return broadcastId;
     }
 
-    @Override
-    public void createInterface(Integer nodeId){
-        Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("New interface: " + nodeId);
+    public NodeRegister getNodeRegister()
+    {
+        return nodeRegister;
     }
 
     @Override
+    public void createInterface(Integer nodeId){
+        nodeRegister.addPrivateNode(nodeId);
+        Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+        logger.debug("New static interface: " + nodeId);
+    }
+
     public void createInterface(Integer nodeId, InetSocketAddress ipAddress)
+    {
+        nodeRegister.addPublicNode(nodeId, ipAddress);
+        Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+        logger.debug("New public interface: " + nodeId);
+    }
+
+    @Override
+    public void connectToInterface(Integer nodeId, InetSocketAddress ipAddress)
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
         logger.debug("New interface: " + nodeId);
         StaticConnection newConnection = new StaticConnection(ipAddress);
+        nodeRegister.addPublicNode(nodeId, ipAddress);
         staticInterfaces.put(nodeId, newConnection);
         connectionManager.addStaticConnection(newConnection);
         routingTable.addInterface(nodeId);
@@ -63,6 +79,7 @@ public abstract class RouterImpl implements Router {
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
         logger.debug("Deleting interface: " + nodeId);
+        nodeRegister.deleteInterface(nodeId);
         if(!routingTable.interfaceListContains(nodeId))
             throw new InterfaceDoesNotExistException(nodeId);
         if(staticInterfaces.containsKey(nodeId))
@@ -95,7 +112,7 @@ public abstract class RouterImpl implements Router {
         sendMessageViaMiddleman(message);
     }
 
-    void sendMessageViaMiddleman(Message message)
+    Integer sendMessageViaMiddleman(Message message)
     {
         Set<Integer> publicNodesSet = staticInterfaces.keySet();
         List<Integer> publicNodesList = new ArrayList<>(List.copyOf(publicNodesSet));
@@ -107,9 +124,13 @@ public abstract class RouterImpl implements Router {
                 publicNodesList.remove(id);
             else
             {
+                Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+                logger.info("---------------------------------------------Sending message via middleman---------------------: " + message.getReceiver());
+                logger.info("Sending message on: " + id + " message: " + message.serialize());
                 routingTable.resendAll();
-                return;
+                return id;
             }
         }
+        return null;
     }
 }

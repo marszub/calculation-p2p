@@ -29,18 +29,22 @@ public class NetworkIntegrationTests {
         InetSocketAddress ip1 = new InetSocketAddress("localhost", 60000);
         InetSocketAddress ip2 = new InetSocketAddress("localhost", 60001);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1, dummyMessageParser, ip1, interrupter1);
-        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2, dummyMessageParser, ip2, interrupter2);
+        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1,
+                dummyMessageParser, ip1, interrupter1);
+        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2,
+                dummyMessageParser, ip2, interrupter2);
 
         RoutingTable table1 = new RoutingTableImpl();
         RoutingTable table2 = new RoutingTableImpl();
 
-        PublicRouter publicRouter1 = new PublicRouter(connectionManager1, messageQueue1, table1);
-        PublicRouter publicRouter2 = new PublicRouter(connectionManager2, messageQueue2, table2);
+        PublicRouter publicRouter1 = new PublicRouter(connectionManager1, messageQueue1,
+                table1, new NodeRegisterImpl());
+        PublicRouter publicRouter2 = new PublicRouter(connectionManager2, messageQueue2,
+                table2, new NodeRegisterImpl());
         publicRouter1.setId(1);
         publicRouter2.setId(2);
 
-        publicRouter1.createInterface(2, ip2);
+        publicRouter1.connectToInterface(2, ip2);
         DummyMessage message = new DummyMessage("TEST");
         message.setSender(1);
         message.setReceiver(2);
@@ -67,17 +71,21 @@ public class NetworkIntegrationTests {
 
         InetSocketAddress ip2 = new InetSocketAddress("localhost", 60002);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1, dummyMessageParser, interrupter1);
-        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2, dummyMessageParser, ip2,interrupter2);
+        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1,
+                dummyMessageParser, interrupter1);
+        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2,
+                dummyMessageParser, ip2,interrupter2);
         RoutingTable table1 = new RoutingTableImpl();
         RoutingTable table2 = new RoutingTableImpl();
 
-        PrivateRouter Router1 = new PrivateRouter(connectionManager1, messageQueue1, table1);
-        PublicRouter Router2 = new PublicRouter(connectionManager2, messageQueue2, table2);
+        PrivateRouter Router1 = new PrivateRouter(connectionManager1, messageQueue1,
+                table1, new NodeRegisterImpl());
+        PublicRouter Router2 = new PublicRouter(connectionManager2, messageQueue2,
+                table2, new NodeRegisterImpl());
         Router1.setId(1);
         Router2.setId(2);
 
-        Router1.createInterface(2, ip2);
+        Router1.connectToInterface(2, ip2);
         DummyMessage message = new DummyMessage("TEST");
         message.setSender(1);
         message.setReceiver(2);
@@ -103,17 +111,21 @@ public class NetworkIntegrationTests {
 
         InetSocketAddress ip2 = new InetSocketAddress("localhost", 60003);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1, dummyMessageParser, new DummyInterrupter());
-        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2, dummyMessageParser, ip2, new DummyInterrupter());
+        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1,
+                dummyMessageParser, new DummyInterrupter());
+        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2,
+                dummyMessageParser, ip2, new DummyInterrupter());
 
         RoutingTable table1 = new RoutingTableImpl();
         RoutingTable table2 = new RoutingTableImpl();
-        PrivateRouter Router1 = new PrivateRouter(connectionManager1, messageQueue1, table1);
-        PublicRouter Router2 = new PublicRouter(connectionManager2, messageQueue2, table2);
+        PrivateRouter Router1 = new PrivateRouter(connectionManager1, messageQueue1,
+                table1, new NodeRegisterImpl());
+        PublicRouter Router2 = new PublicRouter(connectionManager2, messageQueue2,
+                table2, new NodeRegisterImpl());
         Router1.setId(1);
         Router2.setId(2);
 
-        Router1.createInterface(2, ip2);
+        Router1.connectToInterface(2, ip2);
         DummyMessage message = new DummyMessage("TEST");
         message.setSender(1);
         message.setReceiver(2);
@@ -251,7 +263,7 @@ public class NetworkIntegrationTests {
         semaphore2.acquire();
         semaphore3.acquire();
         semaphore4.acquire();
-        semaphore5.tryAcquire(1000, TimeUnit.MILLISECONDS);
+        semaphore5.tryAcquire(2000, TimeUnit.MILLISECONDS);
         List<Message> list2 = Router2.getMessage();
         List<Message> list4 = Router4.getMessage();
         if(list2.size() > 0)
@@ -259,14 +271,14 @@ public class NetworkIntegrationTests {
             if(list4.size() > 0)
             {
                 assertEquals(message4.serialize(), list4.get(0).serialize());
-                semaphore3.tryAcquire(1000, TimeUnit.MILLISECONDS);
+                semaphore3.tryAcquire(2000, TimeUnit.MILLISECONDS);
                 assertEquals(message3, Router3.getMessage().get(0));
             }
             else
             {
                 assertEquals(message2.serialize(), list2.get(0).serialize());
-                semaphore4.tryAcquire(1000, TimeUnit.MILLISECONDS);
-                semaphore3.tryAcquire(1000, TimeUnit.MILLISECONDS);
+                semaphore4.tryAcquire(2000, TimeUnit.MILLISECONDS);
+                semaphore3.tryAcquire(2000, TimeUnit.MILLISECONDS);
                 assertEquals(message3, Router3.getMessage().get(0));
                 assertEquals(message4, Router4.getMessage().get(0));
             }
@@ -274,8 +286,8 @@ public class NetworkIntegrationTests {
         else
         {
             assertEquals(message4.serialize(), list4.get(0).serialize());
-            semaphore2.tryAcquire(1000, TimeUnit.MILLISECONDS);
-            semaphore3.tryAcquire(1000, TimeUnit.MILLISECONDS);
+            semaphore2.tryAcquire(2000, TimeUnit.MILLISECONDS);
+            semaphore3.tryAcquire(2000, TimeUnit.MILLISECONDS);
             assertEquals(message3, Router3.getMessage().get(0));
             assertEquals(message2, Router2.getMessage().get(0));
         }
@@ -343,23 +355,29 @@ public class NetworkIntegrationTests {
 
         InetSocketAddress ip2 = new InetSocketAddress("127.0.0.1", port);
         DummyMessageParser dummyMessageParser = new DummyMessageParser();
-        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1, dummyMessageParser, idleInterrupter1);
-        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2, dummyMessageParser, ip2, idleInterrupter2);
-        ConnectionManagerImpl connectionManager3 = new ConnectionManagerImpl(messageQueue3, dummyMessageParser, idleInterrupter3);
+        ConnectionManagerImpl connectionManager1 = new ConnectionManagerImpl(messageQueue1,
+                dummyMessageParser, idleInterrupter1);
+        ConnectionManagerImpl connectionManager2 = new ConnectionManagerImpl(messageQueue2,
+                dummyMessageParser, ip2, idleInterrupter2);
+        ConnectionManagerImpl connectionManager3 = new ConnectionManagerImpl(messageQueue3,
+                dummyMessageParser, idleInterrupter3);
 
         RoutingTable table1 = new RoutingTableImpl();
         RoutingTable table2 = new RoutingTableImpl();
         RoutingTable table3 = new RoutingTableImpl();
 
-        PrivateRouter Router1 = new PrivateRouter(connectionManager1, messageQueue1, table1);
-        PublicRouter Router2 = new PublicRouter(connectionManager2, messageQueue2, table2);
-        PrivateRouter Router3 = new PrivateRouter(connectionManager3, messageQueue3, table3);
+        PrivateRouter Router1 = new PrivateRouter(connectionManager1, messageQueue1,
+                table1, new NodeRegisterImpl());
+        PublicRouter Router2 = new PublicRouter(connectionManager2, messageQueue2,
+                table2, new NodeRegisterImpl());
+        PrivateRouter Router3 = new PrivateRouter(connectionManager3, messageQueue3,
+                table3, new NodeRegisterImpl());
         Router1.setId(1);
         Router2.setId(2);
         Router3.setId(3);
 
-        Router1.createInterface(2, ip2);
-        Router3.createInterface(2, ip2);
+        Router1.connectToInterface(2, ip2);
+        Router3.connectToInterface(2, ip2);
         DummyMessage welcome_message1 = new DummyMessage("TEST");
         welcome_message1.setSender(1);
         welcome_message1.setReceiver(2);
@@ -388,7 +406,8 @@ public class NetworkIntegrationTests {
         semaphore1.release();
         semaphore2.release();
         semaphore3.release();
-        return new Prepare3RoutersTest(Router1, Router2, Router3, semaphore1, semaphore2, semaphore3, dummyMessageParser, idleInterrupter2);
+        return new Prepare3RoutersTest(Router1, Router2, Router3, semaphore1,
+                semaphore2, semaphore3, dummyMessageParser, idleInterrupter2, ip2);
     }
 
     private Prepare4RoutersTest prepareEnvironmentFour(int port2, int port4) throws InterruptedException {
@@ -410,14 +429,16 @@ public class NetworkIntegrationTests {
         idleInterrupter4.addSecondSemaphore(semaphore5);
         idleInterrupter2.addSecondSemaphore(semaphore5);
         InetSocketAddress ip4 = new InetSocketAddress("127.0.0.1", port4);
-        ConnectionManagerImpl connectionManager4 = new ConnectionManagerImpl(messageQueue4, dummyMessageParser, ip4, idleInterrupter4);
+        ConnectionManagerImpl connectionManager4 = new ConnectionManagerImpl(messageQueue4,
+                dummyMessageParser, ip4, idleInterrupter4);
         RoutingTable table4 = new RoutingTableImpl();
-        PublicRouter Router4 = new PublicRouter(connectionManager4, messageQueue4, table4);
+        PublicRouter Router4 = new PublicRouter(connectionManager4, messageQueue4,
+                table4, new NodeRegisterImpl());
         Router4.setId(4);
 
-        Router1.createInterface(4, ip4);
-        Router2.createInterface(4, ip4);
-        Router3.createInterface(4, ip4);
+        Router1.connectToInterface(4, ip4);
+        Router2.connectToInterface(4, ip4);
+        Router3.connectToInterface(4, ip4);
         DummyMessage welcome_message1 = new DummyMessage("TEST14");
         welcome_message1.setSender(1);
         welcome_message1.setReceiver(4);
@@ -441,7 +462,7 @@ public class NetworkIntegrationTests {
             size += Router4.getMessage().size();
         }
         Router4.createInterface(1);
-        Router4.createInterface(2);
+        Router4.createInterface(2, variables.ip());
         Router4.createInterface(3);
         semaphore1.drainPermits();
         semaphore2.drainPermits();
