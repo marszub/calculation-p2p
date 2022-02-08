@@ -38,10 +38,6 @@ public class StaticConnection extends ConnectionImpl {
         if(!super.send(message))
         {
             reconnect();
-            try {
-                super.register(selector);
-            } catch (ClosedChannelException ignored) {
-            }
             return false;
         }
         return true;
@@ -67,10 +63,6 @@ public class StaticConnection extends ConnectionImpl {
         } catch (ConnectionLostException e) {
             close();
             reconnect();
-            try {
-                super.register(selector);
-            } catch (ClosedChannelException ignored) {
-            }
         }
     }
 
@@ -78,6 +70,10 @@ public class StaticConnection extends ConnectionImpl {
         try {
             socketChannel = SocketChannel.open(ipAddress);
             socketChannel.configureBlocking(false);
+            try {
+                super.register(selector);
+            } catch (ClosedChannelException ignored) {
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
