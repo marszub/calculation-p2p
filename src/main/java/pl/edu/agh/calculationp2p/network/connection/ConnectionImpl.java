@@ -73,7 +73,8 @@ public abstract class ConnectionImpl implements Connection
                 throw new ConnectionLostException();
             } catch (IOException e)
             {
-                e.printStackTrace();
+                list.addAll(Arrays.asList(messages.toString().split(separator)));
+                throw new ConnectionLostException();
             }
             if(bytesRead == -1) {
                 list.addAll(Arrays.asList(messages.toString().split(separator)));

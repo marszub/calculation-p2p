@@ -24,8 +24,8 @@ public class GetInit implements Body{
     public void process(int sender, MessageProcessContext context) {
 
         int myId = context.getRouter().getId();
-        List<Integer> privatesNodes = context.getNodeRegister().getPrivateNodes();
-        Map<Integer, InetSocketAddress> publicNodes = context.getNodeRegister().getPublicNodes();
+        List<Integer> privatesNodes = context.getRouter().getNodeRegister().getPrivateNodes();
+        Map<Integer, InetSocketAddress> publicNodes = context.getRouter().getNodeRegister().getPublicNodes();
 
         Set<Integer> idsAlreadyInUse = new HashSet<>(privatesNodes);
         idsAlreadyInUse.addAll(publicNodes.keySet());
