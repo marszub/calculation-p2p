@@ -15,6 +15,8 @@ public class StatusInformerImpl implements StatusInformer{
         this.scheduler = scheduler;
     }
 
+
+
     @Override
     public void clearNodeReservations(Integer nodeID) {
         MethodRequest request = new ClearReservationRequest(nodeID);

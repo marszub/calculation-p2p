@@ -13,4 +13,5 @@ public interface StatusInformer {
     Future<Observation> observeReserved(IdleInterrupter interrupter);
     void cancelObservation(IdleInterrupter interrupter);
     void clearNodeReservations(Integer nodeID);
+
 }

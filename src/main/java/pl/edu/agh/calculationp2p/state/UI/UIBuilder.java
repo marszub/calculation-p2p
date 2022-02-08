@@ -2,11 +2,14 @@ package pl.edu.agh.calculationp2p.state.UI;
 
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
+import pl.edu.agh.calculationp2p.state.task.TaskRecord;
+import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class UIBuilder {
     int size;
@@ -16,6 +19,7 @@ public class UIBuilder {
     String firstLine;
     String observersTable;
     String progressBar;
+    String taskResult;
     UIUpdater updater;
     boolean isFinished;
 
@@ -45,7 +49,7 @@ public class UIBuilder {
                 firstLine + "\n" +
                 line + "\n" +
                 emptyLine + "\n" +
-                observersTable + "\n" +
+                taskResult + "\n" +
                 line + "\n" +
                 progressBar + "\n" +
                 wideLine + "\n";
@@ -55,8 +59,21 @@ public class UIBuilder {
 
     public void updateAll() {
         updateFirstLine();
+        updateTaskResult();
         updateProgressBar();
         updateObserversTable();
+    }
+
+    private void updateTaskResult() {
+        if(updater.progress.isReady()){
+            taskResult ="";
+            List<TaskRecord> taskList = updater.progress.get().getTasks();
+            taskList.stream().forEach(record -> {
+                if(record.getState() == TaskState.Calculated && record.getResult() != null && !Objects.equals(record.getResult().serialize(), "[]")){
+                    taskResult += record.getResult().serialize() + "\n";
+                }
+            });
+        }
     }
 
 
@@ -76,9 +93,9 @@ public class UIBuilder {
 
 
     public void updateProgressBar() {
-        if (updater.progressSize.isReady() && updater.calculatedNo.isReady()) {
+        if (updater.progress.isReady() && updater.calculatedNo.isReady()) {
             int calculatedTasks = updater.calculatedNo.get();
-            int allTasks = updater.progressSize.get();
+            int allTasks = updater.progress.get().size();
 
             int hashes = (int) ((calculatedTasks * 1.0) / (allTasks * 1.0) * (size * 1.0));
             String description = "Progress: " + calculatedTasks + " of " + allTasks + "\n";
@@ -93,7 +110,7 @@ public class UIBuilder {
             progressBar = description + bar;
         }
         updater.updateCalculatedNo();
-        updater.updateProgressSize();
+        updater.updateProgress();
     }
 
     public void updateObserversTable() {

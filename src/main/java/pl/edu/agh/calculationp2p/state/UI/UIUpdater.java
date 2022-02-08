@@ -1,7 +1,9 @@
 package pl.edu.agh.calculationp2p.state.UI;
 
+import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
+import pl.edu.agh.calculationp2p.state.request.GetProgressRequest;
 import pl.edu.agh.calculationp2p.state.request.MethodRequest;
 import pl.edu.agh.calculationp2p.state.request.UIRequests.*;
 
@@ -11,10 +13,10 @@ import java.util.Optional;
 public class UIUpdater {
     Future<Integer> nodeID;
     Future<Integer> calculatedNo;
-    Future<Integer> progressSize;
     Future<Integer> taskObservers;
     Future<Integer> calculatedObservers;
     Future<Integer> reservedObservers;
+    Future<Progress> progress;
     Scheduler scheduler;
 
 
@@ -26,10 +28,22 @@ public class UIUpdater {
     public void updateAll() {
         updateNodeID();
         updateCalculatedNo();
-        updateProgressSize();
+        updateProgress();
         updateTaskObservers();
         updateCalculatedObservers();
         updateReservedObservers();
+    }
+
+    public void updateProgress() {
+        if (progress == null || progress.isReady()) {
+            progress = new Future<>();
+            MethodRequest request = new GetProgressRequest(progress);
+            try {
+                scheduler.enqueue(request);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void updateNodeID() {
@@ -56,17 +70,6 @@ public class UIUpdater {
         }
     }
 
-    public void updateProgressSize() {
-        if (progressSize == null || progressSize.isReady()) {
-            progressSize = new Future<>();
-            MethodRequest request = new ProgressSizeRequest(progressSize);
-            try {
-                scheduler.enqueue(request);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public void updateTaskObservers() {
         if (taskObservers == null || taskObservers.isReady()) {
