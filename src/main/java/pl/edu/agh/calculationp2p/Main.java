@@ -21,6 +21,8 @@ import pl.edu.agh.calculationp2p.state.publisher.TaskStatePublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.net.InetSocketAddress;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -58,8 +60,14 @@ public class Main {
         TaskGiver taskGiver = new TaskGiverImpl(schedulerImpl);
 
         // calculation
-        TaskResolver taskResolver = new TaskResolver(taskGiver, task);
-        Thread taskResolverThread = new Thread(taskResolver);
+        List<TaskResolver> taskResolvers = new LinkedList<>();
+        List<Thread> taskResolverThreads = new LinkedList<>();
+
+        for(int i = 0; i < config.numOfCalculationThreads(); i++){
+            TaskResolver taskResolver = new TaskResolver(taskGiver, task);
+            taskResolvers.add(taskResolver);
+            taskResolverThreads.add(new Thread(taskResolver));
+        }
 
         // message parser
         MessageParser messageParser = new MessageParserImpl();
@@ -99,12 +107,15 @@ public class Main {
         // start threads
         schedulerThread.start();
         messageProcessorThread.start();
-        taskResolverThread.start();
+        taskResolverThreads.forEach(Thread::start);
         uiControllerThread.start();
 
         try {
             uiControllerThread.join(0);
-            taskResolverThread.join(0);
+            for (Thread thread :
+                    taskResolverThreads) {
+                thread.join(0);
+            }
             messageProcessorThread.join(0);
             schedulerThread.join(0);
         } catch (InterruptedException e) {
@@ -112,5 +123,4 @@ public class Main {
         }
 
     }
-
 }

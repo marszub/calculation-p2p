@@ -175,12 +175,12 @@ public class ConfigReader implements AppConfig{
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
-                return -1;
+                return 1;
             return Integer.parseInt(jsonMap.get("thread_num").toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return -1;
+        return 1;
     }
 }
 
