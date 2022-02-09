@@ -128,7 +128,7 @@ public class RoutingTableTest {
     void checkDeletionOfNonExistingInterface()
     {
         RoutingTableImpl routingTable = new RoutingTableImpl();
-        assertThrows(InterfaceDoesNotExistException.class, () -> {
+        assertDoesNotThrow(() -> {
             routingTable.removeInterface(1);
         });
     }
@@ -137,7 +137,7 @@ public class RoutingTableTest {
     void checkSendingMessageToNonExistingInterface()
     {
         RoutingTableImpl routingTable = new RoutingTableImpl();
-        assertThrows(InterfaceDoesNotExistException.class, () -> {
+        assertDoesNotThrow(() -> {
             routingTable.send(1, new DummyMessage());
         });
     }
@@ -146,7 +146,7 @@ public class RoutingTableTest {
     void checkTrySendingMessageToNonExistingInterface()
     {
         RoutingTableImpl routingTable = new RoutingTableImpl();
-        assertThrows(InterfaceDoesNotExistException.class, () -> {
+        assertDoesNotThrow(() -> {
             routingTable.trySend(1, new DummyMessage());
         });
     }
@@ -155,7 +155,7 @@ public class RoutingTableTest {
     void checkBindingOfNonExistingInterface()
     {
         RoutingTableImpl routingTable = new RoutingTableImpl();
-        assertThrows(InterfaceDoesNotExistException.class, () -> {
+        assertDoesNotThrow(() -> {
             routingTable.bind(1, new DummyConnection(false));
         });
     }
@@ -165,7 +165,7 @@ public class RoutingTableTest {
     {
         RoutingTableImpl routingTable = new RoutingTableImpl();
         routingTable.addInterface(1);
-        assertThrows(InterfaceExistsException.class, () -> {
+        assertDoesNotThrow(() -> {
             routingTable.addInterface(1);
         });
     }
