@@ -57,13 +57,29 @@ public class ConfigReader implements AppConfig{
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
                 return null;
-            return new InetSocketAddress(jsonMap.get("my_ip").toString(), Integer.parseInt(jsonMap.get("my_port").toString()));
+            return new InetSocketAddress(jsonMap.get("my_ip_global").toString(), Integer.parseInt(jsonMap.get("my_port_global").toString()));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
+
+    @Override
+    public InetSocketAddress getMySocketAddress() {
+        LinkedHashMap<String, Object> jsonMap;
+        try {
+            jsonMap = mapper.readValue(content, typeRef);
+            if (jsonMap == null)
+                return null;
+            return new InetSocketAddress(jsonMap.get("my_ip_local").toString(), Integer.parseInt(jsonMap.get("my_port_local").toString()));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     @Override
     public boolean getPublicFlag() {
