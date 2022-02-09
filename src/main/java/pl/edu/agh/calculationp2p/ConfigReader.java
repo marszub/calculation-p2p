@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 public class ConfigReader implements AppConfig{
 
@@ -23,7 +25,8 @@ public class ConfigReader implements AppConfig{
                 throw new Exception();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -45,7 +48,8 @@ public class ConfigReader implements AppConfig{
             return new InetSocketAddress(serverIpAddress, port);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return null;
     }
@@ -60,7 +64,8 @@ public class ConfigReader implements AppConfig{
             return new InetSocketAddress(jsonMap.get("my_ip_global").toString(), Integer.parseInt(jsonMap.get("my_port_global").toString()));
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return null;
     }
@@ -75,7 +80,8 @@ public class ConfigReader implements AppConfig{
             return new InetSocketAddress(jsonMap.get("my_ip_local").toString(), Integer.parseInt(jsonMap.get("my_port_local").toString()));
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return null;
     }
@@ -94,7 +100,8 @@ public class ConfigReader implements AppConfig{
             return (boolean) jsonMap.get("public");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return false;
     }
@@ -108,7 +115,8 @@ public class ConfigReader implements AppConfig{
                 return -1;
             return Integer.parseInt(jsonMap.get("max_connection_time").toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return -1;
     }
@@ -122,7 +130,8 @@ public class ConfigReader implements AppConfig{
                 return -1;
             return Integer.parseInt(jsonMap.get("progress_retry_time").toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return -1;
     }
@@ -136,7 +145,8 @@ public class ConfigReader implements AppConfig{
                 return -1;
             return Integer.parseInt(jsonMap.get("heart_beat_period").toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return -1;
     }
@@ -150,7 +160,8 @@ public class ConfigReader implements AppConfig{
                 return -1;
             return Integer.parseInt(jsonMap.get("heart_beat_lifetime").toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return -1;
     }
@@ -164,7 +175,8 @@ public class ConfigReader implements AppConfig{
                 return null;
             return jsonMap.get("task_config_path").toString();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return null;
     }
@@ -178,7 +190,8 @@ public class ConfigReader implements AppConfig{
                 return 1;
             return Integer.parseInt(jsonMap.get("thread_num").toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return 1;
     }

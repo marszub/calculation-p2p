@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.calculationTask.hashBreaking;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.calculationTask.ResultBuilder;
 import pl.edu.agh.calculationp2p.calculationTask.TaskData;
@@ -58,7 +60,8 @@ public class HashResultBuilder implements ResultBuilder {
             md5 = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         md5.update(string.getBytes());
         byte[] digest = md5.digest();

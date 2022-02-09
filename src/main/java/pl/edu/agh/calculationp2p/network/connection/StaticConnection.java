@@ -29,7 +29,8 @@ public class StaticConnection extends ConnectionImpl {
             connectionAddress = socketChannel.getRemoteAddress().toString();
         } catch(IOException e)
         {
-            e.printStackTrace();
+            Logger logger1 = LoggerFactory.getLogger("");
+            logger1.error(e.getMessage());
         }
     }
 
@@ -66,7 +67,8 @@ public class StaticConnection extends ConnectionImpl {
             } catch (ClosedChannelException ignored) {
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
     }
 }

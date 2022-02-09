@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
@@ -31,7 +33,8 @@ public class Progress implements Cloneable {
             return (Progress) super.clone(); // TODO: repair - need deep copy (but not too deep)   co? robi nam to róznice?
             // pytanie czy skopiuje liste -> do sprawdzenia (lista osobne referencje)
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return null;
     }

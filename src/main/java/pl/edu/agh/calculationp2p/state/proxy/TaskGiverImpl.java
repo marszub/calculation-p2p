@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.proxy;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.calculationTask.TaskResult;
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
@@ -22,7 +24,8 @@ public class TaskGiverImpl implements TaskGiver {
         try {
             scheduler.enqueue(findInteger);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return taskIDFuture;
     }
@@ -35,7 +38,8 @@ public class TaskGiverImpl implements TaskGiver {
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return flag;
     }
@@ -46,7 +50,8 @@ public class TaskGiverImpl implements TaskGiver {
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
 
     }
