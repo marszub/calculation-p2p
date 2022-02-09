@@ -22,7 +22,7 @@ class IdleTest {
         });
         sleeping.start();
 
-        assertDoesNotThrow(() -> sleeping.join(60));
+        assertDoesNotThrow(() -> sleeping.join(200));
         assertTrue(wasWoken.get());
     }
 
@@ -78,7 +78,7 @@ class IdleTest {
         sleeping.start();
         idle.wake();
 
-        assertDoesNotThrow(() -> TimeUnit.MILLISECONDS.sleep(5));
+        assertDoesNotThrow(() -> TimeUnit.MILLISECONDS.sleep(50));
         assertTrue(wasWoken.get());
     }
 }

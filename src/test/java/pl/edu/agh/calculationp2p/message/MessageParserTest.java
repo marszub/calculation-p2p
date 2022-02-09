@@ -33,6 +33,14 @@ class MessageParserTest {
         taskResult.add("111");
         Message calculated2 = new MessageImpl(1, 2, new Calculated(new TaskRecord(1, TaskState.Free, 2, taskResult)));
         assertEquals(calculated2, messageParser.parse(calculated2.serialize()));
+
+        taskResult.add("a13");
+        Message calculated3 = new MessageImpl(1, 2, new Calculated(new TaskRecord(1, TaskState.Free, 2, taskResult)));
+        assertEquals(calculated3, messageParser.parse(calculated3.serialize()));
+
+        taskResult.add(".1.4h.<-+_0kf");
+        Message calculated4 = new MessageImpl(1, 2, new Calculated(new TaskRecord(1, TaskState.Free, 2, taskResult)));
+        assertEquals(calculated4, messageParser.parse(calculated4.serialize()));
     }
 
     @Test

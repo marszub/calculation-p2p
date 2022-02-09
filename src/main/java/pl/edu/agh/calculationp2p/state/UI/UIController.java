@@ -30,9 +30,14 @@ public class UIController implements Runnable {
             if (lowerOSName.contains("window")) {
                 try {
                     new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException e) {
                     Logger logger = LoggerFactory.getLogger("");
                     logger.error(e.getMessage());
+                }
+                catch (InterruptedException e){
+                    Logger logger = LoggerFactory.getLogger("");
+                    logger.error(e.getMessage());
+                    return;
                 }
             } else {
                 System.out.print("\033[H\033[2J");
@@ -44,6 +49,7 @@ public class UIController implements Runnable {
             } catch (InterruptedException e) {
                 Logger logger = LoggerFactory.getLogger("");
                 logger.error(e.getMessage());
+                return;
             }
 
         }
