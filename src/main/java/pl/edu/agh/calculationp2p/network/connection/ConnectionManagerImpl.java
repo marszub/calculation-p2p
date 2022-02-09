@@ -174,10 +174,10 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
                 for(String message : messages)
                 {
                     if(!message.equals("")) {
+                        Logger logger = LoggerFactory.getLogger("");
+                        logger.info("Received message: " + message);
                         Message parsedMessage = messageParser.parse(message);
                         if (parsedMessage != null) {
-                            Logger logger = LoggerFactory.getLogger("");
-                            logger.info("Received message: " + message);
                             messageQueueEntry.add(new MessageConnectionPair(parsedMessage, connection));
                         }
                     }
