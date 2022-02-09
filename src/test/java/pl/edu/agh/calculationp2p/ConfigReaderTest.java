@@ -44,7 +44,7 @@ class ConfigReaderTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(10, reader.getMaxConnectingTime());
+        assertEquals(1000, reader.getMaxConnectingTime());
 
     }
 
@@ -57,7 +57,7 @@ class ConfigReaderTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(20, reader.getGetProgressRetryTime());
+        assertEquals(2000, reader.getGetProgressRetryTime());
 
     }
 }

@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.UI;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
@@ -41,7 +43,8 @@ public class UIUpdater {
             try {
                 scheduler.enqueue(request);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
             }
         }
     }
@@ -53,7 +56,8 @@ public class UIUpdater {
             try {
                 scheduler.enqueue(request);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
             }
         }
     }
@@ -65,7 +69,8 @@ public class UIUpdater {
             try {
                 scheduler.enqueue(request);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
             }
         }
     }
@@ -78,7 +83,8 @@ public class UIUpdater {
             try {
                 scheduler.enqueue(request);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
             }
         }
     }
@@ -90,7 +96,8 @@ public class UIUpdater {
             try {
                 scheduler.enqueue(request);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
             }
         }
     }
@@ -102,7 +109,8 @@ public class UIUpdater {
             try {
                 scheduler.enqueue(request);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
             }
         }
     }

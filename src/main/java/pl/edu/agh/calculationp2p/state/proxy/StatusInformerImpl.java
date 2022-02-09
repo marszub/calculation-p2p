@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.proxy;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.Progress;
 import pl.edu.agh.calculationp2p.state.Scheduler;
 import pl.edu.agh.calculationp2p.state.future.Future;
@@ -25,7 +27,8 @@ public class StatusInformerImpl implements StatusInformer{
         try {
             scheduler.enqueue(getReservedTasksRequest);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return future;
     }
@@ -37,7 +40,8 @@ public class StatusInformerImpl implements StatusInformer{
         try {
             scheduler.enqueue(findInteger);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return taskIDFuture;
     }
@@ -48,7 +52,8 @@ public class StatusInformerImpl implements StatusInformer{
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
     }
 
@@ -59,7 +64,8 @@ public class StatusInformerImpl implements StatusInformer{
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return future;
     }
@@ -71,7 +77,8 @@ public class StatusInformerImpl implements StatusInformer{
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return future;
     }
@@ -83,7 +90,8 @@ public class StatusInformerImpl implements StatusInformer{
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return future;
     }
@@ -95,7 +103,8 @@ public class StatusInformerImpl implements StatusInformer{
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         return future;
     }
@@ -106,7 +115,8 @@ public class StatusInformerImpl implements StatusInformer{
         try {
             scheduler.enqueue(request);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
     }
 }

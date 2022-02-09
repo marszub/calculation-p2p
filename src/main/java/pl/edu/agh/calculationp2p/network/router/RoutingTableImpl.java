@@ -15,33 +15,33 @@ public class RoutingTableImpl implements RoutingTable{
     {
     }
 
-    public void addInterface(int id) throws InterfaceExistsException
+    public void addInterface(int id)
     {
         if(interfaces.containsKey(id))
-            throw new InterfaceExistsException(id);
+            return;
         interfaces.put(id, null);
         messageInterfaceQueue.put(id, new LinkedList<>());
     }
 
-    public void removeInterface(int id) throws InterfaceDoesNotExistException
+    public void removeInterface(int id)
     {
         if(!interfaces.containsKey(id))
-            throw new InterfaceDoesNotExistException(id);
+            return;
         interfaces.remove(id);
         messageInterfaceQueue.remove(id);
     }
 
-    public void bind(int id, Connection connection) throws InterfaceDoesNotExistException
+    public void bind(int id, Connection connection)
     {
         if(!interfaces.containsKey(id))
-            throw new InterfaceDoesNotExistException(id);
+            return;
         interfaces.put(id, connection);
     }
 
-    public void send(int id, Message message) throws InterfaceDoesNotExistException
+    public void send(int id, Message message)
     {
         if(!interfaces.containsKey(id))
-            throw new InterfaceDoesNotExistException(id);
+            return;
         if (interfaces.get(id) != null)
             sendTroughConnection(id, interfaces.get(id), message);
         else
@@ -50,10 +50,10 @@ public class RoutingTableImpl implements RoutingTable{
         }
     }
 
-    public boolean trySend(int id, Message message) throws InterfaceDoesNotExistException
+    public boolean trySend(int id, Message message)
     {
         if(!interfaces.containsKey(id))
-            throw new InterfaceDoesNotExistException(id);
+            return false;
         if (interfaces.get(id) != null) {
             boolean result = interfaces.get(id).send(message);
             if(result) {

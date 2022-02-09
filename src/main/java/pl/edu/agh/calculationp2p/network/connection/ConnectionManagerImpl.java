@@ -48,7 +48,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             staticConnection.register(selector);
             selector.wakeup();
         } catch (ClosedChannelException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         if(!outgoingConnections.contains(staticConnection)){
             outgoingConnections.add(staticConnection);
@@ -71,7 +72,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
                     selector.select();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
             }
             if(endRunning)
             {
@@ -111,7 +113,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             for(Connection connection : outgoingConnections)
                 connection.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
     }
 
@@ -122,7 +125,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
         try {
             this.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
     }
 
@@ -135,7 +139,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
         try {
             this.selector = Selector.open();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
     }
 
@@ -147,7 +152,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             server.configureBlocking(false);
             server.register(selector, SelectionKey.OP_ACCEPT, server);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
 
     }
@@ -203,7 +209,8 @@ public class ConnectionManagerImpl extends Thread implements ConnectionManager {
             }
             logger.debug("New null connection!");
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
     }
  }

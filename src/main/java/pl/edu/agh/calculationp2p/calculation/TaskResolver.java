@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.calculation;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskIterator;
 import pl.edu.agh.calculationp2p.calculationTask.ResultBuilder;
@@ -24,11 +26,15 @@ public class TaskResolver extends Thread {
     public void run() {
         Future<Optional<Integer>> task = taskGiver.getTaskAndReserve();
         while (true) {
+            if(Thread.interrupted())
+                return;
+
             while(!task.isReady()){
                 try {
                     sleep(sleepTime);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Logger logger = LoggerFactory.getLogger("");
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -45,6 +51,8 @@ public class TaskResolver extends Thread {
             CalculationTaskIterator iterator = calculationTask.getFragmentOfTheTask(taskId);
 
             while (iterator.hasNext()) {
+                if(Thread.interrupted())
+                    return;
                 if(observer.isReady())
                     break;
                 resultBuilder.performComputation(iterator.getNext());

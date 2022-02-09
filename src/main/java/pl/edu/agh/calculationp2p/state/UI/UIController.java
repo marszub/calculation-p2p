@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.UI;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.*;
 
 import java.io.IOException;
@@ -28,8 +30,14 @@ public class UIController implements Runnable {
             if (lowerOSName.contains("window")) {
                 try {
                     new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                } catch (IOException e) {
+                    Logger logger = LoggerFactory.getLogger("");
+                    logger.error(e.getMessage());
+                }
+                catch (InterruptedException e){
+                    Logger logger = LoggerFactory.getLogger("");
+                    logger.error(e.getMessage());
+                    return;
                 }
             } else {
                 System.out.print("\033[H\033[2J");
@@ -39,7 +47,9 @@ public class UIController implements Runnable {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
+                return;
             }
 
         }
