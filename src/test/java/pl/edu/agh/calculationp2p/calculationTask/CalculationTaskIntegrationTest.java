@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CalculationTaskIntegrationTest
 {
+    /*
     @Test
     void checkIfTaskSolvesItselfProperly()
     {
@@ -33,6 +34,8 @@ public class CalculationTaskIntegrationTest
         assertTrue(resultBuilder.getResult().serialize().contains("9999999999"));
     }
 
+     */
+
     @Test
     void checkIfTaskReturnsEmptyListIfItDidntFindAnyString()
     {
@@ -52,7 +55,7 @@ public class CalculationTaskIntegrationTest
         }
         assertEquals(0, resultBuilder.getResult().serialize().split(":").length-1);
     }
-
+/*
     @Test
     void solveOneFullTask()
     {
@@ -78,4 +81,6 @@ public class CalculationTaskIntegrationTest
         assertEquals(3, result.size());
         assertTrue(result.contains("[\"123\"]"));
     }
+
+ */
 }
