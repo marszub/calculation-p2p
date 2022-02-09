@@ -18,7 +18,8 @@ public abstract class ConnectionImpl implements Connection
     SocketChannel socketChannel;
     Selector selector;
     SelectionKey key;
-    static final String separator = Character.toString((char) 1);
+    String separator = Character.toString((char) 1);
+    MessageConstructor messageConstructor = new MessageConstructor(separator);
     static final int bytesBufferSize = 2048;
 
     @Override
@@ -63,7 +64,6 @@ public abstract class ConnectionImpl implements Connection
     @Override
     public void read(List<String> list) throws ConnectionLostException
     {
-        StringBuilder messages = new StringBuilder();
         ByteBuffer buf = ByteBuffer.allocate(bytesBufferSize);
         int bytesRead = 1;
         while(bytesRead > 0)
@@ -73,26 +73,26 @@ public abstract class ConnectionImpl implements Connection
                 bytesRead = socketChannel.read(buf);
             } catch (ClosedChannelException e)
             {
-                list.addAll(Arrays.asList(messages.toString().split(separator)));
+                list.addAll(messageConstructor.getMessages());
                 throw new ConnectionLostException();
             } catch (IOException e)
             {
-                list.addAll(Arrays.asList(messages.toString().split(separator)));
+                list.addAll(messageConstructor.getMessages());
                 throw new ConnectionLostException();
             }
             if(bytesRead == -1) {
-                list.addAll(Arrays.asList(messages.toString().split(separator)));
+                list.addAll(messageConstructor.getMessages());
                 throw new ConnectionLostException();
             }
             buf = buf.clear();
             if(bytesRead > 0)
             {
                 String word = new String(buf.array());
-                messages.append(word, 0, bytesRead);
+                messageConstructor.addString(word, bytesRead);
             }
         }
-        list.addAll(Arrays.asList(messages.toString().split(separator)));
-}
+        list.addAll(messageConstructor.getMessages());
+    }
 
     private void trySend(Message message) throws IOException
     {
