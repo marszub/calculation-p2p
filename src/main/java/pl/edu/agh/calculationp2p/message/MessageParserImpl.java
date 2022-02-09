@@ -93,7 +93,7 @@ public class MessageParserImpl implements MessageParser{
         if(!jsonMapBody.get("result").toString().equals("[]") && !jsonMapBody.get("result").toString().equals("null")){
             JSONArray array = jsonMapBody.getJSONArray("result");
             for(int i=0;i<array.length();i++){
-                taskResult.add(String.valueOf(array.getInt(i)));
+                taskResult.add(String.valueOf(array.getString(i)));
             }
         }
         return new Reserve(new TaskRecord(taskId, taskState, owner, taskResult));
@@ -126,7 +126,7 @@ public class MessageParserImpl implements MessageParser{
             } else {
                 JSONArray jsonArray = record.getJSONArray("result");
                 for(int j=0;j<jsonArray.length();j++) {
-                    res.add(String.valueOf(jsonArray.getInt(i)));
+                    res.add(String.valueOf(jsonArray.getString(j)));
                 }
             }
             list.add(new TaskRecord(record.getInt("task_id"), TaskState.valueOf(record.getString("state")), record.getInt("owner"), res));
