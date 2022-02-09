@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -29,7 +31,8 @@ public abstract class ConnectionImpl implements Connection
             return false;
         }catch(IOException e)
         {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
             return false;
         }
         return true;
@@ -52,7 +55,8 @@ public abstract class ConnectionImpl implements Connection
                 key.cancel();
         }catch(IOException e)
         {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
     }
 

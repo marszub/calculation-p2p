@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.calculation.TaskResolver;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskFactory;
@@ -37,7 +39,8 @@ public class Main {
         try {
             config = new ConfigReader(configFile);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
             return;
         }
 
@@ -119,7 +122,8 @@ public class Main {
             messageProcessorThread.join(0);
             schedulerThread.join(0);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
 
     }

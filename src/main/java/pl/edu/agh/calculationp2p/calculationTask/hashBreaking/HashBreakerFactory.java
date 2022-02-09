@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTask;
 import pl.edu.agh.calculationp2p.calculationTask.CalculationTaskFactory;
 
@@ -34,7 +36,8 @@ public class HashBreakerFactory implements CalculationTaskFactory
             content = Files.readString(Path.of(file));
         } catch (IOException e)
         {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -67,7 +70,8 @@ public class HashBreakerFactory implements CalculationTaskFactory
         try {
             jsonMap = mapper.readValue(content, typeRef);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error(e.getMessage());
         }
         if(jsonMap != null)
         {

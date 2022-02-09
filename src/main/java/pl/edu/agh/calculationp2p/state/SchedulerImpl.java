@@ -1,6 +1,8 @@
 package pl.edu.agh.calculationp2p.state;
 
 import io.netty.util.internal.SystemPropertyUtil;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.request.MethodRequest;
 
 import java.util.concurrent.BlockingQueue;
@@ -25,7 +27,8 @@ public class SchedulerImpl implements Runnable, Scheduler {
             try {
                 dispatch();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
                 return;
             }
         }
