@@ -2,7 +2,7 @@ package pl.edu.agh.calculationp2p.state.future;
 
 public class Future<ResponseType> {
     private boolean ready;
-    private ResponseType response;
+    private volatile ResponseType response;
 
     public Future(){
         ready = false;

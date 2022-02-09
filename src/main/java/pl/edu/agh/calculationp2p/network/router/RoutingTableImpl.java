@@ -43,7 +43,7 @@ public class RoutingTableImpl implements RoutingTable{
         if(!interfaces.containsKey(id))
         {
             Logger logger = LoggerFactory.getLogger("");
-            logger.info("Impossible to send message no interface: " + message.serialize());
+            logger.error("Impossible to send, no interface : " + id + " | " + message.serialize() + " | " + "interfaces: ", interfaces.toString());
             return;
         }
         if (interfaces.get(id) != null)

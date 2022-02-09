@@ -51,7 +51,7 @@ public abstract class RouterImpl implements Router {
     public void createInterface(Integer nodeId){
         nodeRegister.addPrivateNode(nodeId);
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("New static interface: " + nodeId);
+        logger.debug("New private interface: " + nodeId);
     }
 
     public void createInterface(Integer nodeId, InetSocketAddress ipAddress)
@@ -65,7 +65,7 @@ public abstract class RouterImpl implements Router {
     public void connectToInterface(Integer nodeId, InetSocketAddress ipAddress)
     {
         Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-        logger.debug("New interface: " + nodeId);
+        logger.debug("New public connection: " + nodeId);
         StaticConnection newConnection = new StaticConnection(ipAddress);
         nodeRegister.addPublicNode(nodeId, ipAddress);
         staticInterfaces.put(nodeId, newConnection);
@@ -108,7 +108,15 @@ public abstract class RouterImpl implements Router {
     @Override
     public void sendHelloMessage(Message message)
     {
-        sendMessageViaMiddleman(message);
+        Integer broadcastSentThrough = null;
+        if(nodeRegister.getPrivateNodes().size() > 0)
+            broadcastSentThrough = sendMessageViaMiddleman(message);
+        for(Integer id : nodeRegister.getPublicNodes().keySet())
+        {
+            if(!id.equals(broadcastSentThrough))
+                routingTable.send(id, message.clone(id));
+        }
+        return;
     }
 
     Integer sendMessageViaMiddleman(Message message)
