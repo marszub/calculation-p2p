@@ -1,5 +1,6 @@
 package pl.edu.agh.calculationp2p.message.body;
 
+import io.vertx.core.net.impl.pool.Task;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessContext;
@@ -51,8 +52,22 @@ public class GetSynchronization implements Body{
                                                 .stream()
                                                 .map(taskId -> context.getStateInformer().getTaskProgress(taskId))
                                                 .collect(Collectors.toList());
-        //TODO:
-        context.getFutureProcessor().addFutureProcess(syncList.get(syncList.size()-1), ()->{
+
+        context.getFutureProcessor().addFutureProcess(syncList.get(syncList.size()-1), createRunnable(syncList, context, myId, sender));
+    }
+
+    private Runnable createRunnable(List<Future<TaskRecord>> syncList, MessageProcessContext context, int myId, int sender)
+    {
+        return () -> {
+            List<Future<TaskRecord>> list = syncList.stream()
+                    .filter(sync -> !sync.isReady())
+                    .collect(Collectors.toList());
+
+            if(list.size() > 0) {
+                context.getFutureProcessor().addFutureProcess(list.get(0), createRunnable(syncList, context, myId, sender));
+                return;
+            }
+
             Message messWithStateOfTasks = new MessageImpl(myId, sender, new GiveSynchronization(
                     syncList
                             .stream()
@@ -60,7 +75,7 @@ public class GetSynchronization implements Body{
                             .collect(Collectors.toList())
             ));
             context.getRouter().send(messWithStateOfTasks);
-        });
+        };
     }
 
     @Override
