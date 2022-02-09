@@ -19,8 +19,6 @@ public class UpdateProgressRequest implements MethodRequest{
     @Override
     public void call(Servant servant) {
         // check every priority and get the highest ones
-        Logger logger = LoggerFactory.getLogger(UpdateProgressRequest.class);
-        logger.info("Call");
         Progress currentProgress = servant.getProgress();
         for(TaskRecord newRecord: newProgress.getTasks()){
             TaskRecord oldRecord = currentProgress.get(newRecord.getTaskID());

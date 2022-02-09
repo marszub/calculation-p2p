@@ -19,8 +19,6 @@ public class ObserveTaskRequest implements MethodRequest {
 
     @Override
     public void call(Servant servant) {
-        Logger logger = LoggerFactory.getLogger(ObserveTaskRequest.class);
-        logger.info("Call");
         servant.getTaskPublisher().subscribe(taskID, flag, servant.getNodeId(), servant.getProgress());
     }
 

@@ -16,25 +16,15 @@ public class TaskGiverImpl implements TaskGiver {
     }
 
     @Override
-    public Future<Optional<Integer>> getTask() {
+    public Future<Optional<Integer>> getTaskAndReserve() {
         Future<Optional<Integer>> taskIDFuture = new Future();
-        MethodRequest findInteger = new GetTaskRequest(taskIDFuture);
+        MethodRequest findInteger = new GetAndReserveRequest(taskIDFuture);
         try {
             scheduler.enqueue(findInteger);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return taskIDFuture;
-    }
-
-    @Override
-    public void reserveTask(Integer taskID) {
-        MethodRequest reserveRequest = new ReserveRequest(taskID);
-        try {
-            scheduler.enqueue(reserveRequest);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

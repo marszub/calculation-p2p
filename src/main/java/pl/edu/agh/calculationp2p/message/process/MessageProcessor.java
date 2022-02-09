@@ -50,7 +50,7 @@ public class MessageProcessor implements Runnable {
         this.idle = idle;
 
         this.heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);
-        this.stateObserver = new StateObserver(statusInformer, idle);
+        this.stateObserver = new StateObserver(context, idle);
     }
 
 

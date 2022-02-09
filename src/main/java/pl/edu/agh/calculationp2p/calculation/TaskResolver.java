@@ -22,7 +22,7 @@ public class TaskResolver extends Thread {
 
     @Override
     public void run() {
-        Future<Optional<Integer>> task = taskGiver.getTask();
+        Future<Optional<Integer>> task = taskGiver.getTaskAndReserve();
         while (true) {
             while(!task.isReady()){
                 try {
@@ -33,13 +33,12 @@ public class TaskResolver extends Thread {
             }
 
             if(task.get().isEmpty()){
-                task = taskGiver.getTask();
+                task = taskGiver.getTaskAndReserve();
                 continue;
             }
 
             Integer taskId = task.get().get();
-            taskGiver.reserveTask(taskId);
-            task = taskGiver.getTask();
+            task = taskGiver.getTaskAndReserve();
             Future<Void> observer = taskGiver.observeTask(taskId);
             ResultBuilder resultBuilder = calculationTask.getResultBuilder();
             resultBuilder.reset();

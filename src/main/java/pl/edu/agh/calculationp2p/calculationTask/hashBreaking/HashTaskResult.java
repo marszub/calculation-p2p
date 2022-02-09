@@ -25,7 +25,9 @@ public class HashTaskResult implements TaskResult {
     public String serialize() {
         String res = "[";
         for(int i=0;i<matchedStrings.size();i++){
+            res = res.concat("\"");
             res = res.concat(matchedStrings.get(i));
+            res = res.concat("\"");
             if(i<matchedStrings.size()-1)
                 res = res.concat(",");
         }

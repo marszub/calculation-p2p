@@ -16,7 +16,7 @@ public class TaskRecord {
         this.result = result;
     }
 
-    public TaskRecord(){
+    public TaskRecord() {
         this.taskID = -1;
         this.state = TaskState.Calculated;
         this.owner = -1;
@@ -34,11 +34,11 @@ public class TaskRecord {
         String resultStr = "{\"task_id\":";
         resultStr = resultStr.concat(String.valueOf(this.taskID));
         resultStr = resultStr.concat(",\"state\":");
-        resultStr = resultStr.concat("\""+this.state+"\"");
+        resultStr = resultStr.concat("\"" + this.state + "\"");
         resultStr = resultStr.concat(",\"owner\":");
         resultStr = resultStr.concat(String.valueOf(this.owner));
         resultStr = resultStr.concat(",\"result\":");
-        if(result != null){
+        if (result != null) {
             resultStr = resultStr.concat(result.serialize());
         } else {
             resultStr = resultStr.concat("\"null\"");
@@ -96,7 +96,7 @@ public class TaskRecord {
         return this.getTaskID() == other.getTaskID() &&
                 this.getState() == other.getState() &&
                 this.getOwner() == other.getOwner();
-                //this.getResult() == other.getResult();
+        //this.getResult() == other.getResult();
 
     }
 
