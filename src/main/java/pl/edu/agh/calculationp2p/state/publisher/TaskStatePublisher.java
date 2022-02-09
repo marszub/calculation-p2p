@@ -35,7 +35,7 @@ public class TaskStatePublisher {
     }
 
     public void look(TaskRecord previous, TaskRecord current) {
-        if (previous.getState() != publisherState && current.getState() ==  publisherState) {
+        if ((previous.getState() != publisherState && current.getState() ==  publisherState )|| (previous.getOwner() != current.getOwner())) {
             for (Pair<Future<Observation>, IdleInterrupter> pair : observers) {
                 Future<Observation> oldF = pair.getL();
                 Future<Observation> newF = new Future<>();

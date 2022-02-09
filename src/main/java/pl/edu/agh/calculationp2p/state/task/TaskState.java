@@ -18,7 +18,11 @@ public enum TaskState {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return name;
+    }
+
+    public String firstLetter() {
+        return name.substring(0, 1);
     }
 }
