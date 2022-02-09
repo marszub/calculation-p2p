@@ -124,6 +124,14 @@ public class Main {
         } catch (InterruptedException e) {
             Logger logger = LoggerFactory.getLogger("");
             logger.error(e.getMessage());
+
+            uiControllerThread.interrupt();
+            for (Thread thread :
+                    taskResolverThreads) {
+                thread.interrupt();
+            }
+            messageProcessorThread.interrupt();
+            schedulerThread.interrupt();
         }
 
     }
