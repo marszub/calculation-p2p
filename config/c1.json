@@ -8,6 +8,6 @@
   "my_port_local": 40000,
   "max_connection_time": 0,
   "progress_retry_time": 0,
-  "heart_beat_period": 5000,
-  "heart_beat_lifetime": 50000
+  "heart_beat_period": 5,
+  "heart_beat_lifetime": 50
 }
