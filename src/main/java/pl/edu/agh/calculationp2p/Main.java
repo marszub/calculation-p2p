@@ -71,20 +71,22 @@ public class Main {
         Idle idle = new Idle();
 
         // connection
-        InetSocketAddress myAddress = config.getMyAddress();
-        if(myAddress == null)
-            throw new NullPointerException("Error while reading my_address and my_port in config file.");
-
-        ConnectionManager connectionManager = new ConnectionManagerImpl(messageQueue, messageParser, myAddress, idle);
 
         // router
         RoutingTable routingTable = new RoutingTableImpl();
         Router router;
         NodeRegister nodeRegister = new NodeRegisterImpl();
         if(config.getPublicFlag())
+        {
+            InetSocketAddress myAddress = config.getMySocketAddress();
+            ConnectionManager connectionManager = new ConnectionManagerImpl(messageQueue, messageParser, myAddress, idle);
             router = new PublicRouter(connectionManager, messageQueue, routingTable, nodeRegister);
+        }
         else
+        {
+            ConnectionManager connectionManager = new ConnectionManagerImpl(messageQueue, messageParser, idle);
             router = new PrivateRouter(connectionManager, messageQueue, routingTable, nodeRegister);
+        }
 
         // message
         MessageProcessor messageProcessor = new MessageProcessor(router, stateUpdater, statusInformer, idle, config, new StartState());
