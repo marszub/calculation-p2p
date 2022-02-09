@@ -2,8 +2,11 @@ plugins {
     id 'java'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+apply plugin: 'application'
+
+application {
+    mainClassName = 'pl.edu.agh.calculationp2p.Main'
+}
 
 repositories {
     mavenCentral()
@@ -25,7 +28,13 @@ test {
 }
 
 jar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     manifest {
-        attributes 'Main-Class': 'pl.edu.agh.calculationp2p.Main'
+        attributes(
+                'Main-Class': 'pl.edu.agh.calculationp2p.Main'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.files.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
