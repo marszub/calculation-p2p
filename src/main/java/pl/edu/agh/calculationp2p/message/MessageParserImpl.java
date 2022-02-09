@@ -138,11 +138,12 @@ public class MessageParserImpl implements MessageParser{
         int taskId = jsonMapBody.getInt("task_id");
         int owner = jsonMapBody.getInt("owner");
         TaskState taskState = TaskState.valueOf(jsonMapBody.getString("state"));
-        JSONArray taskResultStr = jsonMapBody.getJSONArray("result");
         List<String> taskResultList = new ArrayList<>();
-        for(int i=0;i<taskResultStr.length();i++){
-            taskResultList.add(taskResultStr.getString(i));
-
+        if(!jsonMapBody.get("result").toString().equals("[]") && !jsonMapBody.get("result").toString().equals("null")){
+            JSONArray taskResultStr = jsonMapBody.getJSONArray("result");
+            for(int i=0;i<taskResultStr.length();i++){
+                taskResultList.add(taskResultStr.getString(i));
+            }
         }
         TaskResult taskResult = new HashTaskResult();
         taskResultList.forEach(taskResult::add);
