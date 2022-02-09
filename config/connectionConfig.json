@@ -4,6 +4,6 @@
   "public": true,
   "my_ip": "127.0.0.2",
   "my_port": 2137,
-  "max_connection_time":1000,
-  "progress_retry_time":20000
+  "max_connection_time":1,
+  "progress_retry_time":20
 }

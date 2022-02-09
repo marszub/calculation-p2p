@@ -3,6 +3,6 @@
   "server_port": 2137,
   "my_ip_global": "127.0.0.2",
   "my_port_global": "2137",
-  "max_connection_time":10,
-  "progress_retry_time":20
+  "max_connection_time": 0.01,
+  "progress_retry_time": 0.02
 }

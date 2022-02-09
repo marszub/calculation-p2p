@@ -105,12 +105,12 @@ public class ConfigReader implements AppConfig{
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
-                return -1;
-            return Integer.parseInt(jsonMap.get("max_connection_time").toString());
+                return 5000;
+            return (int) Float.parseFloat(jsonMap.getOrDefault("max_connection_time", 5).toString()) * 1000;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return -1;
+        return 5000;
     }
 
     @Override
@@ -119,12 +119,12 @@ public class ConfigReader implements AppConfig{
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
-                return -1;
-            return Integer.parseInt(jsonMap.get("progress_retry_time").toString());
+                return 60000;
+            return (int) Float.parseFloat(jsonMap.getOrDefault("progress_retry_time", 60).toString()) * 1000;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return -1;
+        return 60000;
     }
 
     @Override
@@ -133,12 +133,12 @@ public class ConfigReader implements AppConfig{
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
-                return -1;
-            return Integer.parseInt(jsonMap.get("heart_beat_period").toString());
+                return 2000;
+            return (int) Float.parseFloat(jsonMap.getOrDefault("heart_beat_period", 2).toString()) * 1000;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return -1;
+        return 2000;
     }
 
     @Override
@@ -147,12 +147,12 @@ public class ConfigReader implements AppConfig{
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
-                return -1;
-            return Integer.parseInt(jsonMap.get("heart_beat_lifetime").toString());
+                return 20000;
+            return (int) Float.parseFloat(jsonMap.getOrDefault("heart_beat_lifetime", 20).toString()) * 1000;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return -1;
+        return 20000;
     }
 
     @Override
@@ -161,12 +161,12 @@ public class ConfigReader implements AppConfig{
         try {
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
-                return null;
-            return jsonMap.get("task_config_path").toString();
+                return "config/taskConfig.json";
+            return jsonMap.getOrDefault("task_config_path", "config/taskConfig.json").toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return "config/taskConfig.json";
     }
 
     @Override
@@ -176,7 +176,7 @@ public class ConfigReader implements AppConfig{
             jsonMap = mapper.readValue(content, typeRef);
             if (jsonMap == null)
                 return 1;
-            return Integer.parseInt(jsonMap.get("thread_num").toString());
+            return Integer.parseInt(jsonMap.getOrDefault("thread_num", 1).toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
