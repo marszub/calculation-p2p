@@ -1,14 +1,11 @@
 package pl.edu.agh.calculationp2p.message.process;
 
 import pl.edu.agh.calculationp2p.AppConfig;
-import pl.edu.agh.calculationp2p.ConfigReader;
 import pl.edu.agh.calculationp2p.message.process.statemachine.ProcessingState;
 import pl.edu.agh.calculationp2p.network.router.Router;
 import pl.edu.agh.calculationp2p.state.idle.Idle;
 import pl.edu.agh.calculationp2p.state.proxy.StateUpdater;
 import pl.edu.agh.calculationp2p.state.proxy.StatusInformer;
-
-import java.net.InetSocketAddress;
 
 public class MessageProcessor implements Runnable {
 
@@ -46,14 +43,14 @@ public class MessageProcessor implements Runnable {
         context.setStateUpdater(stateUpdater);
         context.setStateInformer(statusInformer);
         context.setFutureProcessor(new FutureProcessor());
-        context.setNodeRegister(new NodeRegister(validityTime));
+        context.setOutdatedNodesDeleter(new OutdatedNodesDeleter(validityTime));
         context.setMessageProcessor(this);
 
         this.setState(initialState);
         this.idle = idle;
 
         this.heartBeatEmitter = new HeartBeatEmitter(timePeriod, router);
-        this.stateObserver = new StateObserver(statusInformer, idle);
+        this.stateObserver = new StateObserver(context, idle);
     }
 
 

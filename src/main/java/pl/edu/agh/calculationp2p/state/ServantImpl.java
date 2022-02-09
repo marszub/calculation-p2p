@@ -2,27 +2,23 @@ package pl.edu.agh.calculationp2p.state;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import pl.edu.agh.calculationp2p.calculation.TaskResolver;
-import pl.edu.agh.calculationp2p.message.MessageImpl;
-import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.TaskStatePublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ServantImpl implements Servant {
-    private final Progress progress;
+    private Progress progress;
     private final TaskPublisher taskPublisher;
-    private final ReservedPublisher reservedPublisher;
-    private final CalculatedPublisher calculatedPublisher;
+    private final TaskStatePublisher reservedPublisher;
+    private final TaskStatePublisher calculatedPublisher;
     private Integer nodeId;
 
-    public ServantImpl(Progress progress, TaskPublisher taskPublisher, ReservedPublisher reservedPublisher, CalculatedPublisher calculatedPublisher, Integer nodeId) {
+    public ServantImpl(Progress progress, TaskPublisher taskPublisher,  TaskStatePublisher reservedPublisher,  TaskStatePublisher calculatedPublisher, Integer nodeId) {
         this.progress = progress;
         this.taskPublisher = taskPublisher;
         this.reservedPublisher = reservedPublisher;
@@ -57,17 +53,22 @@ public class ServantImpl implements Servant {
     }
 
     @Override
+    public void setProgress(List<TaskRecord> list) {
+        this.progress = new Progress(list);
+    }
+
+    @Override
     public TaskPublisher getTaskPublisher() {
         return taskPublisher;
     }
 
     @Override
-    public ReservedPublisher getReservedPublisher() {
+    public  TaskStatePublisher getReservedPublisher() {
         return reservedPublisher;
     }
 
     @Override
-    public CalculatedPublisher getCalculatedPublisher() {
+    public  TaskStatePublisher getCalculatedPublisher() {
         return calculatedPublisher;
     }
 
@@ -83,9 +84,6 @@ public class ServantImpl implements Servant {
 
     @Override
     public void lookAllPublishers(TaskRecord prev, TaskRecord curr) {
-        Logger logger = LoggerFactory.getLogger(ServantImpl.class);
-        logger.info("Look all publishers");
-
         taskPublisher.look(prev, curr, nodeId);
         calculatedPublisher.look(prev, curr);
         reservedPublisher.look(prev, curr);

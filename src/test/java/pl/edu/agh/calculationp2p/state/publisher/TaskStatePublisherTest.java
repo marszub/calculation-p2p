@@ -11,11 +11,11 @@ import pl.edu.agh.calculationp2p.state.task.TaskState;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ReservedPublisherTest {
+class TaskStatePublisherTest {
 
     @Test
     void subscribe() {
-        ReservedPublisher publisher = new ReservedPublisher();
+        TaskStatePublisher publisher = new  TaskStatePublisher(TaskState.Calculated);
         IdleInterrupter interrupter1 = new Idle();
         Future<Observation> future = new Future<>();
 
@@ -32,7 +32,7 @@ class ReservedPublisherTest {
 
     @Test
     void unsubscribe() {
-        ReservedPublisher publisher = new ReservedPublisher();
+        TaskStatePublisher publisher = new  TaskStatePublisher(TaskState.Calculated);
         Future<Observation> future = new Future<>();
         IdleInterrupter interrupter1 = new Idle();
         IdleInterrupter interrupter2 = new Idle();
@@ -52,7 +52,7 @@ class ReservedPublisherTest {
 
     @Test
     void look() {
-        ReservedPublisher publisher = new ReservedPublisher();
+        TaskStatePublisher publisher = new  TaskStatePublisher(TaskState.Calculated);
         Future<Observation> future1 = new Future<>();
         Future<Observation> future2 = new Future<>();
         Future<Observation> future3 = new Future<>();
@@ -66,9 +66,9 @@ class ReservedPublisherTest {
         publisher.subscribe(future2, interrupter2);
         publisher.subscribe(future3, interrupter3);
 
-        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Free, 1, new HashTaskResult());
-        TaskRecord taskRecord2 = new TaskRecord(1, TaskState.Free, 1, new HashTaskResult());
-        TaskRecord taskRecord3 = new TaskRecord(1, TaskState.Reserved, 2, new HashTaskResult());
+        TaskRecord taskRecord1 = new TaskRecord(1, TaskState.Reserved, 1, new HashTaskResult());
+        TaskRecord taskRecord2 = new TaskRecord(1, TaskState.Reserved, 1, new HashTaskResult());
+        TaskRecord taskRecord3 = new TaskRecord(1, TaskState.Calculated, 2, new HashTaskResult());
 
         publisher.look(taskRecord1, taskRecord2);
         assertFalse(future1.isReady());

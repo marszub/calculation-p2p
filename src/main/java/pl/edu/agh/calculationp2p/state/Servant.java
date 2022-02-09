@@ -1,8 +1,8 @@
 package pl.edu.agh.calculationp2p.state;
 
-import pl.edu.agh.calculationp2p.state.publisher.CalculatedPublisher;
-import pl.edu.agh.calculationp2p.state.publisher.ReservedPublisher;
+import io.vertx.core.net.impl.pool.Task;
 import pl.edu.agh.calculationp2p.state.publisher.TaskPublisher;
+import pl.edu.agh.calculationp2p.state.publisher.TaskStatePublisher;
 import pl.edu.agh.calculationp2p.state.task.TaskRecord;
 
 import java.util.List;
@@ -14,15 +14,17 @@ public interface Servant {
 
     TaskPublisher getTaskPublisher();
 
-    ReservedPublisher getReservedPublisher();
+    TaskStatePublisher getReservedPublisher();
 
-    CalculatedPublisher getCalculatedPublisher();
+    TaskStatePublisher getCalculatedPublisher();
 
     void lookAllPublishers(TaskRecord prev, TaskRecord curr);
 
-    void setNodeId(Integer nodeId);
-
     Integer getNodeId();
 
+    void setNodeId(Integer nodeId);
+
     List<Integer> getFreeTasksList();
+
+    void setProgress(List<TaskRecord> list);
 }

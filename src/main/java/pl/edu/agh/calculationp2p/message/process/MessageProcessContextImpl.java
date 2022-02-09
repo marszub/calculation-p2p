@@ -10,7 +10,7 @@ public class MessageProcessContextImpl implements MessageProcessContext{
     private Router router;
     private StateUpdater stateUpdater;
     private StatusInformer stateInformer;
-    private NodeRegister nodeRegister;
+    private OutdatedNodesDeleter outdatedNodesDeleter;
     private FutureProcessor futureProcessor;
 
     @Override
@@ -43,8 +43,8 @@ public class MessageProcessContextImpl implements MessageProcessContext{
     }
 
     @Override
-    public NodeRegister getNodeRegister() {
-        return this.nodeRegister;
+    public OutdatedNodesDeleter getOutdatedNodesDeleter() {
+        return this.outdatedNodesDeleter;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MessageProcessContextImpl implements MessageProcessContext{
     @Override
     public void setStateInformer(StatusInformer stateInformer) {this.stateInformer = stateInformer;}
     @Override
-    public void setNodeRegister(NodeRegister nodeRegister) {this.nodeRegister = nodeRegister;}
+    public void setOutdatedNodesDeleter(OutdatedNodesDeleter outdatedNodesDeleter) {this.outdatedNodesDeleter = outdatedNodesDeleter;}
     @Override
     public void setFutureProcessor(FutureProcessor futureProcessor) {this.futureProcessor = futureProcessor;}
 

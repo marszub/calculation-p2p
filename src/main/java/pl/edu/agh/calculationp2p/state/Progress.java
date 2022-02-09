@@ -44,6 +44,13 @@ public class Progress implements Cloneable {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public List<TaskRecord> getReservedTasksList() {
+        return tasks
+                .stream()
+                .filter(e -> e.getState() == TaskState.Reserved)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     public List<TaskRecord> getTasks() {
         return tasks;
     }

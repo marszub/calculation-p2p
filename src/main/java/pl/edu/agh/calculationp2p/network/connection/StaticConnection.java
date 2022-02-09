@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.network.connection;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 
 import java.io.IOException;
@@ -15,6 +17,8 @@ public class StaticConnection extends ConnectionImpl {
     String connectionAddress = "";
 
     public StaticConnection(InetSocketAddress ipAddress){
+        Logger logger = LoggerFactory.getLogger(StaticConnection.class);
+        logger.debug("Establishing new connection with: " + ipAddress.toString());
         this.ipAddress = ipAddress;
         try
         {
@@ -34,10 +38,6 @@ public class StaticConnection extends ConnectionImpl {
         if(!super.send(message))
         {
             reconnect();
-            try {
-                super.register(selector);
-            } catch (ClosedChannelException ignored) {
-            }
             return false;
         }
         return true;
@@ -48,25 +48,12 @@ public class StaticConnection extends ConnectionImpl {
         return connectionAddress;
     }
 
-    public void disconnect()
-    {
-        try {
-            socketChannel.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void read(List messages) {
         try {
             super.read(messages);
         } catch (ConnectionLostException e) {
             close();
             reconnect();
-            try {
-                super.register(selector);
-            } catch (ClosedChannelException ignored) {
-            }
         }
     }
 
@@ -74,6 +61,10 @@ public class StaticConnection extends ConnectionImpl {
         try {
             socketChannel = SocketChannel.open(ipAddress);
             socketChannel.configureBlocking(false);
+            try {
+                super.register(selector);
+            } catch (ClosedChannelException ignored) {
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

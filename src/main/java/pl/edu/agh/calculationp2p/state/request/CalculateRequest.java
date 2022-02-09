@@ -20,8 +20,6 @@ public class CalculateRequest implements MethodRequest{
 
     @Override
     public void call(Servant servant){
-        Logger logger = LoggerFactory.getLogger(CalculateRequest.class);
-        logger.info("Call");
         Progress progress = servant.getProgress();
         TaskRecord oldTask = progress.get(taskId);
         TaskRecord newTask = new TaskRecord(taskId, TaskState.Calculated, servant.getNodeId(), result);

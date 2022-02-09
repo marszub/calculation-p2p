@@ -31,7 +31,6 @@ public class CalculationTaskIntegrationTest
             resultBuilder.performComputation(iterator.getNext());
         }
         assertTrue(resultBuilder.getResult().serialize().contains("9999999999"));
-        //assertEquals(1, resultBuilder.getResult().size());
     }
 
     @Test

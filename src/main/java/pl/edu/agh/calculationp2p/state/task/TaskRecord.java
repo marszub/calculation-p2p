@@ -16,7 +16,7 @@ public class TaskRecord {
         this.result = result;
     }
 
-    public TaskRecord(){
+    public TaskRecord() {
         this.taskID = -1;
         this.state = TaskState.Calculated;
         this.owner = -1;
@@ -34,11 +34,11 @@ public class TaskRecord {
         String resultStr = "{\"task_id\":";
         resultStr = resultStr.concat(String.valueOf(this.taskID));
         resultStr = resultStr.concat(",\"state\":");
-        resultStr = resultStr.concat("\""+this.state+"\"");
+        resultStr = resultStr.concat("\"" + this.state + "\"");
         resultStr = resultStr.concat(",\"owner\":");
         resultStr = resultStr.concat(String.valueOf(this.owner));
         resultStr = resultStr.concat(",\"result\":");
-        if(result != null){
+        if (result != null) {
             resultStr = resultStr.concat(result.serialize());
         } else {
             resultStr = resultStr.concat("\"null\"");
@@ -65,11 +65,20 @@ public class TaskRecord {
 
     public boolean hasHigherPriority(TaskRecord toCompare) {
         TaskState taskState = toCompare.getState();
-        if(this.state.getValue() < taskState.getValue()){
-            return true;
-        }
-        if(this.owner < toCompare.getOwner()){
-            return true;
+        if ((toCompare.getOwner() * this.getOwner()) > 0) {
+            if (this.state.getValue() < taskState.getValue()) {
+                return true;
+            }
+            if (this.owner < toCompare.getOwner()) {
+                return true;
+            }
+        } else {
+            if (this.owner > 0 && toCompare.getOwner() < 0) {
+                return true;
+            }
+            if (toCompare.getOwner() > 0 && this.owner < 0) {
+                return false;
+            }
         }
         return false;
     }
@@ -87,7 +96,8 @@ public class TaskRecord {
         return this.getTaskID() == other.getTaskID() &&
                 this.getState() == other.getState() &&
                 this.getOwner() == other.getOwner();
-                //this.getResult() == other.getResult();
+        //this.getResult() == other.getResult();
 
     }
+
 }

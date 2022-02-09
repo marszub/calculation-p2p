@@ -13,18 +13,16 @@ public class PublicRouter extends RouterImpl
 {
     private final HashMap<Integer, ConnectionTimestampPair> connectionQueue = new HashMap<>();
     private final LinkedList<Connection> unknownNodeConnections = new LinkedList<>();
-    final List<Integer> interfaces = new ArrayList<>();
     final long removeDeadline = 10000;
 
-    public PublicRouter(ConnectionManager ConnectionManager, MessageQueueExit MessageQueue, RoutingTable RoutingTable)
+    public PublicRouter(ConnectionManager ConnectionManager, MessageQueueExit MessageQueue, RoutingTable RoutingTable, NodeRegister nodeRegister)
     {
-        super(ConnectionManager, MessageQueue, RoutingTable);
+        super(ConnectionManager, MessageQueue, RoutingTable, nodeRegister);
     }
 
     @Override
     public void createInterface(Integer nodeId) throws InterfaceExistsException
     {
-        interfaces.add(nodeId);
         routingTable.addInterface(nodeId);
         if(connectionQueue.containsKey(nodeId))
         {
@@ -35,22 +33,20 @@ public class PublicRouter extends RouterImpl
     }
 
     @Override
+    public void createInterface(Integer nodeId, InetSocketAddress ip) throws InterfaceExistsException
+    {
+        routingTable.addInterface(nodeId);
+        if(connectionQueue.containsKey(nodeId))
+        {
+            routingTable.bind(nodeId, connectionQueue.get(nodeId).connection());
+            connectionQueue.remove(nodeId);
+        }
+        super.createInterface(nodeId, ip);
+    }
+
+    @Override
     public boolean isPublic() {
         return true;
-    }
-
-    @Override
-    public void createInterface(Integer nodeId, InetSocketAddress ipAddress)
-    {
-        interfaces.add(nodeId);
-        super.createInterface(nodeId, ipAddress);
-    }
-
-    @Override
-    public void deleteInterface(Integer nodeId) throws InterfaceDoesNotExistException
-    {
-        interfaces.remove(nodeId);
-        super.deleteInterface(nodeId);
     }
 
     @Override
@@ -90,10 +86,11 @@ public class PublicRouter extends RouterImpl
 
     private void checkOutdatedConnections()
     {
-        for (Map.Entry<Integer, ConnectionTimestampPair> entry : connectionQueue.entrySet())
+        List<Integer> keysList = new LinkedList<>(connectionQueue.keySet());
+        for (Integer key : keysList)
         {
-            if(System.currentTimeMillis() - entry.getValue().timestamp() > removeDeadline)
-                connectionQueue.remove(entry.getKey()); //delete connections from queue if they are too old
+            if(System.currentTimeMillis() - connectionQueue.get(key).timestamp() > removeDeadline)
+                connectionQueue.remove(key); //delete connections from queue if they are too old
         }
     }
 
@@ -121,10 +118,10 @@ public class PublicRouter extends RouterImpl
                 if (message.getReceiver() == broadcastId)
                 {
                     list.add(message.clone(myId));
-                    processMessageToAll(message); //message to all
+                    processMessageToAllPrivate(message); //message to all
                 }
                 else
-                    if(interfaces.contains(message.getReceiver()))
+                    if(nodeRegister.interfaceExists(message.getReceiver()))
                     {
                         routingTable.send(message.getReceiver(), message); //message to someone else, not me
                     }
@@ -133,9 +130,21 @@ public class PublicRouter extends RouterImpl
         bindConnectionOrAddToQueue(message.getSender(), result.connection());
     }
 
+    private void processMessageToAllPrivate(Message message)
+    {
+        for(int nodeId : nodeRegister.getPrivateNodes())
+        {
+            if(nodeId != message.getSender())
+            {
+                Message newMessage = message.clone(nodeId);
+                routingTable.send(nodeId, newMessage);
+            }
+        }
+    }
+
     private void processMessageToAll(Message message)
     {
-        for(int nodeId : interfaces)
+        for(int nodeId : nodeRegister.getAllNodesKeys())
         {
             if(nodeId != message.getSender())
             {
