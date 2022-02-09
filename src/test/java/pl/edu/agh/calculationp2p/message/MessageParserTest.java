@@ -22,15 +22,17 @@ class MessageParserTest {
 
     @Test
     void parseCalculated() {
-//        TaskRecord taskRecord = new TaskRecord();
-//        Message calculated = new MessageImpl(1, 2, new Calculated(taskRecord));
-//        assertEquals(calculated, messageParser.parse(calculated.serialize()));
-//
-//        Message calculated1 = new MessageImpl(1, 2, null);
-//        assertEquals(calculated1, messageParser.parse(calculated1.serialize()));
-//
-//        Message calculated2 = new MessageImpl(1, 2, new Calculated(null));
-//        assertEquals(calculated2, messageParser.parse(calculated2.serialize()));
+        TaskRecord taskRecord = new TaskRecord();
+        Message calculated = new MessageImpl(1, 2, new Calculated(taskRecord));
+        assertEquals(calculated, messageParser.parse(calculated.serialize()));
+
+        Message calculated1 = new MessageImpl(1, 2, null);
+        //assertEquals(calculated1, messageParser.parse(calculated1.serialize()));
+
+        TaskResult taskResult = new HashTaskResult();
+        taskResult.add("111");
+        Message calculated2 = new MessageImpl(1, 2, new Calculated(new TaskRecord(1, TaskState.Free, 2, taskResult)));
+        assertEquals(calculated2, messageParser.parse(calculated2.serialize()));
     }
 
     @Test
