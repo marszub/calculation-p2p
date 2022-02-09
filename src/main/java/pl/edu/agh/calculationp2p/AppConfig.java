@@ -8,6 +8,8 @@ public interface AppConfig {
 
     InetSocketAddress getMyAddress();
 
+    InetSocketAddress getMySocketAddress();
+
     boolean getPublicFlag();
 
     int getMaxConnectingTime();
