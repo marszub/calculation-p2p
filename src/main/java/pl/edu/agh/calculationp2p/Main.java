@@ -57,7 +57,6 @@ public class Main {
 
         // proxy
         SchedulerImpl schedulerImpl = new SchedulerImpl(servant);
-        Thread schedulerThread = new Thread(schedulerImpl); // create Thread
         StateUpdater stateUpdater = new StateUpdaterImpl(schedulerImpl);
         StatusInformer statusInformer = new StatusInformerImpl(schedulerImpl);
         TaskGiver taskGiver = new TaskGiverImpl(schedulerImpl);
@@ -108,7 +107,6 @@ public class Main {
         Thread uiControllerThread = new Thread(uiController);
 
         // start threads
-        schedulerThread.start();
         messageProcessorThread.start();
         taskResolverThreads.forEach(Thread::start);
         uiControllerThread.start();
@@ -120,7 +118,6 @@ public class Main {
                 thread.join(0);
             }
             messageProcessorThread.join(0);
-            schedulerThread.join(0);
         } catch (InterruptedException e) {
             Logger logger = LoggerFactory.getLogger("");
             logger.error(e.getMessage());
@@ -131,8 +128,6 @@ public class Main {
                 thread.interrupt();
             }
             messageProcessorThread.interrupt();
-            schedulerThread.interrupt();
         }
-
     }
 }

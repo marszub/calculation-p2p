@@ -41,7 +41,11 @@ public class RoutingTableImpl implements RoutingTable{
     public void send(int id, Message message)
     {
         if(!interfaces.containsKey(id))
+        {
+            Logger logger = LoggerFactory.getLogger("");
+            logger.error("Impossible to send, no interface : " + id + " | " + message.serialize() + " | " + "interfaces: ", interfaces.toString());
             return;
+        }
         if (interfaces.get(id) != null)
             sendTroughConnection(id, interfaces.get(id), message);
         else
@@ -72,6 +76,8 @@ public class RoutingTableImpl implements RoutingTable{
             while (entry.getValue().size() > 0)
             {
                 Message message = entry.getValue().pop();
+                Logger logger = LoggerFactory.getLogger("");
+                logger.info("Resending message: " + message.serialize());
                 if(!trySend(entry.getKey(), message))
                 {
                     addToMessageQueue(entry.getKey(), message);
@@ -103,7 +109,6 @@ public class RoutingTableImpl implements RoutingTable{
     {
         Logger logger = LoggerFactory.getLogger("");
         logger.info("Sending message failed!: " + ID + " | " + message.serialize());
-        LinkedList<Message> Queue = messageInterfaceQueue.get(ID);
-        Queue.addLast(message);
+        messageInterfaceQueue.get(ID).addLast(message);
     }
 }
