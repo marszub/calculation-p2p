@@ -128,7 +128,7 @@ public abstract class RouterImpl implements Router {
         {
             int id = publicNodesList.get(random.nextInt(publicNodesList.size()));
             if(!routingTable.trySend(id, message))
-                publicNodesList.remove(id);
+                publicNodesList.remove((Object) id);
             else
             {
                 routingTable.resendAll();
