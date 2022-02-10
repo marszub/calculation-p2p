@@ -27,10 +27,7 @@ public abstract class ConnectionImpl implements Connection
     {
         try {
             trySend(message);
-        }catch(ClosedChannelException e)
-        {
-            return false;
-        }catch(IOException e)
+        }catch(Exception e)
         {
             Logger logger = LoggerFactory.getLogger("");
             logger.error(e.getMessage());
@@ -43,6 +40,10 @@ public abstract class ConnectionImpl implements Connection
     public void register(Selector selector) throws ClosedChannelException
     {
         this.selector = selector;
+        if(key != null)
+        {
+            key.cancel();
+        }
         key = socketChannel.register(selector, SelectionKey.OP_READ, this);
     }
 

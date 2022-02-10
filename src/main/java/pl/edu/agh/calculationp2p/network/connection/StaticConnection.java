@@ -64,7 +64,9 @@ public class StaticConnection extends ConnectionImpl {
             socketChannel.configureBlocking(false);
             try {
                 super.register(selector);
-            } catch (ClosedChannelException ignored) {
+            } catch (ClosedChannelException e) {
+                Logger logger = LoggerFactory.getLogger("");
+                logger.error(e.getMessage());
             }
         } catch (IOException e) {
             Logger logger = LoggerFactory.getLogger("");

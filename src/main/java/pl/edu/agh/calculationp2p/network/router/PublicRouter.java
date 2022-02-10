@@ -61,6 +61,7 @@ public class PublicRouter extends RouterImpl
             }
             default -> {
                 routingTable.send(receiverId, message);
+                resendMessagesViaMiddleman();
                 routingTable.resendAll();
             }
         }

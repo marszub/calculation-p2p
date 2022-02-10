@@ -38,7 +38,6 @@ public class PrivateRouter extends RouterImpl
         if(nodeRegister.getPrivateNodes().contains(receiverId))
         {
             super.sendMessageViaMiddleman(message);
-            routingTable.resendAll();
             return;
         }
         routingTable.send(receiverId, message);

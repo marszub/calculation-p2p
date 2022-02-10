@@ -15,6 +15,7 @@ public abstract class RouterImpl implements Router {
     protected final MessageQueueExit messageQueue;
     protected final RoutingTable routingTable;
     protected final Map<Integer, StaticConnection> staticInterfaces = new HashMap<>();
+    protected final List<Message> broadcastMessageQueue = new LinkedList<>();
     protected int myId = -2;
     protected final int mainServerId = -3;
     protected final int unknownId = -2;
@@ -131,10 +132,26 @@ public abstract class RouterImpl implements Router {
                 publicNodesList.remove(id);
             else
             {
+                resendMessagesViaMiddleman();
                 routingTable.resendAll();
                 return id;
             }
         }
+        Logger logger = LoggerFactory.getLogger("");
+        logger.info("Sending message via middleman failed! | " + message.serialize());
+        broadcastMessageQueue.add(message);
         return null;
+    }
+
+    void resendMessagesViaMiddleman()
+    {
+        while(!broadcastMessageQueue.isEmpty())
+        {
+            Message message = broadcastMessageQueue.remove(0);
+            Logger logger = LoggerFactory.getLogger("");
+            logger.info("Resending message via middleman: " + message.serialize());
+            if(sendMessageViaMiddleman(message) == null)
+                break;
+        }
     }
 }
