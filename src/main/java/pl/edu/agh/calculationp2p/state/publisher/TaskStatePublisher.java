@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.state.publisher;
 
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.state.future.Future;
 import pl.edu.agh.calculationp2p.state.future.Observation;
 import pl.edu.agh.calculationp2p.state.idle.IdleInterrupter;
@@ -35,9 +37,14 @@ public class TaskStatePublisher {
     }
 
     public void look(TaskRecord previous, TaskRecord current) {
-        if((previous.getState() != publisherState && current.getState() == publisherState)
-                || (previous.getOwner() != current.getOwner())) {
-          
+        Logger logger = LoggerFactory.getLogger(publisherState.toString());
+        logger.debug(previous.getTaskID() + "->" + current.getTaskID());
+
+        if(current.getState() == publisherState
+                && (previous.getState() != publisherState || previous.getOwner() != current.getOwner())) {
+
+            logger.debug(current.getState().toString() + "<-" + previous.getState().toString() + " " + current.getOwner() + "<-" + previous.getOwner());
+
             for (Pair<Future<Observation>, IdleInterrupter> pair : observers) {
                 Future<Observation> oldF = pair.getL();
                 Future<Observation> newF = new Future<>();
