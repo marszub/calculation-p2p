@@ -10,5 +10,5 @@
   "progress_retry_time": 50,
   "heart_beat_period": 5,
   "heart_beat_lifetime": 50,
-  "thread_num": 2
+  "thread_num": 1
 }
