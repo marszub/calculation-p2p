@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.message.process.statemachine;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.process.MessageProcessor;
 
@@ -42,6 +44,8 @@ public class WorkState implements ProcessingState{
         Map<Integer, Long> allNodes = messageProcessor.getContext().getRouter().getNodeRegister().getAllNodes();
         List<Integer> notResponding = messageProcessor.getContext().getOutdatedNodesDeleter().getOutdatedNodes(allNodes);
         notResponding.forEach(id -> {
+            Logger logger = LoggerFactory.getLogger(this.getClass());
+            logger.info("[Removing node] id: ", id);
             messageProcessor.getContext().getRouter().deleteInterface(id);
             messageProcessor.getContext().getStateUpdater().clearNodeReservations(id);
         });
