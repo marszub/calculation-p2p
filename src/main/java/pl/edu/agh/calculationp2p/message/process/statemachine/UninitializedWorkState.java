@@ -1,5 +1,7 @@
 package pl.edu.agh.calculationp2p.message.process.statemachine;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import pl.edu.agh.calculationp2p.message.Message;
 import pl.edu.agh.calculationp2p.message.MessageImpl;
 import pl.edu.agh.calculationp2p.message.body.GetProgress;
@@ -51,6 +53,8 @@ public class UninitializedWorkState implements ProcessingState{
                 .getOutdatedNodesDeleter().getOutdatedNodes(router.getNodeRegister().getAllNodes());
 
         notResponding.forEach(id -> {
+            Logger logger = LoggerFactory.getLogger(this.getClass());
+            logger.info("[Removing node] id: ", id);
             router.deleteInterface(id);
             messageProcessor.getContext().getStateUpdater().clearNodeReservations(id);
         });
