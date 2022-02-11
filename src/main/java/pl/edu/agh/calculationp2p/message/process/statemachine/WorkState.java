@@ -45,7 +45,7 @@ public class WorkState implements ProcessingState{
         List<Integer> notResponding = messageProcessor.getContext().getOutdatedNodesDeleter().getOutdatedNodes(allNodes);
         notResponding.forEach(id -> {
             Logger logger = LoggerFactory.getLogger(this.getClass());
-            logger.info("[Removing node] id: ", id);
+            logger.info("[Removing node] id: " + id);
             messageProcessor.getContext().getRouter().deleteInterface(id);
             messageProcessor.getContext().getStateUpdater().clearNodeReservations(id);
         });
