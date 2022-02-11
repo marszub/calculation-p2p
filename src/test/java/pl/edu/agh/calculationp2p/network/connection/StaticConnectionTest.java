@@ -15,31 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StaticConnectionTest
 {
-    @Test
-    void testIfConnectionWillKeepItselfAliveAfterDisconnectRead() throws IOException {
-        DummyMessage message = new DummyMessage("TESTMESSAGE");
-        InetSocketAddress ip1 = new InetSocketAddress("localhost", 50000);
-        InetSocketAddress ip2 = new InetSocketAddress("localhost", 50001);
-        SelectorServerPair result1 = createServer(ip1);
-        SelectorServerPair result2 = createServer(ip2);
-        Selector selector1 = result1.selector();
-        Selector selector2 = result2.selector();
-        StaticConnection connection = new StaticConnection(ip2);
-        connection.register(selector1);
-        connection.send(message);
-        DynamicConnection dynamicConnection = addNewConnection(selector2);
-        dynamicConnection.close();
-        getMessage(selector1);
-        dynamicConnection = addNewConnection(selector2);
-        dynamicConnection.send(message);
-        assertEquals(message.serialize(), getMessage(selector1).get(0));
-        selector1.close();
-        selector2.close();
-        connection.close();
-        dynamicConnection.close();
-        result1.server().close();
-        result2.server().close();
-    }
 
     @Test
     void checkIfStaticConnectionReadsProperly() throws IOException
