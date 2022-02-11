@@ -38,6 +38,7 @@ public class StaticConnection extends ConnectionImpl {
     public boolean send(Message message) {
         if(!super.send(message))
         {
+            reconnect();
             return false;
         }
         return true;
