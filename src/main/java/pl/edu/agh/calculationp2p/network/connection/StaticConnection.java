@@ -38,7 +38,6 @@ public class StaticConnection extends ConnectionImpl {
     public boolean send(Message message) {
         if(!super.send(message))
         {
-            reconnect();
             return false;
         }
         return true;
@@ -60,8 +59,8 @@ public class StaticConnection extends ConnectionImpl {
 
     public void reconnect(){
         try {
-            socketChannel = SocketChannel.open(ipAddress);
             socketChannel.configureBlocking(false);
+            socketChannel = SocketChannel.open(ipAddress);
             try {
                 super.register(selector);
             } catch (ClosedChannelException ignored) {
